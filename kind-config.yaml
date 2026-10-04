@@ -1,0 +1,18 @@
+# 練習用のクラスターの形（kind create cluster --config kind-config.yaml）
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: hitokoto
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+    extraPortMappings:
+      - containerPort: 30000   # NodePort（第5章）
+        hostPort: 30000
+        listenAddress: "127.0.0.1"
+      - containerPort: 30080   # Gateway の入り口（第5章）
+        hostPort: 8080
+        listenAddress: "127.0.0.1"
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5

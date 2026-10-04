@@ -1,0 +1,26 @@
+{
+  "name": "hitokoto-k8s（kind と kubectl が使える環境）",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": false,
+      "dockerDashComposeVersion": "none"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "1.37.1",
+      "helm": "none",
+      "minikube": "none"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/install-kind.sh",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb"
+  },
+  "forwardPorts": [8000, 8080, 30000],
+  "portsAttributes": {
+    "8000": { "label": "port-forward（Pod に直接）" },
+    "8080": { "label": "Gateway（掲示板の入り口）" },
+    "30000": { "label": "NodePort" }
+  }
+}

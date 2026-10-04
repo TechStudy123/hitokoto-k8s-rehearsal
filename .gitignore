@@ -1,0 +1,5 @@
+.DS_Store
+*.swp
+# 秘密の値を書いたファイルは入れない
+*secret*.yaml
+!manifests/README.md
