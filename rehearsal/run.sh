@@ -210,16 +210,16 @@ run kubectl rollout status deployment/hitokoto --timeout=180s
 run "kubectl logs deploy/hitokoto | tail -5"
 gw_until 'banner db'
 run "curl -s localhost:8080/ | grep -E 'banner'"
-run "curl -s -o /dev/null -w '%{http_code}\n' -X POST -d 'text=PVC のテスト' localhost:8080/"
+run "curl -s -o /dev/null -w '%{http_code}\n' -X POST --data-urlencode 'text=PVC-test' localhost:8080/"
 sleep 2
-for i in 1 2 3; do curl -s localhost:8080/ | grep -o -E 'PVC のテスト|Pod: [a-z0-9-]*' | tr '\n' ' '; echo; done
+for i in 1 2 3; do curl -s localhost:8080/ | grep -o -E 'PVC-test|Pod: [a-z0-9-]*' | tr '\n' ' '; echo; done
 log H7 DB の Pod を消す
 run kubectl delete pod -l app=db
 run "curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/"
 run kubectl rollout status deployment/db --timeout=240s
 waitp 5
 gw_until 'banner db'
-run "curl -s localhost:8080/ | grep -o -E 'PVC のテスト|banner [a-z]*'"
+run "curl -s localhost:8080/ | grep -o -E 'PVC-test|banner [a-z]*'"
 free_mem
 } > $OUT/H7.txt
 
