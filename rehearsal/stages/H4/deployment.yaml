@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitokoto
+  labels:
+    app: hitokoto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hitokoto
+  template:
+    metadata:
+      labels:
+        app: hitokoto
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:1.1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: "none"

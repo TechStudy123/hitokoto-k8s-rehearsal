@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hitokoto
+spec:
+  selector:
+    app: hitokoto
+  ports:
+    - port: 80          # Service のポート
+      targetPort: 8000  # Pod（アプリ）のポート

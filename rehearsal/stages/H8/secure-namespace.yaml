@@ -1,0 +1,7 @@
+# 安全の設定を試すネームスペース。restricted の水準で Pod を確かめる
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: secure
+  labels:
+    pod-security.kubernetes.io/enforce: restricted

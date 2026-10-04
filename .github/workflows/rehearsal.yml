@@ -1,0 +1,21 @@
+name: rehearsal
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rehearsal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - run: npm install -g @devcontainers/cli
+      - run: devcontainer up --workspace-folder .
+      - run: devcontainer exec --workspace-folder . bash rehearsal/run.sh
+        continue-on-error: true
+      - name: 結果を results ブランチへ
+        if: always()
+        run: |
+          mkdir -p /tmp/r && cp -r results/* /tmp/r/ 2>/dev/null || true
+          git config user.name rehearsal && git config user.email rehearsal@example.com
+          git checkout --orphan results && git rm -rqf . && cp -r /tmp/r/* . && git add -A && git commit -qm "results $(date -u +%FT%TZ)" && git push -f origin results

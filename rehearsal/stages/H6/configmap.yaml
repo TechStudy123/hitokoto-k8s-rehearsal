@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hitokoto-config
+data:
+  APP_TITLE: "ひとこと掲示板（開発）"
+  DB_HOST: "none"
+  notice.txt: |
+    今週の金曜日の夜は、メンテナンスのため止まります。
