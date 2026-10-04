@@ -8,6 +8,7 @@ ST=rehearsal/stages
 log() { echo; echo "===== $* ====="; }
 run() { echo "\$ $*"; timeout 300 bash -c "$*" 2>&1; echo "[exit $?]"; }
 waitp() { sleep "${1:-10}"; }
+gw_until() { local want="$1"; local t0=$(date +%s); for i in $(seq 1 60); do if curl -s -m 3 localhost:8080/ | grep -q "$want"; then echo "[Gateway] '$want' が出るまで $(( $(date +%s)-t0 ))秒"; return; fi; sleep 1; done; echo "[Gateway] 60秒待っても '$want' が出ない"; }
 free_mem() { echo "--- free -m"; free -m; echo "--- docker stats"; docker stats --no-stream --format '{{.Name}} {{.MemUsage}} {{.CPUPerc}}'; }
 
 # ---------------- H1
@@ -22,6 +23,8 @@ start=$(date +%s)
 run kind create cluster --config kind-config.yaml
 echo "所要: $(( $(date +%s) - start ))秒"
 run kubectl config current-context
+run kubectl get nodes
+run kubectl wait --for=condition=Ready nodes --all --timeout=180s
 run kubectl get nodes -o wide
 log H1 失敗：もう一度作る
 run kind create cluster --config kind-config.yaml
@@ -100,6 +103,7 @@ log H5 Service
 run kubectl apply -f manifests/service.yaml
 run kubectl get svc
 run kubectl get endpoints hitokoto
+run kubectl describe service hitokoto
 run kubectl get endpointslices -l kubernetes.io/service-name=hitokoto
 run kubectl apply -f manifests/web.yaml
 run kubectl rollout status deployment/web --timeout=180s
@@ -126,8 +130,9 @@ run kubectl apply -f manifests/gateway.yaml
 run kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s
 run kubectl get gateway
 run kubectl get svc -A
+run kubectl get deploy,pods -l gateway.networking.k8s.io/gateway-name=hitokoto-gateway
 run kubectl apply -f manifests/httproute.yaml
-waitp 5
+gw_until '<footer>'
 run kubectl get httproute
 run "kubectl describe httproute hitokoto | sed -n '/Status:/,\$p'"
 waitp 5
@@ -151,6 +156,7 @@ log H6 ConfigMap
 run kubectl apply -f manifests/configmap.yaml
 run kubectl apply -f manifests/deployment.yaml
 run kubectl rollout status deployment/hitokoto --timeout=180s
+gw_until 'ひとこと掲示板（開発）'
 run "curl -s localhost:8080/ | grep -E '<h1>'"
 log H6 値を変えても変わらない
 sed -i 's/ひとこと掲示板（開発）/ひとこと掲示板（テスト）/' manifests/configmap.yaml
@@ -159,6 +165,7 @@ waitp 5
 run "curl -s localhost:8080/ | grep -E '<h1>'"
 run kubectl rollout restart deployment/hitokoto
 run kubectl rollout status deployment/hitokoto --timeout=180s
+gw_until 'ひとこと掲示板（テスト）'
 run "curl -s localhost:8080/ | grep -E '<h1>'"
 log H6 ファイル
 run kubectl exec deploy/hitokoto -- cat /config/notice.txt
@@ -172,7 +179,7 @@ run kubectl create secret generic db --from-literal=password=hitokoto-pass-123
 run kubectl get secret db -o yaml
 run "kubectl get secret db -o jsonpath='{.data.password}' | base64 -d; echo"
 log H6 失敗：ConfigMap の名前
-sed 's/name: hitokoto-config$/name: hitokoto-confg/' manifests/deployment.yaml | kubectl apply -f - 2>&1
+sed '0,/name: hitokoto-config$/s//name: hitokoto-confg/' manifests/deployment.yaml | kubectl apply -f - 2>&1
 waitp 15
 run kubectl get pods
 P=$(kubectl get pods --no-headers | awk '/CreateContainerConfigError/{print $1; exit}')
@@ -201,14 +208,17 @@ run kubectl apply -f manifests/configmap.yaml -f manifests/deployment.yaml
 run kubectl rollout restart deployment/hitokoto
 run kubectl rollout status deployment/hitokoto --timeout=180s
 run "kubectl logs deploy/hitokoto | tail -5"
+gw_until 'banner db'
 run "curl -s localhost:8080/ | grep -E 'banner'"
 run "curl -s -o /dev/null -w '%{http_code}\n' -X POST -d 'text=PVC のテスト' localhost:8080/"
+sleep 2
 for i in 1 2 3; do curl -s localhost:8080/ | grep -o -E 'PVC のテスト|Pod: [a-z0-9-]*' | tr '\n' ' '; echo; done
 log H7 DB の Pod を消す
 run kubectl delete pod -l app=db
 run "curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/"
 run kubectl rollout status deployment/db --timeout=240s
 waitp 5
+gw_until 'banner db'
 run "curl -s localhost:8080/ | grep -o -E 'PVC のテスト|banner [a-z]*'"
 free_mem
 } > $OUT/H7.txt
@@ -227,7 +237,7 @@ run kubectl rollout status deployment/hitokoto --timeout=180s
 run kubectl get pods
 run "kubectl describe deploy hitokoto | sed -n '/Containers:/,/Volumes:/p'"
 log H8 失敗1：memory 32Mi
-sed 's/memory: 256Mi/memory: 32Mi/' manifests/deployment.yaml | kubectl apply -f - 2>&1
+sed -e 's/memory: 256Mi/memory: 32Mi/' -e 's/memory: 128Mi/memory: 32Mi/' manifests/deployment.yaml | kubectl apply -f - 2>&1
 waitp 40
 run kubectl get pods
 P=$(kubectl get pods -l app=hitokoto --no-headers | awk '/OOMKilled|CrashLoop|Error/{print $1; exit}')
