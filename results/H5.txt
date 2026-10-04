@@ -1,0 +1,285 @@
+
+===== H5 Service =====
+$ kubectl apply -f manifests/service.yaml
+service/hitokoto created
+[exit 0]
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+hitokoto     ClusterIP   10.96.127.241   <none>        80/TCP    0s
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   2m10s
+[exit 0]
+$ kubectl get endpoints hitokoto
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME       ENDPOINTS                                         AGE
+hitokoto   10.244.1.5:8000,10.244.1.6:8000,10.244.2.7:8000   0s
+[exit 0]
+$ kubectl describe service hitokoto
+Name:                     hitokoto
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=hitokoto
+Type:                     ClusterIP
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.96.127.241
+IPs:                      10.96.127.241
+Port:                     <unset>  80/TCP
+TargetPort:               8000/TCP
+Endpoints:                10.244.1.6:8000,10.244.1.5:8000,10.244.2.7:8000
+Session Affinity:         None
+Internal Traffic Policy:  Cluster
+Events:                   <none>
+[exit 0]
+$ kubectl get endpointslices -l kubernetes.io/service-name=hitokoto
+NAME             ADDRESSTYPE   PORTS   ENDPOINTS                                      AGE
+hitokoto-6bgsh   IPv4          8000    10.244.1.6,10.244.1.7,10.244.1.5 + 1 more...   0s
+[exit 0]
+$ kubectl apply -f manifests/web.yaml
+deployment.apps/web created
+service/web created
+[exit 0]
+$ kubectl rollout status deployment/web --timeout=180s
+Waiting for deployment "web" rollout to finish: 0 of 1 updated replicas are available...
+deployment "web" successfully rolled out
+[exit 0]
+$ kubectl exec deploy/web -- curl -s http://hitokoto/health
+{"status":"ok"}[exit 0]
+Pod: hitokoto-7594f9745c-xpk2l
+Pod: hitokoto-7594f9745c-fqmrc
+Pod: hitokoto-7594f9745c-fqmrc
+Pod: hitokoto-7594f9745c-xpk2l
+Pod: hitokoto-7594f9745c-bqp2t
+Pod: hitokoto-7594f9745c-xpk2l
+
+===== H5 NodePort =====
+$ kubectl apply -f manifests/service-nodeport.yaml
+service/hitokoto-nodeport created
+[exit 0]
+Pod: hitokoto-7594f9745c-xpk2l
+Pod: hitokoto-7594f9745c-bqp2t
+Pod: hitokoto-7594f9745c-xpk2l
+Pod: hitokoto-7594f9745c-fqmrc
+
+===== H5 失敗：セレクター =====
+service/hitokoto configured
+$ kubectl get endpoints hitokoto
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME       ENDPOINTS   AGE
+hitokoto   <none>      6s
+[exit 0]
+$ kubectl exec deploy/web -- curl -s -m 5 http://hitokoto/health
+command terminated with exit code 7
+[exit 7]
+$ kubectl apply -f manifests/service.yaml
+service/hitokoto configured
+[exit 0]
+$ kubectl get endpoints hitokoto
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME       ENDPOINTS                                         AGE
+hitokoto   10.244.1.5:8000,10.244.1.6:8000,10.244.2.7:8000   7s
+[exit 0]
+
+===== H5 Gateway の実装を入れる =====
+$ bash setup/install-gateway.sh
+customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/grpcroutes.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/listenersets.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/tcproutes.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/tlsroutes.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/udproutes.gateway.networking.k8s.io serverside-applied
+validatingadmissionpolicy.admissionregistration.k8s.io/safe-upgrades.gateway.networking.k8s.io serverside-applied
+validatingadmissionpolicybinding.admissionregistration.k8s.io/safe-upgrades.gateway.networking.k8s.io serverside-applied
+customresourcedefinition.apiextensions.k8s.io/authenticationfilters.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/clientsettingspolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/externalloadbalancers.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/nginxgateways.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/nginxproxies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/observabilitypolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/payloadprocessors.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/proxysettingspolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/ratelimitpolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/snippetsfilters.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/snippetspolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/upstreamsettingspolicies.gateway.nginx.org serverside-applied
+customresourcedefinition.apiextensions.k8s.io/wafpolicies.gateway.nginx.org serverside-applied
+namespace/nginx-gateway created
+serviceaccount/nginx-gateway created
+serviceaccount/nginx-gateway-cert-generator created
+role.rbac.authorization.k8s.io/nginx-gateway-cert-generator created
+clusterrole.rbac.authorization.k8s.io/nginx-gateway created
+rolebinding.rbac.authorization.k8s.io/nginx-gateway-cert-generator created
+clusterrolebinding.rbac.authorization.k8s.io/nginx-gateway created
+service/nginx-gateway created
+deployment.apps/nginx-gateway created
+job.batch/nginx-gateway-cert-generator created
+gatewayclass.gateway.networking.k8s.io/nginx created
+nginxgateway.gateway.nginx.org/nginx-gateway-config created
+nginxproxy.gateway.nginx.org/nginx-gateway-proxy-config created
+nginxproxy.gateway.nginx.org/nginx-gateway-proxy-config patched
+deployment.apps/nginx-gateway condition met
+NAME    CONTROLLER                                   ACCEPTED   AGE
+nginx   gateway.nginx.org/nginx-gateway-controller   True       17s
+[exit 0]
+所要: 19秒
+$ kubectl get pods -n nginx-gateway -o wide
+NAME                                 READY   STATUS      RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES
+nginx-gateway-69b4b8d978-j2h6h       1/1     Running     0          17s   10.244.2.9   hitokoto-worker2   <none>           <none>
+nginx-gateway-cert-generator-xvs8k   0/1     Completed   0          17s   10.244.1.8   hitokoto-worker    <none>           <none>
+[exit 0]
+$ kubectl get nginxproxy -n nginx-gateway -o yaml
+apiVersion: v1
+items:
+- apiVersion: gateway.nginx.org/v1alpha2
+  kind: NginxProxy
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.nginx.org/v1alpha2","kind":"NginxProxy","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"nginx-gateway","app.kubernetes.io/name":"nginx-gateway","app.kubernetes.io/version":"2.7.2"},"name":"nginx-gateway-proxy-config","namespace":"nginx-gateway"},"spec":{"kubernetes":{"deployment":{"container":{"image":{"pullPolicy":"IfNotPresent","repository":"ghcr.io/nginx/nginx-gateway-fabric/nginx","tag":"2.7.2"}},"replicas":1},"service":{"externalTrafficPolicy":"Local","type":"NodePort"}}}}
+    creationTimestamp: "2026-10-04T11:32:44Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/instance: nginx-gateway
+      app.kubernetes.io/name: nginx-gateway
+      app.kubernetes.io/version: 2.7.2
+    name: nginx-gateway-proxy-config
+    namespace: nginx-gateway
+    resourceVersion: "1278"
+    uid: 0fc25f38-7de2-40ae-851a-f9c990432c7b
+  spec:
+    kubernetes:
+      deployment:
+        container:
+          image:
+            pullPolicy: IfNotPresent
+            repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
+            tag: 2.7.2
+        replicas: 1
+      service:
+        externalTrafficPolicy: Cluster
+        nodePorts:
+        - listenerPort: 80
+          port: 30080
+        type: NodePort
+kind: List
+metadata:
+  resourceVersion: ""
+[exit 0]
+
+===== H5 Gateway と HTTPRoute =====
+$ kubectl apply -f manifests/gateway.yaml
+gateway.gateway.networking.k8s.io/hitokoto-gateway created
+[exit 0]
+$ kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s
+gateway.gateway.networking.k8s.io/hitokoto-gateway condition met
+[exit 0]
+$ kubectl get gateway
+NAME               CLASS   ADDRESS       PROGRAMMED   AGE
+hitokoto-gateway   nginx   10.96.116.3   True         0s
+[exit 0]
+$ kubectl get svc -A
+NAMESPACE       NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE
+default         hitokoto                 ClusterIP   10.96.127.241   <none>        80/TCP                   26s
+default         hitokoto-gateway-nginx   NodePort    10.96.116.3     <none>        80:30080/TCP             0s
+default         hitokoto-nodeport        NodePort    10.96.50.86     <none>        80:30000/TCP             23s
+default         kubernetes               ClusterIP   10.96.0.1       <none>        443/TCP                  2m36s
+default         web                      ClusterIP   10.96.183.86    <none>        80/TCP                   26s
+kube-system     kube-dns                 ClusterIP   10.96.0.10      <none>        53/UDP,53/TCP,9153/TCP   2m35s
+nginx-gateway   nginx-gateway            ClusterIP   10.96.15.176    <none>        443/TCP,9113/TCP         17s
+[exit 0]
+$ kubectl get deploy,pods -l gateway.networking.k8s.io/gateway-name=hitokoto-gateway
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hitokoto-gateway-nginx   0/1     1            0           0s
+
+NAME                                          READY   STATUS     RESTARTS   AGE
+pod/hitokoto-gateway-nginx-7fc646bd7f-dbrbb   0/1     Init:0/1   0          0s
+[exit 0]
+$ kubectl apply -f manifests/httproute.yaml
+httproute.gateway.networking.k8s.io/hitokoto created
+[exit 0]
+[Gateway] '<footer>' が出るまで 16秒
+$ kubectl get httproute
+NAME       HOSTNAMES   AGE
+hitokoto               16s
+[exit 0]
+$ kubectl describe httproute hitokoto | sed -n '/Status:/,$p'
+Status:
+  Parents:
+    Conditions:
+      Last Transition Time:  2026-10-04T11:32:59Z
+      Message:               The Route is accepted
+      Observed Generation:   1
+      Reason:                Accepted
+      Status:                True
+      Type:                  Accepted
+      Last Transition Time:  2026-10-04T11:32:59Z
+      Message:               All references are resolved
+      Observed Generation:   1
+      Reason:                ResolvedRefs
+      Status:                True
+      Type:                  ResolvedRefs
+    Controller Name:         gateway.nginx.org/nginx-gateway-controller
+    Parent Ref:
+      Group:         gateway.networking.k8s.io
+      Kind:          Gateway
+      Name:          hitokoto-gateway
+      Namespace:     default
+      Section Name:  http
+Events:              <none>
+[exit 0]
+$ curl -s localhost:8080/ | grep -E '<h1>|<footer>'
+<h1>ひとこと掲示板</h1>
+<footer>hitokoto 1.1 ・ Pod: hitokoto-7594f9745c-xpk2l</footer>
+[exit 0]
+$ curl -s localhost:8080/web | grep -i '<title>'
+<title>Welcome to nginx!</title>
+[exit 0]
+$ curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/web/
+200
+[exit 0]
+
+===== H5 失敗：backendRefs の名前 =====
+httproute.gateway.networking.k8s.io/hitokoto configured
+$ kubectl describe httproute hitokoto | sed -n '/Status:/,$p'
+Status:
+  Parents:
+    Conditions:
+      Last Transition Time:  2026-10-04T11:33:21Z
+      Message:               The Route is accepted
+      Observed Generation:   2
+      Reason:                Accepted
+      Status:                True
+      Type:                  Accepted
+      Last Transition Time:  2026-10-04T11:33:21Z
+      Message:               spec.rules[0].backendRefs[0].name: Not found: "webb"
+      Observed Generation:   2
+      Reason:                BackendNotFound
+      Status:                False
+      Type:                  ResolvedRefs
+    Controller Name:         gateway.nginx.org/nginx-gateway-controller
+    Parent Ref:
+      Group:         gateway.networking.k8s.io
+      Kind:          Gateway
+      Name:          hitokoto-gateway
+      Namespace:     default
+      Section Name:  http
+Events:              <none>
+[exit 0]
+$ curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/web
+500
+[exit 0]
+$ kubectl apply -f manifests/httproute.yaml
+httproute.gateway.networking.k8s.io/hitokoto configured
+[exit 0]
+--- free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15988        2993        4497          82        8927       12995
+Swap:           3071           0        3071
+--- docker stats
+hitokoto-worker 449.2MiB / 15.61GiB 1.45%
+hitokoto-control-plane 973MiB / 15.61GiB 9.25%
+hitokoto-worker2 362MiB / 15.61GiB 4.77%

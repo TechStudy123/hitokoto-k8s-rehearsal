@@ -1,0 +1,108 @@
+
+===== H7 StorageClass =====
+$ kubectl get storageclass
+NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+standard (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  5m2s
+[exit 0]
+
+===== H7 PVC だけ =====
+persistentvolumeclaim/db-data created
+$ kubectl get pvc
+NAME      STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+db-data   Pending                                      standard       <unset>                 5s
+[exit 0]
+$ kubectl get pv
+No resources found
+[exit 0]
+
+===== H7 db =====
+$ kubectl apply -f manifests/db.yaml
+persistentvolumeclaim/db-data unchanged
+deployment.apps/db created
+service/db created
+[exit 0]
+$ kubectl rollout status deployment/db --timeout=240s
+Waiting for deployment "db" rollout to finish: 0 of 1 updated replicas are available...
+deployment "db" successfully rolled out
+[exit 0]
+$ kubectl get pvc,pv
+NAME                            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/db-data   Bound    pvc-33a2bd99-afeb-4ea0-b44f-5ce10bd57cfa   1Gi        RWO            standard       <unset>                 14s
+
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+persistentvolume/pvc-33a2bd99-afeb-4ea0-b44f-5ce10bd57cfa   1Gi        RWO            Delete           Bound    default/db-data   standard       <unset>                          5s
+[exit 0]
+$ kubectl logs deploy/db --tail=5
+selecting dynamic shared memory implementation ... posix
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Etc/UTC
+creating configuration files ... ok
+[exit 0]
+
+===== H7 掲示板をつなぐ =====
+$ kubectl apply -f manifests/configmap.yaml -f manifests/deployment.yaml
+configmap/hitokoto-config configured
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout restart deployment/hitokoto
+deployment.apps/hitokoto restarted
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+$ kubectl logs deploy/hitokoto | tail -5
+Found 4 pods, using pod/hitokoto-6f96858b-fjqjk
+INFO:     hitokoto 1.1 を起動します（タイトル: ひとこと掲示板（テスト））
+INFO:     データベースを使わずに動きます（DB_HOST=none）
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     10.244.1.9:48122 - "GET / HTTP/1.1" 200 OK
+[exit 0]
+[Gateway] 'banner db' が出るまで 1秒
+$ curl -s localhost:8080/ | grep -E 'banner'
+    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }
+<p class="banner db">データベース（db）に保存しています</p>
+[exit 0]
+$ curl -s -o /dev/null -w '%{http_code}\n' -X POST --data-urlencode 'text=PVC-test' localhost:8080/
+303
+[exit 0]
+PVC-test Pod: hitokoto-56df4c746b-z5s7h 
+PVC-test Pod: hitokoto-56df4c746b-z5s7h 
+PVC-test Pod: hitokoto-56df4c746b-t2zz8 
+
+===== H7 DB の Pod を消す =====
+$ kubectl delete pod -l app=db
+pod "db-78ddf677fd-w2lmc" deleted from default namespace
+[exit 0]
+$ curl -s -o /dev/null -w '%{http_code}\n' localhost:8080/
+200
+[exit 0]
+$ kubectl rollout status deployment/db --timeout=240s
+deployment "db" successfully rolled out
+[exit 0]
+[Gateway] 'banner db' が出るまで 0秒
+$ curl -s localhost:8080/ | grep -o -E 'PVC-test|banner [a-z]*'
+banner 
+banner db
+PVC-test
+[exit 0]
+--- free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15988        3091        3941         100        9402       12897
+Swap:           3071           0        3071
+--- docker stats
+hitokoto-worker 431.9MiB / 15.61GiB 1.08%
+hitokoto-control-plane 979.8MiB / 15.61GiB 7.88%
+hitokoto-worker2 486.1MiB / 15.61GiB 3.82%

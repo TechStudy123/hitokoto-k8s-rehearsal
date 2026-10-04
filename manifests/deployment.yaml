@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitokoto
+  labels:
+    app: hitokoto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hitokoto
+  template:
+    metadata:
+      labels:
+        app: hitokoto
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:1.1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: APP_TITLE
+              valueFrom:
+                configMapKeyRef:
+                  name: hitokoto-config
+                  key: APP_TITLE
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hitokoto-config
+                  key: DB_HOST
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: password
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 10
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: config
+          configMap:
+            name: hitokoto-config
+            items:
+              - key: notice.txt
+                path: notice.txt

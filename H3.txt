@@ -1,0 +1,121 @@
+
+===== H3 dry-run と apply =====
+$ kubectl apply -f manifests/pod.yaml --dry-run=server
+pod/hitokoto created (server dry run)
+[exit 0]
+$ kubectl apply -f manifests/pod.yaml
+pod/hitokoto created
+[exit 0]
+$ kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s
+pod/hitokoto condition met
+[exit 0]
+$ kubectl get pods -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES
+hitokoto   1/1     Running   0          4s    10.244.2.2   hitokoto-worker2   <none>           <none>
+[exit 0]
+$ kubectl describe pod hitokoto
+Name:             hitokoto
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             hitokoto-worker2/172.19.0.4
+Start Time:       Sun, 04 Oct 2026 11:30:52 +0000
+Labels:           app=hitokoto
+Annotations:      <none>
+Status:           Running
+IP:               10.244.2.2
+IPs:
+  IP:  10.244.2.2
+Containers:
+  app:
+    Container ID:   containerd://a67c0d6503c801d594ca3c8536cc56e6381e87ae264f678231d3a23ec63551e4
+    Image:          ghcr.io/container-nyumon/hitokoto:1.0
+    Image ID:       ghcr.io/container-nyumon/hitokoto@sha256:cb42bbe81f321d96ec733f94f64eb10ef3995094dd157e2953dfc3c377edbb80
+    Port:           8000/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Sun, 04 Oct 2026 11:30:56 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      DB_HOST:  none
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-264nf (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-264nf:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  4s    default-scheduler  Successfully assigned default/hitokoto to hitokoto-worker2
+  Normal  Pulling    4s    kubelet            spec.containers{app}: Pulling image "ghcr.io/container-nyumon/hitokoto:1.0"
+  Normal  Pulled     0s    kubelet            spec.containers{app}: Successfully pulled image "ghcr.io/container-nyumon/hitokoto:1.0" in 3.894s (3.894s including waiting). Image size: 85439688 bytes.
+  Normal  Created    0s    kubelet            spec.containers{app}: Container created
+  Normal  Started    0s    kubelet            spec.containers{app}: Container started
+[exit 0]
+$ kubectl logs hitokoto
+[exit 0]
+
+===== H3 port-forward =====
+$ curl -s localhost:8000/ | grep -E '<h1>|<footer>|banner'
+    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }
+<h1>ひとこと掲示板</h1>
+<p class="banner memory">データベースを使っていません（書き込みは、Pod ごとに別々で、Pod を消すと消えます）</p>
+<footer>hitokoto 1.0 ・ Pod: hitokoto</footer>
+[exit 0]
+$ curl -s localhost:8000/health
+{"status":"ok"}[exit 0]
+
+===== H3 exec =====
+$ kubectl exec hitokoto -- sh -c 'hostname; whoami; id; env | grep -E "DB_|APP_"'
+hitokoto
+appuser
+uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)
+DB_HOST=none
+APP_VERSION=1.0
+[exit 0]
+$ kubectl get pods --show-labels
+NAME       READY   STATUS    RESTARTS   AGE   LABELS
+hitokoto   1/1     Running   0          9s    app=hitokoto
+[exit 0]
+
+===== H3 失敗：タグ 9.9 =====
+pod/hitokoto-bad created
+$ kubectl get pods
+NAME           READY   STATUS             RESTARTS   AGE
+hitokoto       1/1     Running            0          34s
+hitokoto-bad   0/1     ImagePullBackOff   0          25s
+[exit 0]
+$ kubectl describe pod hitokoto-bad | sed -n '/Events:/,$p'
+Events:
+  Type     Reason     Age                From               Message
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  25s                default-scheduler  Successfully assigned default/hitokoto-bad to hitokoto-worker
+  Normal   BackOff    24s                kubelet            spec.containers{app}: Back-off pulling image "ghcr.io/container-nyumon/hitokoto:9.9"
+  Warning  Failed     24s                kubelet            spec.containers{app}: Error: ImagePullBackOff
+  Normal   Pulling    10s (x2 over 25s)  kubelet            spec.containers{app}: Pulling image "ghcr.io/container-nyumon/hitokoto:9.9"
+  Warning  Failed     9s (x2 over 25s)   kubelet            spec.containers{app}: Failed to pull image "ghcr.io/container-nyumon/hitokoto:9.9": rpc error: code = NotFound desc = failed to pull and unpack image "ghcr.io/container-nyumon/hitokoto:9.9": failed to resolve reference "ghcr.io/container-nyumon/hitokoto:9.9": ghcr.io/container-nyumon/hitokoto:9.9: not found
+  Warning  Failed     9s (x2 over 25s)   kubelet            spec.containers{app}: Error: ErrImagePull
+[exit 0]
+$ kubectl delete pod hitokoto-bad hitokoto --wait=true
+pod "hitokoto-bad" deleted from default namespace
+pod "hitokoto" deleted from default namespace
+[exit 0]
+$ kubectl get pods
+No resources found in default namespace.
+[exit 0]

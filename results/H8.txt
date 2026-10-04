@@ -1,0 +1,185 @@
+
+===== H8 metrics-server =====
+$ bash setup/install-metrics-server.sh
+serviceaccount/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+service/metrics-server created
+deployment.apps/metrics-server created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+deployment.apps/metrics-server patched
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+deployment "metrics-server" successfully rolled out
+[exit 0]
+$ kubectl top nodes
+NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+hitokoto-control-plane   82m          2%       983Mi           6%          
+hitokoto-worker          21m          0%       441Mi           2%          
+hitokoto-worker2         26m          0%       524Mi           3%          
+[exit 0]
+$ kubectl top pods
+NAME                                      CPU(cores)   MEMORY(bytes)   
+db-78ddf677fd-dvngp                       1m           26Mi            
+hitokoto-56df4c746b-ch8r5                 1m           94Mi            
+hitokoto-56df4c746b-t2zz8                 2m           94Mi            
+hitokoto-56df4c746b-z5s7h                 2m           95Mi            
+hitokoto-gateway-nginx-7fc646bd7f-dbrbb   1m           32Mi            
+web-5f6bdcdb7f-9wqgf                      0m           4Mi             
+[exit 0]
+
+===== H8 安全な設定 =====
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+$ kubectl get pods
+NAME                                      READY   STATUS        RESTARTS   AGE
+db-78ddf677fd-dvngp                       1/1     Running       0          2m49s
+hitokoto-56df4c746b-ch8r5                 1/1     Terminating   0          2m53s
+hitokoto-5d8f6d6957-dxsk4                 1/1     Running       0          12s
+hitokoto-5d8f6d6957-lk6zj                 1/1     Running       0          6s
+hitokoto-5d8f6d6957-wz4wr                 1/1     Running       0          18s
+hitokoto-gateway-nginx-7fc646bd7f-dbrbb   1/1     Running       0          5m39s
+web-5f6bdcdb7f-9wqgf                      1/1     Running       0          6m5s
+[exit 0]
+$ kubectl describe deploy hitokoto | sed -n '/Containers:/,/Volumes:/p'
+  Containers:
+   app:
+    Image:      ghcr.io/container-nyumon/hitokoto:1.1
+    Port:       8000/TCP
+    Host Port:  0/TCP
+    Limits:
+      memory:  256Mi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Liveness:   http-get http://:8000/health delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Readiness:  http-get http://:8000/health delay=0s timeout=1s period=5s successThreshold=1 failureThreshold=3
+    Environment:
+      APP_TITLE:    <set to the key 'APP_TITLE' of config map 'hitokoto-config'>  Optional: false
+      DB_HOST:      <set to the key 'DB_HOST' of config map 'hitokoto-config'>    Optional: false
+      DB_PASSWORD:  <set to the key 'password' in secret 'db'>                    Optional: false
+    Mounts:
+      /config from config (ro)
+  Volumes:
+[exit 0]
+
+===== H8 失敗1：memory 32Mi =====
+deployment.apps/hitokoto configured
+$ kubectl get pods
+NAME                                      READY   STATUS             RESTARTS     AGE
+db-78ddf677fd-dvngp                       1/1     Running            0            3m29s
+hitokoto-5d8f6d6957-dxsk4                 1/1     Running            0            52s
+hitokoto-5d8f6d6957-lk6zj                 1/1     Running            0            46s
+hitokoto-5d8f6d6957-wz4wr                 1/1     Running            0            58s
+hitokoto-5f9dcf96f7-94gsh                 0/1     CrashLoopBackOff   3 (3s ago)   40s
+hitokoto-gateway-nginx-7fc646bd7f-dbrbb   1/1     Running            0            6m19s
+web-5f6bdcdb7f-9wqgf                      1/1     Running            0            6m45s
+[exit 0]
+$ kubectl describe pod hitokoto-5f9dcf96f7-94gsh | sed -n '/State:/,/Ready:/p;/Limits:/,/Requests:/p'
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Sun, 04 Oct 2026 11:39:14 +0000
+      Finished:     Sun, 04 Oct 2026 11:39:15 +0000
+    Ready:          False
+    Limits:
+      memory:  32Mi
+    Requests:
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=240s
+deployment "hitokoto" successfully rolled out
+[exit 0]
+
+===== H8 失敗2：liveness /healthz =====
+deployment.apps/hitokoto configured
+$ kubectl get pods
+NAME                                      READY   STATUS    RESTARTS      AGE
+db-78ddf677fd-dvngp                       1/1     Running   0             4m45s
+hitokoto-6f4c8d8d7-blxbg                  1/1     Running   2 (12s ago)   73s
+hitokoto-6f4c8d8d7-bmcfs                  1/1     Running   2 (6s ago)    67s
+hitokoto-6f4c8d8d7-vmdhc                  1/1     Running   2 (15s ago)   75s
+hitokoto-gateway-nginx-7fc646bd7f-dbrbb   1/1     Running   0             7m35s
+web-5f6bdcdb7f-9wqgf                      1/1     Running   0             8m1s
+[exit 0]
+$ kubectl describe pod hitokoto-6f4c8d8d7-bmcfs | sed -n '/Events:/,$p'
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  67s               default-scheduler  Successfully assigned default/hitokoto-6f4c8d8d7-bmcfs to hitokoto-worker
+  Warning  Unhealthy  7s (x6 over 57s)  kubelet            spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 404
+  Normal   Killing    7s (x2 over 37s)  kubelet            spec.containers{app}: Container app failed liveness probe, will be restarted
+  Normal   Pulled     6s (x3 over 66s)  kubelet            spec.containers{app}: Container image "ghcr.io/container-nyumon/hitokoto:1.1" already present on machine and can be accessed by the pod
+  Normal   Created    6s (x3 over 66s)  kubelet            spec.containers{app}: Container created
+  Normal   Started    6s (x3 over 66s)  kubelet            spec.containers{app}: Container started
+  Warning  Unhealthy  6s (x5 over 66s)  kubelet            spec.containers{app}: Readiness probe failed: Get "http://10.244.1.22:8000/health": dial tcp 10.244.1.22:8000: connect: connection refused
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=240s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+
+===== H8 PodSecurity =====
+$ kubectl apply -f manifests/secure-namespace.yaml
+namespace/secure created
+[exit 0]
+$ kubectl apply -f manifests/root-pod.yaml
+Error from server (Forbidden): error when creating "manifests/root-pod.yaml": pods "root-nginx" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+[exit 1]
+$ kubectl apply -f manifests/safe-pod.yaml
+pod/safe-hitokoto created
+[exit 0]
+$ kubectl wait --for=condition=Ready pod/safe-hitokoto -n secure --timeout=120s
+pod/safe-hitokoto condition met
+[exit 0]
+$ kubectl get pods -n secure
+NAME            READY   STATUS    RESTARTS   AGE
+safe-hitokoto   1/1     Running   0          0s
+[exit 0]
+$ kubectl exec -n secure safe-hitokoto -- id
+uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)
+[exit 0]
+--- free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15988        3366        3469         101        9600       12622
+Swap:           3071           0        3071
+--- docker stats
+hitokoto-worker 648.2MiB / 15.61GiB 2.22%
+hitokoto-control-plane 1.006GiB / 15.61GiB 8.78%
+hitokoto-worker2 527.8MiB / 15.61GiB 2.13%

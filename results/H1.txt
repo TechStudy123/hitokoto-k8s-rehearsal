@@ -1,0 +1,75 @@
+
+===== H1 版 =====
+$ docker version --format '{{.Server.Version}}'
+29.8.2
+[exit 0]
+$ kubectl version --client
+Client Version: v1.37.1
+Kustomize Version: v5.8.1
+[exit 0]
+$ kind version
+kind v0.33.0 go1.26.7 linux/amd64
+[exit 0]
+4
+               total        used        free      shared  buff/cache   available
+Mem:           15988        1539       10917          53        3932       14449
+Swap:           3071           0        3071
+
+===== H1 クラスターを作る =====
+$ kind create cluster --config kind-config.yaml
+Creating cluster "hitokoto" ...
+ • Ensuring node image (kindest/node:v1.37.0) 🖼️  ...
+ ✓ Ensuring node image (kindest/node:v1.37.0) 🖼️
+ • Preparing nodes 📦 📦 📦   ...
+ ✓ Preparing nodes 📦 📦 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+ • Joining worker nodes 🚜  ...
+ ✓ Joining worker nodes 🚜
+Set kubectl context to "kind-hitokoto"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-hitokoto
+
+Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
+[exit 0]
+所要: 39秒
+$ kubectl config current-context
+kind-hitokoto
+[exit 0]
+$ kubectl get nodes
+NAME                     STATUS     ROLES           AGE   VERSION
+hitokoto-control-plane   NotReady   control-plane   15s   v1.37.0
+hitokoto-worker          NotReady   <none>          1s    v1.37.0
+hitokoto-worker2         NotReady   <none>          1s    v1.37.0
+[exit 0]
+$ kubectl wait --for=condition=Ready nodes --all --timeout=180s
+node/hitokoto-control-plane condition met
+node/hitokoto-worker condition met
+node/hitokoto-worker2 condition met
+[exit 0]
+$ kubectl get nodes -o wide
+NAME                     STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                       KERNEL-VERSION              CONTAINER-RUNTIME
+hitokoto-control-plane   Ready    control-plane   27s   v1.37.0   172.19.0.2    <none>        Debian GNU/Linux 13 (trixie)   6.17.0-1022-azure (amd64)   containerd://2.3.4
+hitokoto-worker          Ready    <none>          13s   v1.37.0   172.19.0.3    <none>        Debian GNU/Linux 13 (trixie)   6.17.0-1022-azure (amd64)   containerd://2.3.4
+hitokoto-worker2         Ready    <none>          13s   v1.37.0   172.19.0.4    <none>        Debian GNU/Linux 13 (trixie)   6.17.0-1022-azure (amd64)   containerd://2.3.4
+[exit 0]
+
+===== H1 失敗：もう一度作る =====
+$ kind create cluster --config kind-config.yaml
+ERROR: failed to create cluster: node(s) already exist for a cluster with the name "hitokoto"
+[exit 1]
+--- free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15988        2306        6499          80        7610       13682
+Swap:           3071           0        3071
+--- docker stats
+hitokoto-worker 136.4MiB / 15.61GiB 1.03%
+hitokoto-control-plane 606MiB / 15.61GiB 4.71%
+hitokoto-worker2 135MiB / 15.61GiB 0.78%

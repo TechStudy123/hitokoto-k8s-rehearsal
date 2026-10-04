@@ -1,0 +1,39 @@
+
+===== H9 片付け =====
+$ kubectl delete -f manifests/ --ignore-not-found
+configmap "hitokoto-config" deleted from default namespace
+persistentvolumeclaim "db-data" deleted from default namespace
+deployment.apps "db" deleted from default namespace
+service "db" deleted from default namespace
+deployment.apps "hitokoto" deleted from default namespace
+gateway.gateway.networking.k8s.io "hitokoto-gateway" deleted from default namespace
+httproute.gateway.networking.k8s.io "hitokoto" deleted from default namespace
+pod "safe-hitokoto" deleted from secure namespace
+namespace "secure" deleted
+service "hitokoto-nodeport" deleted from default namespace
+service "hitokoto" deleted from default namespace
+deployment.apps "web" deleted from default namespace
+service "web" deleted from default namespace
+[exit 0]
+$ kubectl delete namespace secure --ignore-not-found
+[exit 0]
+$ kubectl get pvc,pv
+No resources found
+[exit 0]
+$ kubectl get all
+NAME                           READY   STATUS        RESTARTS     AGE
+pod/hitokoto-6f4c8d8d7-blxbg   1/1     Terminating   3 (9s ago)   100s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   10m
+[exit 0]
+$ kind delete cluster --name hitokoto
+Deleting cluster "hitokoto" ...
+Deleted nodes: ["hitokoto-worker" "hitokoto-control-plane" "hitokoto-worker2"]
+[exit 0]
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+[exit 0]
+$ kind get clusters
+No kind clusters found.
+[exit 0]
