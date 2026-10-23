@@ -28,6 +28,8 @@ run kubectl wait --for=condition=Ready nodes --all --timeout=180s
 run kubectl get nodes -o wide
 log H1 失敗：もう一度作る
 run kind create cluster --config kind-config.yaml
+log "2026-10-23 自分で1つ"
+run kind get clusters
 free_mem
 } > $OUT/H1.txt
 
@@ -49,6 +51,8 @@ pkill -f "port-forward pod/hitokoto"
 log H3 exec
 run kubectl exec hitokoto -- sh -c "'hostname; whoami; id; env | grep -E \"DB_|APP_\"'"
 run kubectl get pods --show-labels
+log "2026-10-23 自分で1つ"
+run kubectl logs -l app=hitokoto
 log H3 失敗：タグ 9.9
 sed -e 's/name: hitokoto$/name: hitokoto-bad/' -e 's/:1.0/:9.9/' manifests/pod.yaml | kubectl apply -f - 2>&1
 waitp 25
@@ -76,6 +80,13 @@ run kubectl rollout status deployment/hitokoto --timeout=120s
 run kubectl get pods -o wide
 run kubectl scale deployment hitokoto --replicas=3
 waitp 5
+log "2026-10-23 自分で1つ"
+run kubectl scale deployment hitokoto --replicas=2
+waitp 3
+run kubectl get pods
+run kubectl scale deployment hitokoto --replicas=3
+waitp 5
+run kubectl get pods
 log H4 1.1 へ更新
 cp $ST/H4/deployment.yaml manifests/deployment.yaml
 run kubectl apply -f manifests/deployment.yaml
@@ -109,6 +120,8 @@ run kubectl apply -f manifests/web.yaml
 run kubectl rollout status deployment/web --timeout=180s
 run kubectl exec deploy/web -- curl -s http://hitokoto/health
 for i in 1 2 3 4 5 6; do kubectl exec deploy/web -- curl -s http://hitokoto/ | grep -o 'Pod: [a-z0-9-]*'; done
+log "2026-10-23 自分で1つ"
+run kubectl get endpoints web
 log H5 NodePort
 run kubectl apply -f manifests/service-nodeport.yaml
 waitp 3
@@ -174,6 +187,9 @@ run kubectl apply -f manifests/configmap.yaml
 for s in 10 20 30 40 50 60 70 80 90; do sleep 10; echo "${s}秒後: $(kubectl exec deploy/hitokoto -- cat /config/notice.txt)"; done
 cp $ST/H6/configmap.yaml manifests/
 run kubectl apply -f manifests/configmap.yaml
+run kubectl rollout restart deployment/hitokoto
+log "2026-10-23 自分で1つ"
+run kubectl get configmap hitokoto-config -o yaml
 log H6 Secret
 run kubectl create secret generic db --from-literal=password=hitokoto-pass-123
 run kubectl get secret db -o yaml
@@ -220,6 +236,8 @@ run kubectl rollout status deployment/db --timeout=240s
 waitp 5
 gw_until 'banner db'
 run "curl -s localhost:8080/ | grep -o -E 'PVC-test|banner [a-z]*'"
+log "2026-10-23 自分で1つ"
+run kubectl logs deploy/db --tail=5
 free_mem
 } > $OUT/H7.txt
 
@@ -236,6 +254,10 @@ run kubectl apply -f manifests/deployment.yaml
 run kubectl rollout status deployment/hitokoto --timeout=180s
 run kubectl get pods
 run "kubectl describe deploy hitokoto | sed -n '/Containers:/,/Volumes:/p'"
+log "2026-10-23 自分で1つ"
+run kubectl top pods
+waitp 60
+run kubectl top pods
 log H8 失敗1：memory 32Mi
 sed -e 's/memory: 256Mi/memory: 32Mi/' -e 's/memory: 128Mi/memory: 32Mi/' manifests/deployment.yaml | kubectl apply -f - 2>&1
 waitp 40
@@ -272,5 +294,7 @@ run kubectl get all
 run kind delete cluster --name hitokoto
 run docker ps -a
 run kind get clusters
+log "2026-10-23 自分で1つ"
+run kubectl get nodes
 } > $OUT/H9.txt
 echo done
