@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hitokoto
+  labels:
+    app: hitokoto
+spec:
+  containers:
+    - name: app
+      image: ghcr.io/container-nyumon/hitokoto:1.0
+      ports:
+        - containerPort: 8000
+      env:
+        - name: DB_HOST
+          value: "none"   # データベースを使わない（第7章でつなぐ）

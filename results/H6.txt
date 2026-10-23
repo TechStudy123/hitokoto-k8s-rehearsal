@@ -1,0 +1,152 @@
+
+===== H6 ConfigMap =====
+$ kubectl apply -f manifests/configmap.yaml
+configmap/hitokoto-config created
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+[Gateway] 'ひとこと掲示板（開発）' が出るまで 1秒
+$ curl -s localhost:8080/ | grep -E '<h1>'
+<h1>ひとこと掲示板（開発）</h1>
+[exit 0]
+
+===== H6 値を変えても変わらない =====
+$ kubectl apply -f manifests/configmap.yaml
+configmap/hitokoto-config configured
+[exit 0]
+$ curl -s localhost:8080/ | grep -E '<h1>'
+<h1>ひとこと掲示板（開発）</h1>
+[exit 0]
+$ kubectl rollout restart deployment/hitokoto
+deployment.apps/hitokoto restarted
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+[Gateway] 'ひとこと掲示板（テスト）' が出るまで 1秒
+$ curl -s localhost:8080/ | grep -E '<h1>'
+<h1>ひとこと掲示板（テスト）</h1>
+[exit 0]
+
+===== H6 ファイル =====
+$ kubectl exec deploy/hitokoto -- cat /config/notice.txt
+今週の金曜日の夜は、メンテナンスのため止まります。
+[exit 0]
+$ kubectl apply -f manifests/configmap.yaml
+configmap/hitokoto-config configured
+[exit 0]
+10秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+20秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+30秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+40秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+50秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+60秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+70秒後: 今週の金曜日の夜は、メンテナンスのため止まります。
+80秒後: 今週の土曜日の夜は、メンテナンスのため止まります。
+90秒後: 今週の土曜日の夜は、メンテナンスのため止まります。
+$ kubectl apply -f manifests/configmap.yaml
+configmap/hitokoto-config configured
+[exit 0]
+$ kubectl rollout restart deployment/hitokoto
+deployment.apps/hitokoto restarted
+[exit 0]
+
+===== 2026-10-23 自分で1つ =====
+$ kubectl get configmap hitokoto-config -o yaml
+apiVersion: v1
+data:
+  APP_TITLE: ひとこと掲示板（開発）
+  DB_HOST: none
+  notice.txt: |
+    今週の金曜日の夜は、メンテナンスのため止まります。
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"APP_TITLE":"ひとこと掲示板（開発）","DB_HOST":"none","notice.txt":"今週の金曜日の夜は、メンテナンスのため止まります。\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"hitokoto-config","namespace":"default"}}
+  creationTimestamp: "2026-10-23T05:44:09Z"
+  name: hitokoto-config
+  namespace: default
+  resourceVersion: "1943"
+  uid: dbccd6ba-4098-40ea-abbe-969989c2dbdf
+[exit 0]
+
+===== H6 Secret =====
+$ kubectl create secret generic db --from-literal=password=hitokoto-pass-123
+secret/db created
+[exit 0]
+$ kubectl get secret db -o yaml
+apiVersion: v1
+data:
+  password: aGl0b2tvdG8tcGFzcy0xMjM=
+kind: Secret
+metadata:
+  creationTimestamp: "2026-10-23T05:45:51Z"
+  name: db
+  namespace: default
+  resourceVersion: "1957"
+  uid: 149d3952-976f-440c-b22d-c733c82fb7a2
+type: Opaque
+[exit 0]
+$ kubectl get secret db -o jsonpath='{.data.password}' | base64 -d; echo
+hitokoto-pass-123
+[exit 0]
+
+===== H6 失敗：ConfigMap の名前 =====
+deployment.apps/hitokoto configured
+$ kubectl get pods
+NAME                                     READY   STATUS                       RESTARTS   AGE
+hitokoto-65d6cb45d-zwt2r                 1/1     Terminating                  0          16s
+hitokoto-6d5dc56c69-cnhb5                1/1     Running                      0          109s
+hitokoto-6d5dc56c69-djnrn                1/1     Running                      0          110s
+hitokoto-6d5dc56c69-t5jp4                1/1     Running                      0          109s
+hitokoto-7b54859ff7-dz6hp                0/1     CreateContainerConfigError   0          15s
+hitokoto-gateway-nginx-65899c7f6-xb8qq   1/1     Running                      0          2m25s
+web-5f6bdcdb7f-ld2qg                     1/1     Running                      0          2m48s
+[exit 0]
+$ kubectl describe pod hitokoto-7b54859ff7-dz6hp | sed -n '/Events:/,$p'
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  15s               default-scheduler  Successfully assigned default/hitokoto-7b54859ff7-dz6hp to hitokoto-worker
+  Normal   Pulled     3s (x3 over 15s)  kubelet            spec.containers{app}: Container image "ghcr.io/container-nyumon/hitokoto:1.1" already present on machine and can be accessed by the pod
+  Warning  Failed     3s (x3 over 15s)  kubelet            spec.containers{app}: Error: configmap "hitokoto-confg" not found
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]

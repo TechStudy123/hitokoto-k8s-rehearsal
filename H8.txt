@@ -1,0 +1,207 @@
+
+===== H8 metrics-server =====
+$ bash setup/install-metrics-server.sh
+serviceaccount/metrics-server created
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrole.rbac.authorization.k8s.io/system:metrics-server created
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created
+service/metrics-server created
+deployment.apps/metrics-server created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+deployment.apps/metrics-server patched
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "metrics-server" rollout to finish: 1 old replicas are pending termination...
+deployment "metrics-server" successfully rolled out
+[exit 0]
+$ kubectl top nodes
+NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+hitokoto-control-plane   89m          2%       1016Mi          6%          
+hitokoto-worker          29m          0%       579Mi           3%          
+hitokoto-worker2         21m          0%       400Mi           2%          
+[exit 0]
+$ kubectl top pods
+NAME                                     CPU(cores)   MEMORY(bytes)   
+db-78ddf677fd-2jvq5                      1m           24Mi            
+hitokoto-75bcfc7cfc-8hqj6                1m           92Mi            
+hitokoto-75bcfc7cfc-9btxl                2m           95Mi            
+hitokoto-75bcfc7cfc-zhr8n                2m           93Mi            
+hitokoto-gateway-nginx-65899c7f6-xb8qq   1m           30Mi            
+web-5f6bdcdb7f-ld2qg                     0m           4Mi             
+[exit 0]
+
+===== H8 安全な設定 =====
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=180s
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+$ kubectl get pods
+NAME                                     READY   STATUS        RESTARTS   AGE
+db-78ddf677fd-2jvq5                      1/1     Running       0          2m50s
+hitokoto-75bcfc7cfc-8hqj6                1/1     Terminating   0          2m53s
+hitokoto-7db85c6b66-dm5tf                1/1     Running       0          18s
+hitokoto-7db85c6b66-hgrcl                1/1     Running       0          6s
+hitokoto-7db85c6b66-v8kcj                1/1     Running       0          13s
+hitokoto-gateway-nginx-65899c7f6-xb8qq   1/1     Running       0          5m37s
+web-5f6bdcdb7f-ld2qg                     1/1     Running       0          6m
+[exit 0]
+$ kubectl describe deploy hitokoto | sed -n '/Containers:/,/Volumes:/p'
+  Containers:
+   app:
+    Image:      ghcr.io/container-nyumon/hitokoto:1.1
+    Port:       8000/TCP
+    Host Port:  0/TCP
+    Limits:
+      memory:  256Mi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Liveness:   http-get http://:8000/health delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3
+    Readiness:  http-get http://:8000/health delay=0s timeout=1s period=5s successThreshold=1 failureThreshold=3
+    Environment:
+      APP_TITLE:    <set to the key 'APP_TITLE' of config map 'hitokoto-config'>  Optional: false
+      DB_HOST:      <set to the key 'DB_HOST' of config map 'hitokoto-config'>    Optional: false
+      DB_PASSWORD:  <set to the key 'password' in secret 'db'>                    Optional: false
+    Mounts:
+      /config from config (ro)
+  Volumes:
+[exit 0]
+
+===== 2026-10-23 自分で1つ =====
+$ kubectl top pods
+NAME                                     CPU(cores)   MEMORY(bytes)   
+db-78ddf677fd-2jvq5                      1m           28Mi            
+hitokoto-75bcfc7cfc-8hqj6                2m           92Mi            
+hitokoto-gateway-nginx-65899c7f6-xb8qq   2m           31Mi            
+web-5f6bdcdb7f-ld2qg                     0m           4Mi             
+[exit 0]
+$ kubectl top pods
+NAME                                     CPU(cores)   MEMORY(bytes)   
+db-78ddf677fd-2jvq5                      1m           28Mi            
+hitokoto-7db85c6b66-dm5tf                2m           93Mi            
+hitokoto-7db85c6b66-hgrcl                2m           93Mi            
+hitokoto-7db85c6b66-v8kcj                2m           93Mi            
+hitokoto-gateway-nginx-65899c7f6-xb8qq   3m           32Mi            
+web-5f6bdcdb7f-ld2qg                     0m           4Mi             
+[exit 0]
+
+===== H8 失敗1：memory 32Mi =====
+deployment.apps/hitokoto configured
+$ kubectl get pods
+NAME                                     READY   STATUS             RESTARTS     AGE
+db-78ddf677fd-2jvq5                      1/1     Running            0            4m30s
+hitokoto-5c5bdff66b-v4m28                0/1     CrashLoopBackOff   3 (2s ago)   40s
+hitokoto-7db85c6b66-dm5tf                1/1     Running            0            118s
+hitokoto-7db85c6b66-hgrcl                1/1     Running            0            106s
+hitokoto-7db85c6b66-v8kcj                1/1     Running            0            113s
+hitokoto-gateway-nginx-65899c7f6-xb8qq   1/1     Running            0            7m17s
+web-5f6bdcdb7f-ld2qg                     1/1     Running            0            7m40s
+[exit 0]
+$ kubectl describe pod hitokoto-5c5bdff66b-v4m28 | sed -n '/State:/,/Ready:/p;/Limits:/,/Requests:/p'
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Fri, 23 Oct 2026 05:50:57 +0000
+      Finished:     Fri, 23 Oct 2026 05:50:57 +0000
+    Ready:          False
+    Limits:
+      memory:  32Mi
+    Requests:
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=240s
+deployment "hitokoto" successfully rolled out
+[exit 0]
+
+===== H8 失敗2：liveness /healthz =====
+deployment.apps/hitokoto configured
+$ kubectl get pods
+NAME                                     READY   STATUS    RESTARTS      AGE
+db-78ddf677fd-2jvq5                      1/1     Running   0             5m45s
+hitokoto-749dcf99f4-8m27g                1/1     Running   2 (7s ago)    68s
+hitokoto-749dcf99f4-8sssn                1/1     Running   2 (14s ago)   75s
+hitokoto-749dcf99f4-p6cqs                0/1     Running   2 (2s ago)    62s
+hitokoto-gateway-nginx-65899c7f6-xb8qq   1/1     Running   0             8m32s
+web-5f6bdcdb7f-ld2qg                     1/1     Running   0             8m55s
+[exit 0]
+$ kubectl describe pod hitokoto-749dcf99f4-p6cqs | sed -n '/Events:/,$p'
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  62s               default-scheduler  Successfully assigned default/hitokoto-749dcf99f4-p6cqs to hitokoto-worker
+  Normal   Pulled     2s (x3 over 62s)  kubelet            spec.containers{app}: Container image "ghcr.io/container-nyumon/hitokoto:1.1" already present on machine and can be accessed by the pod
+  Normal   Created    2s (x3 over 62s)  kubelet            spec.containers{app}: Container created
+  Normal   Started    2s (x3 over 62s)  kubelet            spec.containers{app}: Container started
+  Warning  Unhealthy  2s (x5 over 62s)  kubelet            spec.containers{app}: Readiness probe failed: Get "http://10.244.2.26:8000/health": dial tcp 10.244.2.26:8000: connect: connection refused
+  Warning  Unhealthy  2s (x6 over 52s)  kubelet            spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 404
+  Normal   Killing    2s (x2 over 32s)  kubelet            spec.containers{app}: Container app failed liveness probe, will be restarted
+[exit 0]
+$ kubectl apply -f manifests/deployment.yaml
+deployment.apps/hitokoto configured
+[exit 0]
+$ kubectl rollout status deployment/hitokoto --timeout=240s
+Waiting for deployment spec update to be observed...
+Waiting for deployment spec update to be observed...
+Waiting for deployment "hitokoto" rollout to finish: 0 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "hitokoto" rollout to finish: 1 old replicas are pending termination...
+deployment "hitokoto" successfully rolled out
+[exit 0]
+
+===== H8 PodSecurity =====
+$ kubectl apply -f manifests/secure-namespace.yaml
+namespace/secure created
+[exit 0]
+$ kubectl apply -f manifests/root-pod.yaml
+Error from server (Forbidden): error when creating "manifests/root-pod.yaml": pods "root-nginx" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "nginx" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "nginx" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "nginx" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+[exit 1]
+$ kubectl apply -f manifests/safe-pod.yaml
+pod/safe-hitokoto created
+[exit 0]
+$ kubectl wait --for=condition=Ready pod/safe-hitokoto -n secure --timeout=120s
+pod/safe-hitokoto condition met
+[exit 0]
+$ kubectl get pods -n secure
+NAME            READY   STATUS    RESTARTS   AGE
+safe-hitokoto   1/1     Running   0          1s
+[exit 0]
+$ kubectl exec -n secure safe-hitokoto -- id
+uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)
+[exit 0]
+--- free -m
+               total        used        free      shared  buff/cache   available
+Mem:           15989        3203        3431         103        9804       12786
+Swap:           3071           0        3071
+--- docker stats
+hitokoto-worker2 587.3MiB / 15.61GiB 8.00%
+hitokoto-worker 486.9MiB / 15.61GiB 10.89%
+hitokoto-control-plane 1.021GiB / 15.61GiB 9.14%

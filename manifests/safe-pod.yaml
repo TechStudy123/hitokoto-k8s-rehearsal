@@ -1,0 +1,21 @@
+# 安全の指定をした掲示板の Pod。secure でも作られる
+apiVersion: v1
+kind: Pod
+metadata:
+  name: safe-hitokoto
+  namespace: secure
+spec:
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: ghcr.io/container-nyumon/hitokoto:1.1
+      env:
+        - name: DB_HOST
+          value: "none"
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]

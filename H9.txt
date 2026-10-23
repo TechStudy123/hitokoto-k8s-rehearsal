@@ -1,0 +1,46 @@
+
+===== H9 片付け =====
+$ kubectl delete -f manifests/ --ignore-not-found
+configmap "hitokoto-config" deleted from default namespace
+persistentvolumeclaim "db-data" deleted from default namespace
+deployment.apps "db" deleted from default namespace
+service "db" deleted from default namespace
+deployment.apps "hitokoto" deleted from default namespace
+gateway.gateway.networking.k8s.io "hitokoto-gateway" deleted from default namespace
+httproute.gateway.networking.k8s.io "hitokoto" deleted from default namespace
+pod "safe-hitokoto" deleted from secure namespace
+namespace "secure" deleted
+service "hitokoto-nodeport" deleted from default namespace
+service "hitokoto" deleted from default namespace
+deployment.apps "web" deleted from default namespace
+service "web" deleted from default namespace
+[exit 0]
+$ kubectl delete namespace secure --ignore-not-found
+[exit 0]
+$ kubectl get pvc,pv
+No resources found
+[exit 0]
+$ kubectl get all
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   11m
+[exit 0]
+$ kind delete cluster --name hitokoto
+Deleting cluster "hitokoto" ...
+Deleted nodes: ["hitokoto-worker2" "hitokoto-worker" "hitokoto-control-plane"]
+[exit 0]
+$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+[exit 0]
+$ kind get clusters
+No kind clusters found.
+[exit 0]
+
+===== 2026-10-23 自分で1つ =====
+$ kubectl get nodes
+E1023 05:52:51.313799   21034 memcache.go:381] "Couldn't get current server API group list" err="Get \"http://localhost:8080/api?timeout=32s\": dial tcp [::1]:8080: connect: connection refused"
+E1023 05:52:51.314131   21034 memcache.go:381] "Couldn't get current server API group list" err="Get \"http://localhost:8080/api?timeout=32s\": dial tcp [::1]:8080: connect: connection refused"
+E1023 05:52:51.315505   21034 memcache.go:381] "Couldn't get current server API group list" err="Get \"http://localhost:8080/api?timeout=32s\": dial tcp [::1]:8080: connect: connection refused"
+E1023 05:52:51.315769   21034 memcache.go:381] "Couldn't get current server API group list" err="Get \"http://localhost:8080/api?timeout=32s\": dial tcp [::1]:8080: connect: connection refused"
+E1023 05:52:51.317403   21034 memcache.go:381] "Couldn't get current server API group list" err="Get \"http://localhost:8080/api?timeout=32s\": dial tcp [::1]:8080: connect: connection refused"
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+[exit 1]
