@@ -1,0 +1,579 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/pod.yaml",
+  "mac": "kubectl delete -f manifests/pod.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"hitokoto\" deleted",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.0",
+  "label": "manifests/deployment.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deployment.apps/hitokoto created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get deployments",
+  "mac": "kubectl get deployments"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "3/3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   3/3     3            3           20s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get rs",
+  "mac": "kubectl get rs"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                  DESIRED   CURRENT   READY   AGE\nhitokoto-6b7f9c8d4f   3         3         3       25s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-2xkqp   1/1     Running   0          30s\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          30s\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          30s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -o wide",
+  "mac": "kubectl get pods -o wide"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES\nhitokoto-6b7f9c8d4f-2xkqp   1/1     Running   0          40s   10.244.1.2   hitokoto-worker    <none>           <none>\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker2   <none>           <none>\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          40s   10.244.2.3   hitokoto-worker2   <none>           <none>",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl delete pod hitokoto-6b7f9c8d4f-2xkqp",
+  "mac": "kubectl delete pod hitokoto-6b7f9c8d4f-2xkqp"
+ },
+ {
+  "t": "out",
+  "text": "pod \"hitokoto-6b7f9c8d4f-2xkqp\" deleted",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete $(kubectl get pods -o name | head -n 1)",
+  "mac": "kubectl delete $(kubectl get pods -o name | head -n 1)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 3; kubectl rollout status deployment/hitokoto --timeout=120s",
+  "mac": "sleep 3; kubectl rollout status deployment/hitokoto --timeout=120s"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          5s\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          1m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl scale deployment/hitokoto --replicas=5",
+  "mac": "kubectl scale deployment/hitokoto --replicas=5"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "scaled"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto scaled",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=120s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=120s"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          2m\nhitokoto-6b7f9c8d4f-c9xvp   1/1     Running   0          6s\nhitokoto-6b7f9c8d4f-h2kfm   1/1     Running   0          6s\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          2m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 5; kubectl rollout status deployment/hitokoto --timeout=120s",
+  "mac": "sleep 5; kubectl rollout status deployment/hitokoto --timeout=120s"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          2m\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          2m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 4\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.0"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s",
+  "mac": "kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get deployments",
+  "mac": "kubectl get deployments"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "4/4"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   4/4     4            4           3m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.0"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s && kubectl get deployments",
+  "mac": "kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s && kubectl get deployments"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "3/3"
+  ]
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（例。行の数は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get rs",
+  "mac": "kubectl get rs"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                  DESIRED   CURRENT   READY   AGE\nhitokoto-6b7f9c8d4f   0         0         0       4m\nhitokoto-7c5d9b8f6d   3         3         3       30s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl port-forward deployment/hitokoto 8000:8000",
+  "mac": "kubectl port-forward deployment/hitokoto 8000:8000"
+ },
+ {
+  "t": "out",
+  "text": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000",
+  "label": "表示される内容（つないでいる間は、プロンプトに戻りません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl port-forward deployment/hitokoto 8000:8000",
+  "mac": "kubectl port-forward deployment/hitokoto 8000:8000",
+  "bg": true,
+  "wait": "http://127.0.0.1:8000/health"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "hitokoto 2.1"
+  ]
+ },
+ {
+  "t": "stop"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:9.9",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "out",
+  "text": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...",
+  "label": "表示される内容（この行のまま進みません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=40s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=40s",
+  "rc": 1,
+  "timeout": 60
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "1 out of 3 new replicas have been updated"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS             RESTARTS   AGE\nhitokoto-5f6d8c7b9c-q7wzn   0/1     ImagePullBackOff   0          50s\nhitokoto-7c5d9b8f6d-b4nzk   1/1     Running            0          2m\nhitokoto-7c5d9b8f6d-k8sdw   1/1     Running            0          2m\nhitokoto-7c5d9b8f6d-xw2rt   1/1     Running            0          2m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout undo deployment/hitokoto",
+  "mac": "kubectl rollout undo deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "rolled back"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto rolled back",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7c5d9b8f6d-b4nzk   1/1     Running   0          2m\nhitokoto-7c5d9b8f6d-k8sdw   1/1     Running   0          1m\nhitokoto-7c5d9b8f6d-xw2rt   1/1     Running   0          2m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout history deployment/hitokoto",
+  "mac": "kubectl rollout history deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "REVISION"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto \nREVISION  CHANGE-CAUSE\n1         <none>\n3         <none>\n4         <none>",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "unchanged"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto unchanged",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.0"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ }
+]
