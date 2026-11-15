@@ -409,7 +409,7 @@
  {
   "t": "out",
   "text": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...",
-  "label": "表示される内容（この行のまま進みません）"
+  "label": "表示される内容（同じ行が繰り返し出て、先に進みません）"
  },
  {
   "t": "cmd",
