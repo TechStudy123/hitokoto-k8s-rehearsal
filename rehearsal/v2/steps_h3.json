@@ -12,7 +12,7 @@
  },
  {
   "t": "out",
-  "text": "pod \"hitokoto\" deleted",
+  "text": "pod \"hitokoto\" deleted from default namespace",
   "label": "表示される内容（例）"
  },
  {
@@ -78,7 +78,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                  DESIRED   CURRENT   READY   AGE\nhitokoto-6b7f9c8d4f   3         3         3       25s",
+  "text": "NAME                 DESIRED   CURRENT   READY   AGE\nhitokoto-5745d576f   3         3         3       25s",
   "label": "表示される内容（例）"
  },
  {
@@ -94,7 +94,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-2xkqp   1/1     Running   0          30s\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          30s\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          30s",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-p4p6k   1/1     Running   0          30s\nhitokoto-5745d576f-sxtsd   1/1     Running   0          30s\nhitokoto-5745d576f-twljb   1/1     Running   0          30s",
   "label": "表示される内容（例）"
  },
  {
@@ -110,18 +110,18 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES\nhitokoto-6b7f9c8d4f-2xkqp   1/1     Running   0          40s   10.244.1.2   hitokoto-worker    <none>           <none>\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker2   <none>           <none>\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          40s   10.244.2.3   hitokoto-worker2   <none>           <none>",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES\nhitokoto-5745d576f-p4p6k   1/1     Running   0          40s   10.244.1.3   hitokoto-worker2   <none>           <none>\nhitokoto-5745d576f-sxtsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker    <none>           <none>\nhitokoto-5745d576f-twljb   1/1     Running   0          40s   10.244.2.3   hitokoto-worker    <none>           <none>",
   "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl delete pod hitokoto-6b7f9c8d4f-2xkqp",
-  "mac": "kubectl delete pod hitokoto-6b7f9c8d4f-2xkqp"
+  "win": "kubectl delete pod hitokoto-5745d576f-p4p6k",
+  "mac": "kubectl delete pod hitokoto-5745d576f-p4p6k"
  },
  {
   "t": "out",
-  "text": "pod \"hitokoto-6b7f9c8d4f-2xkqp\" deleted",
+  "text": "pod \"hitokoto-5745d576f-p4p6k\" deleted from default namespace",
   "label": "表示される内容（例）"
  },
  {
@@ -159,7 +159,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          5s\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          1m",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-mlt98   1/1     Running   0          4s\nhitokoto-5745d576f-sxtsd   1/1     Running   0          1m\nhitokoto-5745d576f-twljb   1/1     Running   0          1m",
   "label": "表示される内容（例）"
  },
  {
@@ -202,7 +202,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          2m\nhitokoto-6b7f9c8d4f-c9xvp   1/1     Running   0          6s\nhitokoto-6b7f9c8d4f-h2kfm   1/1     Running   0          6s\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          2m",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-m6h2x   1/1     Running   0          5s\nhitokoto-5745d576f-mlt98   1/1     Running   0          1m\nhitokoto-5745d576f-sxtsd   1/1     Running   0          2m\nhitokoto-5745d576f-t9q5k   1/1     Running   0          5s\nhitokoto-5745d576f-twljb   1/1     Running   0          2m",
   "label": "表示される内容（例）"
  },
  {
@@ -245,7 +245,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-6b7f9c8d4f-8mlsd   1/1     Running   0          2m\nhitokoto-6b7f9c8d4f-r4wzj   1/1     Running   0          1m\nhitokoto-6b7f9c8d4f-tv5nh   1/1     Running   0          2m",
+  "text": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-m6h2x   1/1     Running       0          20s\nhitokoto-5745d576f-mlt98   1/1     Running       0          1m\nhitokoto-5745d576f-t9q5k   1/1     Terminating   0          20s\nhitokoto-5745d576f-twljb   1/1     Running       0          2m",
   "label": "表示される内容（例）"
  },
  {
@@ -347,7 +347,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                  DESIRED   CURRENT   READY   AGE\nhitokoto-6b7f9c8d4f   0         0         0       4m\nhitokoto-7c5d9b8f6d   3         3         3       30s",
+  "text": "NAME                 DESIRED   CURRENT   READY   AGE\nhitokoto-5745d576f   0         0         0       4m\nhitokoto-b55ff59b6   3         3         3       30s",
   "label": "表示される内容（例）"
  },
  {
@@ -437,7 +437,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS             RESTARTS   AGE\nhitokoto-5f6d8c7b9c-q7wzn   0/1     ImagePullBackOff   0          50s\nhitokoto-7c5d9b8f6d-b4nzk   1/1     Running            0          2m\nhitokoto-7c5d9b8f6d-k8sdw   1/1     Running            0          2m\nhitokoto-7c5d9b8f6d-xw2rt   1/1     Running            0          2m",
+  "text": "NAME                        READY   STATUS             RESTARTS   AGE\nhitokoto-6d666f5f4c-czll2   0/1     ImagePullBackOff   0          40s\nhitokoto-b55ff59b6-5gw9r    1/1     Running            0          2m\nhitokoto-b55ff59b6-b25gk    1/1     Running            0          2m\nhitokoto-b55ff59b6-wtjhs    1/1     Running            0          2m",
   "label": "表示される内容（例）"
  },
  {
@@ -453,7 +453,7 @@
  },
  {
   "t": "out",
-  "text": "deployment.apps/hitokoto rolled back",
+  "text": "deployment.apps/hitokoto rolled back\nWarning: resource deployments/hitokoto was previously managed with 'kubectl apply'. Rolling back will not update the kubectl.kubernetes.io/last-applied-configuration annotation, which may cause unexpected behavior on future 'kubectl apply' operations. Consider using 'kubectl apply' with your previous configuration file instead.",
   "label": "表示される内容（例）"
  },
  {
@@ -485,7 +485,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7c5d9b8f6d-b4nzk   1/1     Running   0          2m\nhitokoto-7c5d9b8f6d-k8sdw   1/1     Running   0          1m\nhitokoto-7c5d9b8f6d-xw2rt   1/1     Running   0          2m",
+  "text": "NAME                        READY   STATUS        RESTARTS   AGE\nhitokoto-6d666f5f4c-czll2   0/1     Terminating   0          41s\nhitokoto-b55ff59b6-5gw9r    1/1     Running       0          2m\nhitokoto-b55ff59b6-b25gk    1/1     Running       0          2m\nhitokoto-b55ff59b6-wtjhs    1/1     Running       0          2m",
   "label": "表示される内容（例）"
  },
  {
@@ -518,12 +518,12 @@
  {
   "t": "expect",
   "contains": [
-   "unchanged"
+   "configured"
   ]
  },
  {
   "t": "out",
-  "text": "deployment.apps/hitokoto unchanged",
+  "text": "deployment.apps/hitokoto configured",
   "label": "表示される内容（例）"
  },
  {
