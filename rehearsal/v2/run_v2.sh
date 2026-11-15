@@ -3,6 +3,7 @@
 # rehearsal/v2/steps_h{N}.json を、前の回の完成（rehearsal/v2/H{N-1}/）から始めて、説明資料から抜き出した手順のとおりに実行する。
 cd "$(dirname "$0")/../.."
 mkdir -p results
+command -v python3 >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq python3 >/dev/null; }   # devcontainer の base には python3 が無い（リハーサルの道具 rh.py のためだけに入れる）
 {
   echo "== 版"; docker version --format '{{.Server.Version}}'; kubectl version --client; kind version; python3 --version
   kind create cluster --config kind-config.yaml
