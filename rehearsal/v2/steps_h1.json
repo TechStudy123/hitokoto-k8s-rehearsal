@@ -17,8 +17,8 @@
  },
  {
   "t": "cmd",
-  "win": "kubectl get nodes -o wide",
-  "mac": "kubectl get nodes -o wide"
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
  },
  {
   "t": "expect",
@@ -28,8 +28,8 @@
  },
  {
   "t": "out",
-  "text": "NAME                    STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION   CONTAINER-RUNTIME\nhitokoto-control-plane  Ready    control-plane   5m    v1.37.0   172.18.0.4    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0\nhitokoto-worker         Ready    <none>          5m    v1.37.0   172.18.0.2    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0\nhitokoto-worker2        Ready    <none>          5m    v1.37.0   172.18.0.3    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0",
-  "label": "表示される内容（例。IP・版は環境によって違います）"
+  "text": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   5m    v1.37.0\nhitokoto-worker          Ready    <none>          5m    v1.37.0\nhitokoto-worker2         Ready    <none>          5m    v1.37.0",
+  "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
@@ -180,7 +180,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-…                                        1/1     Running   0          9m\ncoredns-…                                        1/1     Running   0          9m\netcd-hitokoto-control-plane                      1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          9m\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          9m",
+  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-7sskz                         1/1     Running   0          9m\ncoredns-559f6c778d-mvjf5                         1/1     Running   0          9m\netcd-hitokoto-control-plane                      1/1     Running   0          9m\nkindnet-56m49                                    1/1     Running   0          9m\nkindnet-g7pl4                                    1/1     Running   0          9m\nkindnet-kz8bc                                    1/1     Running   0          9m\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          9m\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          9m\nkube-proxy-krvf2                                 1/1     Running   0          9m\nkube-proxy-mnkn7                                 1/1     Running   0          9m\nkube-proxy-qstml                                 1/1     Running   0          9m\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          9m",
   "label": "表示される内容（例。名前の後ろの文字・AGE は人によって違います）"
  },
  {
@@ -212,12 +212,12 @@
  },
  {
   "t": "out",
-  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: image <string>\n\n\nDESCRIPTION:\n    Container image name.\n…",
+  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: image <string>\n\n\nDESCRIPTION:\n    Container image name. More info:\n…",
   "label": "表示される内容（一部）"
  },
  {
   "t": "out",
-  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: labels <map[string]string>\n\n\nDESCRIPTION:\n    Map of string keys and values that can be used to organize and categorize\n…",
+  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: labels <map[string]string>\n\n\nDESCRIPTION:\n    Map of string keys and values that can be used to organize and categorize\n    (scope and select) objects. May match selectors of replication controllers\n…",
   "label": "表示される内容（一部）"
  },
  {
@@ -260,7 +260,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-…                                        1/1     Running   0          10m\n…",
+  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-7sskz                         1/1     Running   0          10m\n…",
   "label": "表示される内容（一部）"
  }
 ]
