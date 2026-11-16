@@ -50,7 +50,7 @@
  },
  {
   "t": "out",
-  "text": "NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE\nhitokoto     ClusterIP   10.96.120.35   <none>        80/TCP    5s\nkubernetes   ClusterIP   10.96.0.1      <none>        443/TCP   10m",
+  "text": "NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE\nhitokoto     ClusterIP   10.96.157.221   <none>        80/TCP    5s\nkubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   10m",
   "label": "表示される内容（例。CLUSTER-IP は人によって違います）"
  },
  {
@@ -66,7 +66,7 @@
  },
  {
   "t": "out",
-  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000\n…",
   "label": "表示される内容（一部。アドレスは人によって違います）"
  },
  {
@@ -93,8 +93,8 @@
  },
  {
   "t": "cmd",
-  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
-  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
   "timeout": 150
  },
  {
@@ -111,13 +111,13 @@
  },
  {
   "t": "out",
-  "text": "<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5gw9r</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-wtjhs</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5gw9r</footer>",
+  "text": "<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-rv4nn</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-x6ffn</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-j7mf6</footer>",
   "label": "表示される内容（3回打った例。名前は人によって違います）"
  },
  {
   "t": "cmd",
-  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
-  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
   "timeout": 150
  },
  {
@@ -161,24 +161,46 @@
  },
  {
   "t": "out",
-  "text": "pod \"hitokoto-b55ff59b6-5gw9r\" deleted from default namespace",
+  "text": "pod \"hitokoto-b55ff59b6-j7mf6\" deleted from default namespace",
   "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health",
-  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health"
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh"
  },
  {
   "t": "out",
-  "text": "{\"status\":\"ok\"}pod \"tmp\" deleted from default namespace",
+  "text": "~ $",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "curl -s http://hitokoto/health",
+  "mac": "curl -s http://hitokoto/health"
+ },
+ {
+  "t": "out",
+  "text": "{\"status\":\"ok\"}",
   "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
-  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
-  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "skip": true,
+  "win": "exit",
+  "mac": "exit"
+ },
+ {
+  "t": "out",
+  "text": "pod \"tmp\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
   "timeout": 150
  },
  {
@@ -200,7 +222,7 @@
  },
  {
   "t": "out",
-  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000\n…",
   "label": "表示される内容（一部。Endpoints の1つが新しいアドレスに変わります）"
  },
  {
@@ -261,24 +283,46 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health",
-  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health"
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh"
  },
  {
   "t": "out",
-  "text": "curl: (7) Failed to connect to hitokoto port 80 after 2 ms: Could not connect to server\npod \"tmp\" deleted from default namespace\npod default/tmp terminated (Error)",
+  "text": "~ $",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "curl -s http://hitokoto/health",
+  "mac": "curl -s http://hitokoto/health"
+ },
+ {
+  "t": "out",
+  "text": "curl: (7) Failed to connect to hitokoto port 80 after 1 ms: Could not connect to server",
   "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
-  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s -m 5 http://hitokoto/health\"",
-  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s -m 5 http://hitokoto/health\"",
-  "rc": 1,
+  "skip": true,
+  "win": "exit",
+  "mac": "exit"
+ },
+ {
+  "t": "out",
+  "text": "pod \"tmp\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://hitokoto/health\"",
+  "rc": 7,
   "timeout": 150
  },
  {
   "t": "out",
-  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000\n…",
   "label": "表示される内容（一部）"
  },
  {
@@ -337,7 +381,7 @@
  },
  {
   "t": "out",
-  "text": "customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/grpcroutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io serverside-applied",
+  "text": "customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied\n…\ncustomresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied\n…",
   "label": "表示される内容（一部）"
  },
  {
@@ -353,7 +397,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                 SHORTNAMES   APIVERSION                          NAMESPACED   KIND\nbackendtlspolicies   btlspolicy   gateway.networking.k8s.io/v1        true         BackendTLSPolicy\ngatewayclasses       gc           gateway.networking.k8s.io/v1        false        GatewayClass\ngateways             gtw          gateway.networking.k8s.io/v1        true         Gateway\ngrpcroutes                        gateway.networking.k8s.io/v1        true         GRPCRoute\nhttproutes                        gateway.networking.k8s.io/v1        true         HTTPRoute\nreferencegrants      refgrant     gateway.networking.k8s.io/v1beta1   true         ReferenceGrant",
+  "text": "NAME                 SHORTNAMES   APIVERSION                     NAMESPACED   KIND\nbackendtlspolicies   btlspolicy   gateway.networking.k8s.io/v1   true         BackendTLSPolicy\ngatewayclasses       gc           gateway.networking.k8s.io/v1   false        GatewayClass\ngateways             gtw          gateway.networking.k8s.io/v1   true         Gateway\ngrpcroutes                        gateway.networking.k8s.io/v1   true         GRPCRoute\nhttproutes                        gateway.networking.k8s.io/v1   true         HTTPRoute\nlistenersets         lset         gateway.networking.k8s.io/v1   true         ListenerSet\nreferencegrants      refgrant     gateway.networking.k8s.io/v1   true         ReferenceGrant\ntcproutes                         gateway.networking.k8s.io/v1   true         TCPRoute\ntlsroutes                         gateway.networking.k8s.io/v1   true         TLSRoute",
   "label": "表示される内容（例）"
  },
  {
@@ -369,7 +413,7 @@
  },
  {
   "t": "out",
-  "text": "customresourcedefinition.apiextensions.k8s.io/clientsettingspolicies.gateway.nginx.org serverside-applied\n…",
+  "text": "customresourcedefinition.apiextensions.k8s.io/clientsettingspolicies.gateway.nginx.org serverside-applied\n…\ncustomresourcedefinition.apiextensions.k8s.io/nginxproxies.gateway.nginx.org serverside-applied\n…",
   "label": "表示される内容（一部）"
  },
  {
@@ -385,7 +429,7 @@
  },
  {
   "t": "out",
-  "text": "namespace/nginx-gateway created\n…\ndeployment.apps/nginx-gateway created\ngatewayclass.gateway.networking.k8s.io/nginx created\nnginxproxy.gateway.nginx.org/nginx-gateway-proxy-config created",
+  "text": "namespace/nginx-gateway created\n…\nservice/nginx-gateway created\ndeployment.apps/nginx-gateway created\njob.batch/nginx-gateway-cert-generator created\ngatewayclass.gateway.networking.k8s.io/nginx created\nnginxgateway.gateway.nginx.org/nginx-gateway-config created\nnginxproxy.gateway.nginx.org/nginx-gateway-proxy-config created",
   "label": "表示される内容（一部）"
  },
  {
@@ -429,7 +473,7 @@
  },
  {
   "t": "out",
-  "text": "NAME    CONTROLLER                                   ACCEPTED   AGE\nnginx   gateway.nginx.org/nginx-gateway-controller   True       30s",
+  "text": "NAME    CONTROLLER                                   ACCEPTED   AGE\nnginx   gateway.nginx.org/nginx-gateway-controller   True       16s",
   "label": "表示される内容（例）"
  },
  {
@@ -523,7 +567,7 @@
  },
  {
   "t": "out",
-  "text": "NAME               CLASS   ADDRESS        PROGRAMMED   AGE\nhitokoto-gateway   nginx   10.96.45.210   True         20s",
+  "text": "NAME               CLASS   ADDRESS        PROGRAMMED   AGE\nhitokoto-gateway   nginx   10.96.50.217   True         15s",
   "label": "表示される内容（例）"
  },
  {
@@ -620,7 +664,7 @@
  },
  {
   "t": "out",
-  "text": "      Message:               Spec.rules[0].backendRefs[0].name: Not found: \"apii\"\n      Observed Generation:   2\n      Reason:                BackendNotFound\n      Status:                False\n      Type:                  ResolvedRefs\n…",
+  "text": "      Message:               spec.rules[0].backendRefs[0].name: Not found: \"apii\"\n      Observed Generation:   2\n      Reason:                BackendNotFound\n      Status:                False\n      Type:                  ResolvedRefs\n…",
   "label": "表示される内容（Status の一部）"
  },
  {
