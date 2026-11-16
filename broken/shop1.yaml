@@ -1,0 +1,18 @@
+# 壊れたアプリ その1（ハンズオン9）
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop1
+  template:
+    metadata:
+      labels:
+        app: shop1
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokotto:2.1
