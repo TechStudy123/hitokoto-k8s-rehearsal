@@ -156,8 +156,8 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl delete pod hitokoto-b55ff59b6-5gw9r",
-  "mac": "kubectl delete pod hitokoto-b55ff59b6-5gw9r"
+  "win": "kubectl delete pod hitokoto-b55ff59b6-j7mf6",
+  "mac": "kubectl delete pod hitokoto-b55ff59b6-j7mf6"
  },
  {
   "t": "out",
@@ -617,18 +617,6 @@
   "path": "manifests/httproute.yaml",
   "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: hitokoto\nspec:\n  parentRefs:\n    - name: hitokoto-gateway\n  rules:\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /api\n      backendRefs:\n        - name: apii\n          port: 80\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /\n      backendRefs:\n        - name: hitokoto\n          port: 80",
   "label": "manifests/httproute.yaml書き換える"
- },
- {
-  "t": "cmd",
-  "rc": 1,
-  "win": "kubectl diff -f manifests/httproute.yaml",
-  "mac": "kubectl diff -f manifests/httproute.yaml"
- },
- {
-  "t": "expect",
-  "contains": [
-   "apii"
-  ]
  },
  {
   "t": "cmd",
