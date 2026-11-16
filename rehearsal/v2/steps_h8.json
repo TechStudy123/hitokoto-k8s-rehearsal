@@ -1,0 +1,436 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f setup/team.yaml",
+  "mac": "kubectl apply -f setup/team.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "rolebinding"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "namespace/hitokoto-prod created\ndeployment.apps/hitokoto created\nserviceaccount/prod-user created\nrole.rbac.authorization.k8s.io/viewer created\nrolebinding.rbac.authorization.k8s.io/prod-user-viewer created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config set-credentials prod-user --token=$(kubectl create token prod-user -n hitokoto-prod --duration=24h)",
+  "mac": "kubectl config set-credentials prod-user --token=$(kubectl create token prod-user -n hitokoto-prod --duration=24h)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "prod-user"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "User \"prod-user\" set.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config set-context prod --cluster=kind-hitokoto --user=prod-user --namespace=hitokoto-prod",
+  "mac": "kubectl config set-context prod --cluster=kind-hitokoto --user=prod-user --namespace=hitokoto-prod"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "prod"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Context \"prod\" created.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config get-contexts",
+  "mac": "kubectl config get-contexts"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "prod-user"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   \n          prod            kind-hitokoto   prod-user       hitokoto-prod",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config use-context prod",
+  "mac": "kubectl config use-context prod"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "prod"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Switched to context \"prod\".",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-7k2xq    1/1     Running   0          1m\nhitokoto-b55ff59b6-q9w4z    1/1     Running   0          1m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete $(kubectl get pods -o name | head -n 1)",
+  "mac": "kubectl delete $(kubectl get pods -o name | head -n 1)",
+  "rc": 1
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Forbidden"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl delete pod hitokoto-b55ff59b6-7k2xq",
+  "mac": "kubectl delete pod hitokoto-b55ff59b6-7k2xq"
+ },
+ {
+  "t": "out",
+  "text": "Error from server (Forbidden): pods \"hitokoto-b55ff59b6-7k2xq\" is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot delete resource \"pods\" in API group \"\" in the namespace \"hitokoto-prod\"",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "rc": 1,
+  "win": "kubectl get pods -n hitokoto",
+  "mac": "kubectl get pods -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Forbidden"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Error from server (Forbidden): pods is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot list resource \"pods\" in API group \"\" in the namespace \"hitokoto\"",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "rc": 1,
+  "win": "kubectl auth can-i delete pods",
+  "mac": "kubectl auth can-i delete pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "no"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "no",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl auth can-i list pods",
+  "mac": "kubectl auth can-i list pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "yes"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "yes",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config use-context kind-hitokoto",
+  "mac": "kubectl config use-context kind-hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kind-hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Switched to context \"kind-hitokoto\".",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config set-context --current --namespace=hitokoto",
+  "mac": "kubectl config set-context --current --namespace=hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "modified"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Context \"kind-hitokoto\" modified.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config get-contexts",
+  "mac": "kubectl config get-contexts"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-prod"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   hitokoto\n          prod            kind-hitokoto   prod-user       hitokoto-prod",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7d8f6c9b5-2kq8x    1/1     Running   0          10m\n…",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-7k2xq    1/1     Running   0          1m\nhitokoto-b55ff59b6-q9w4z    1/1     Running   0          1m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods --context prod",
+  "mac": "kubectl get pods --context prod"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl kustomize hitokoto-team/overlays/staging",
+  "mac": "kubectl kustomize hitokoto-team/overlays/staging"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "staging-hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: staging-hitokoto\n…\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: staging-hitokoto\nspec:\n  replicas: 2\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl kustomize hitokoto-team/overlays/prod",
+  "mac": "kubectl kustomize hitokoto-team/overlays/prod"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "prod-hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "…\nkind: Deployment\nmetadata:\n  name: prod-hitokoto\nspec:\n  replicas: 5\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config get-contexts",
+  "mac": "kubectl config get-contexts"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   hitokoto\n          prod            kind-hitokoto   prod-user       hitokoto-prod",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "rc": 1,
+  "win": "kubectl diff -k hitokoto-team/overlays/staging",
+  "mac": "kubectl diff -k hitokoto-team/overlays/staging"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "staging-hitokoto"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -k hitokoto-team/overlays/staging",
+  "mac": "kubectl apply -k hitokoto-team/overlays/staging"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deployment.apps/staging-hitokoto created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "service/staging-hitokoto created\ndeployment.apps/staging-hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 40); do kubectl get pods | grep -q CreateContainerConfigError && break; sleep 2; done",
+  "mac": "for i in $(seq 40); do kubectl get pods | grep -q CreateContainerConfigError && break; sleep 2; done",
+  "timeout": 100
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "CreateContainerConfigError"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                                READY   STATUS                       RESTARTS   AGE\nhitokoto-7d8f6c9b5-2kq8x            1/1     Running                      0          12m\n…\nstaging-hitokoto-6c8d9f7b4-5mx2k    0/1     CreateContainerConfigError   0          20s\nstaging-hitokoto-6c8d9f7b4-h8q3w    0/1     CreateContainerConfigError   0          20s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pods -l app=hitokoto-team",
+  "mac": "kubectl describe pods -l app=hitokoto-team"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "secret \"team-secret\" not found"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pods -l app=hitokoto-team",
+  "mac": "kubectl describe pods -l app=hitokoto-team"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "team-secret"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "  Warning  Failed     …  kubelet  spec.containers{app}: Error: secret \"team-secret\" not found",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl create secret generic team-secret --from-literal=DB_PASSWORD=team-pass",
+  "mac": "kubectl create secret generic team-secret --from-literal=DB_PASSWORD=team-pass"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "secret/team-secret created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/staging-hitokoto --timeout=180s",
+  "mac": "kubectl rollout status deployment/staging-hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -l app=hitokoto-team",
+  "mac": "kubectl get pods -l app=hitokoto-team"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                                READY   STATUS    RESTARTS   AGE\n…\nstaging-hitokoto-6c8d9f7b4-5mx2k    1/1     Running   0          1m\nstaging-hitokoto-6c8d9f7b4-h8q3w    1/1     Running   0          1m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "out",
+  "text": "Context \"kind-hitokoto\" modified.",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl config set-context --current --namespace=default",
+  "mac": "kubectl config set-context --current --namespace=default"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "modified"
+  ]
+ }
+]
