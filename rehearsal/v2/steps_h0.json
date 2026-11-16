@@ -1,0 +1,83 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl version --client",
+  "mac": "kubectl version --client"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Client Version"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Client Version: v1.37.1\nKustomize Version: v5.8.1",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kind version",
+  "mac": "kind version"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kind v"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "kind v0.33.0 go1.26.7 linux/amd64",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "docker login -u <あなたのユーザー名>",
+  "mac": "docker login -u <あなたのユーザー名>"
+ },
+ {
+  "t": "out",
+  "text": "Login Succeeded",
+  "label": "成功したとき"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kind create cluster --config kind-config.yaml",
+  "mac": "kind create cluster --config kind-config.yaml"
+ },
+ {
+  "t": "out",
+  "text": "Creating cluster \"hitokoto\" ...\n ✓ Ensuring node image (kindest/node:v1.37.0) 🖼\n ✓ Preparing nodes 📦 📦 📦\n ✓ Writing configuration 📜\n ✓ Starting control-plane 🕹️\n ✓ Installing CNI 🔌\n ✓ Installing StorageClass 💾\n ✓ Joining worker nodes 🚜\nSet kubectl context to \"kind-hitokoto\"\n…",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker2"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   60s   v1.37.0\nhitokoto-worker          Ready    <none>          45s   v1.37.0\nhitokoto-worker2         Ready    <none>          45s   v1.37.0",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
+ },
+ {
+  "t": "out",
+  "text": "The connection to the server 127.0.0.1:… was refused - did you specify the right host or port?",
+  "label": "表示される内容（例）"
+ }
+]
