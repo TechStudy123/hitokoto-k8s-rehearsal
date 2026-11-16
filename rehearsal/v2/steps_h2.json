@@ -24,6 +24,28 @@
  {
   "t": "cmd",
   "skip": true,
+  "win": "kubectl delete -f manifests/web.yaml",
+  "mac": "kubectl delete -f manifests/web.yaml"
+ },
+ {
+  "t": "out",
+  "text": "pod \"web\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl apply -f manifests/web.yaml",
+  "mac": "kubectl apply -f manifests/web.yaml"
+ },
+ {
+  "t": "out",
+  "text": "pod/web created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
   "win": "kubectl get pods -w",
   "mac": "kubectl get pods -w"
  },
