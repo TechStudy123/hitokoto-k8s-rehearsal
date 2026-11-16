@@ -1,0 +1,369 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl config get-contexts",
+  "mac": "kubectl config get-contexts"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kind-hitokoto"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f broken/",
+  "mac": "kubectl apply -f broken/"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "service/shop3 created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/shop1 created\ndeployment.apps/shop2 created\ndeployment.apps/shop3 created\nservice/shop3 created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 60); do kubectl get pods | grep -q 'shop2.*CrashLoopBackOff' && kubectl get pods | grep -q 'shop1.*ImagePullBackOff' && break; sleep 3; done",
+  "mac": "for i in $(seq 60); do kubectl get pods | grep -q 'shop2.*CrashLoopBackOff' && kubectl get pods | grep -q 'shop1.*ImagePullBackOff' && break; sleep 3; done",
+  "timeout": 220
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "shop3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     READY   STATUS             RESTARTS      AGE\nshop1-6b8d7c9f5-k2xqp    0/1     ImagePullBackOff   0             1m\nshop2-7c9f8d6b4-m5x2w    0/1     CrashLoopBackOff   3 (20s ago)   1m\nshop3-5d7f6c8b9-q8w4z    1/1     Running            0             1m",
+  "label": "表示される内容（shop の行。例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pods -l app=shop1",
+  "mac": "kubectl describe pods -l app=shop1"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Failed to pull image"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "  Warning  Failed     …  kubelet  spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokotto:2.1\": … denied …\n  Warning  Failed     …  kubelet  spec.containers{app}: Error: ErrImagePull",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "file",
+  "path": "broken/shop1.yaml",
+  "text": "# 壊れたアプリ その1（ハンズオン9）\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: shop1\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: shop1\n  template:\n    metadata:\n      labels:\n        app: shop1\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1",
+  "label": "broken/shop1.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f broken/shop1.yaml",
+  "mac": "kubectl apply -f broken/shop1.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/shop1 configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl logs deployment/shop2 --previous",
+  "mac": "kubectl logs deployment/shop2 --previous"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "mian.py"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "…\nError: Path does not exist mian.py",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/shop2 configured",
+  "label": "表示される内容"
+ },
+ {
+  "t": "file",
+  "path": "broken/shop2.yaml",
+  "text": "# 壊れたアプリ その2（ハンズオン9）\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: shop2\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: shop2\n  template:\n    metadata:\n      labels:\n        app: shop2\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          args: [\"fastapi\", \"run\", \"main.py\", \"--port\", \"8000\"]"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f broken/shop2.yaml",
+  "mac": "kubectl apply -f broken/shop2.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/shop1 --timeout=180s && kubectl rollout status deployment/shop2 --timeout=180s",
+  "mac": "kubectl rollout status deployment/shop1 --timeout=180s && kubectl rollout status deployment/shop2 --timeout=180s",
+  "timeout": 380
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh"
+ },
+ {
+  "t": "out",
+  "text": "~ $",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "curl -s http://shop3/health",
+  "mac": "curl -s http://shop3/health"
+ },
+ {
+  "t": "out",
+  "text": "curl: (7) Failed to connect to shop3 port 80 after 1 ms: Could not connect to server",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "exit",
+  "mac": "exit"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://shop3/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://shop3/health\"",
+  "rc": 7,
+  "timeout": 150
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service shop3",
+  "mac": "kubectl describe service shop3"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "app=shop-3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Selector:                 app=shop-3\n…\nEndpoints:                \n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -l app=shop3 --show-labels",
+  "mac": "kubectl get pods -l app=shop3 --show-labels"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "app=shop3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                    READY   STATUS    RESTARTS   AGE   LABELS\nshop3-5d7f6c8b9-q8w4z   1/1     Running   0          3m    app=shop3,pod-template-hash=5d7f6c8b9",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "broken/shop3.yaml",
+  "text": "# 壊れたアプリ その3（ハンズオン9）\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: shop3\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: shop3\n  template:\n    metadata:\n      labels:\n        app: shop3\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: shop3\nspec:\n  selector:\n    app: shop3\n  ports:\n    - port: 80\n      targetPort: 8000",
+  "label": "broken/shop3.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f broken/shop3.yaml",
+  "mac": "kubectl apply -f broken/shop3.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "service/shop3 configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/shop3 unchanged\nservice/shop3 configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 3",
+  "mac": "sleep 3"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service shop3",
+  "mac": "kubectl describe service shop3"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "8000"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Selector:                 app=shop3\n…\nEndpoints:                10.244.1.12:8000\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://shop3/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://shop3/health\"",
+  "timeout": 150
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "\"status\":\"ok\""
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -l 'app in (shop1,shop2,shop3)'",
+  "mac": "kubectl get pods -l 'app in (shop1,shop2,shop3)'"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "shop3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     READY   STATUS    RESTARTS   AGE\nshop1-5c7d9f8b6-x4k2m    1/1     Running   0          2m\nshop2-6d8f9c7b5-w2q8n    1/1     Running   0          1m\nshop3-5d7f6c8b9-q8w4z    1/1     Running   0          5m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f broken/",
+  "mac": "kubectl delete -f broken/"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps \"shop1\" deleted from default namespace\ndeployment.apps \"shop2\" deleted from default namespace\ndeployment.apps \"shop3\" deleted from default namespace\nservice \"shop3\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/ --ignore-not-found",
+  "mac": "kubectl delete -f manifests/ --ignore-not-found"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kind delete cluster --name hitokoto",
+  "mac": "kind delete cluster --name hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Deleted nodes"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Deleting cluster \"hitokoto\" ...\nDeleted nodes: [\"hitokoto-worker2\" \"hitokoto-control-plane\" \"hitokoto-worker\"]",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "docker ps --format \"table {{.Names}}\\t{{.Status}}\"",
+  "mac": "docker ps --format \"table {{.Names}}\\t{{.Status}}\""
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "NAMES"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAMES     STATUS",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "docker system df",
+  "mac": "docker system df"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Images"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          1         0         1.2GB     1.2GB (100%)\nContainers      0         0         0B        0B\nLocal Volumes   0         0         0B        0B\nBuild Cache     0         0         0B        0B",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "docker system prune -a",
+  "mac": "docker system prune -a"
+ },
+ {
+  "t": "cmd",
+  "win": "docker system prune -a -f",
+  "mac": "docker system prune -a -f",
+  "timeout": 120
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Total reclaimed space"
+  ]
+ }
+]
