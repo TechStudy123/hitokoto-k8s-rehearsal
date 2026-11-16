@@ -304,7 +304,7 @@
  },
  {
   "t": "out",
-  "text": "NAME        TYPE     DATA   AGE\ndb-secret   Opaque   1      5s",
+  "text": "NAME                               TYPE                DATA   AGE\ndb-secret                          Opaque              1      5s\nhitokoto-gateway-nginx-agent-tls   kubernetes.io/tls   3      10m",
   "label": "表示される内容（例）"
  },
  {
@@ -440,7 +440,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS                       RESTARTS   AGE\nhitokoto-58d7c9f6b4-x2k8m   0/1     CreateContainerConfigError   0          20s\nhitokoto-6c9f7d8b5-4fz2q    1/1     Running                      0          2m\nhitokoto-6c9f7d8b5-9kq7w    1/1     Running                      0          2m\nhitokoto-6c9f7d8b5-tm5xd    1/1     Running                      0          2m",
+  "text": "NAME                                      READY   STATUS                       RESTARTS   AGE\napi-5f65f5b867-279cw                      1/1     Running                      0          10m\nhitokoto-6d6556f446-8qmm4                 1/1     Running                      0          2m\nhitokoto-6d6556f446-szjnj                 1/1     Running                      0          2m\nhitokoto-6d6556f446-x7n64                 1/1     Running                      0          2m\nhitokoto-fdd6467cf-gnfg4                  0/1     CreateContainerConfigError   0          20s\nhitokoto-gateway-nginx-79bbb478c8-5knm4   1/1     Running                      0          10m",
   "label": "表示される内容（例。名前は人によって違います）"
  },
  {
@@ -457,12 +457,12 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl describe pod hitokoto-58d7c9f6b4-x2k8m",
-  "mac": "kubectl describe pod hitokoto-58d7c9f6b4-x2k8m"
+  "win": "kubectl describe pod hitokoto-fdd6467cf-gnfg4",
+  "mac": "kubectl describe pod hitokoto-fdd6467cf-gnfg4"
  },
  {
   "t": "out",
-  "text": "  Warning  Failed     5s (x3 over 20s)  kubelet   spec.containers{app}: Error: secret \"db-secrt\" not found",
+  "text": "  Warning  Failed     2s (x2 over 2s)  kubelet            spec.containers{app}: Error: secret \"db-secrt\" not found",
   "label": "表示される内容（Events の一部）"
  },
  {
