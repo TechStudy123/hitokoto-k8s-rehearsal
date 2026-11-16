@@ -1,0 +1,434 @@
+[
+ {
+  "t": "file",
+  "path": "manifests/web.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\nspec:\n  containers:\n    - name: web\n      image: nginx:1.30",
+  "label": "manifests/web.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/web.yaml",
+  "mac": "kubectl apply -f manifests/web.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "pod/web created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/web created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl get pods -w",
+  "mac": "kubectl get pods -w"
+ },
+ {
+  "t": "out",
+  "text": "NAME   READY   STATUS              RESTARTS   AGE\nweb    0/1     ContainerCreating   0          2s\nweb    1/1     Running             0          6s",
+  "label": "表示される内容（例。見張っている間は、プロンプトに戻りません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/web.yaml --wait=true && kubectl apply -f manifests/web.yaml && timeout 40 kubectl get pods -w",
+  "mac": "kubectl delete -f manifests/web.yaml --wait=true && kubectl apply -f manifests/web.yaml && timeout 40 kubectl get pods -w",
+  "rc": 124,
+  "timeout": 60
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pod web",
+  "mac": "kubectl describe pod web"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Started"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Events:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  20s   default-scheduler  Successfully assigned default/web to hitokoto-worker\n  Normal  Pulling    20s   kubelet            Pulling image \"nginx:1.30\"\n  Normal  Pulled     15s   kubelet            Successfully pulled image \"nginx:1.30\" in 4.8s (4.8s including waiting). Image size: 59000000 bytes.\n  Normal  Created    15s   kubelet            Container created\n  Normal  Started    15s   kubelet            Container started",
+  "label": "表示される内容（いちばん下の Events。例）"
+ },
+ {
+  "t": "out",
+  "text": "NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES\nweb    1/1     Running   0          40s   10.244.1.2   hitokoto-worker   <none>           <none>",
+  "label": "表示される内容（例。店舗は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -o wide",
+  "mac": "kubectl get pods -o wide"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "web"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/web.yaml",
+  "mac": "kubectl delete -f manifests/web.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"web\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "No resources found"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "No resources found in default namespace.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/pod.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: hitokoto\nspec:\n  containers:\n    - name: app\n      image: ghcr.io/container-nyumon/hitokoto:2.0\n      ports:\n        - containerPort: 8000",
+  "label": "manifests/pod.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pod.yaml",
+  "mac": "kubectl apply -f manifests/pod.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "pod/hitokoto created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "mac": "kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   0          10s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl logs hitokoto",
+  "mac": "kubectl logs hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Application startup complete"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "INFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl port-forward pod/hitokoto 8000:8000",
+  "mac": "kubectl port-forward pod/hitokoto 8000:8000"
+ },
+ {
+  "t": "out",
+  "text": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000",
+  "label": "表示される内容（つないでいる間は、プロンプトに戻りません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl port-forward pod/hitokoto 8000:8000",
+  "mac": "kubectl port-forward pod/hitokoto 8000:8000",
+  "bg": true,
+  "wait": "http://127.0.0.1:8000/health"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "hitokoto 2.0"
+  ]
+ },
+ {
+  "t": "stop"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec hitokoto -- hostname",
+  "mac": "kubectl exec hitokoto -- hostname"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hitokoto",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec hitokoto -- id",
+  "mac": "kubectl exec hitokoto -- id"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "uid=10001"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "uid=10001 gid=10001 groups=10001",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/pod.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: hitokoto\n  labels:\n    app: hitokoto\nspec:\n  containers:\n    - name: app\n      image: ghcr.io/container-nyumon/hitokoto:2.0\n      ports:\n        - containerPort: 8000",
+  "label": "manifests/pod.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pod.yaml",
+  "mac": "kubectl apply -f manifests/pod.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/web.yaml",
+  "mac": "kubectl apply -f manifests/web.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/web created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods --show-labels",
+  "mac": "kubectl get pods --show-labels"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "app=hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   STATUS    RESTARTS   AGE   LABELS\nhitokoto   1/1     Running   0          3m    app=hitokoto\nweb        1/1     Running   0          5s    <none>",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -l app=hitokoto",
+  "mac": "kubectl get pods -l app=hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   0          3m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/web.yaml",
+  "mac": "kubectl delete -f manifests/web.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"web\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/pod.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: hitokoto\n  labels:\n    app: hitokoto\nspec:\n  containers:\n    - name: app\n      image: ghcr.io/container-nyumon/hitokoto:2.0.0\n      ports:\n        - containerPort: 8000",
+  "label": "manifests/pod.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pod.yaml",
+  "mac": "kubectl apply -f manifests/pod.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 60); do kubectl get pod hitokoto | grep -q ImagePullBackOff && break; sleep 2; done; kubectl get pod hitokoto",
+  "mac": "for i in $(seq 60); do kubectl get pod hitokoto | grep -q ImagePullBackOff && break; sleep 2; done; kubectl get pod hitokoto",
+  "timeout": 150
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "ImagePullBackOff"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "ImagePullBackOff"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   STATUS             RESTARTS   AGE\nhitokoto   0/1     ImagePullBackOff   0          4m",
+  "label": "表示される内容（例。ErrImagePull と出ることもあります）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pod hitokoto",
+  "mac": "kubectl describe pod hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Failed to pull image"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "  Warning  Failed     10s   kubelet   Failed to pull image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": …not found\n  Warning  Failed     10s   kubelet   Error: ErrImagePull\n  Normal   BackOff    5s    kubelet   Back-off pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     5s    kubelet   Error: ImagePullBackOff",
+  "label": "表示される内容（いちばん下の Events。一部）"
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   1          5m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/pod.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: hitokoto\n  labels:\n    app: hitokoto\nspec:\n  containers:\n    - name: app\n      image: ghcr.io/container-nyumon/hitokoto:2.0\n      ports:\n        - containerPort: 8000"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pod.yaml",
+  "mac": "kubectl apply -f manifests/pod.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "mac": "kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Running"
+  ]
+ }
+]
