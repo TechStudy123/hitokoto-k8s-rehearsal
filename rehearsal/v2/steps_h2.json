@@ -29,7 +29,7 @@
  },
  {
   "t": "out",
-  "text": "NAME   READY   STATUS              RESTARTS   AGE\nweb    0/1     ContainerCreating   0          2s\nweb    1/1     Running             0          6s",
+  "text": "NAME   READY   STATUS              RESTARTS   AGE\nweb    0/1     ContainerCreating   0          0s\nweb    0/1     ContainerCreating   0          0s\nweb    1/1     Running             0          2s",
   "label": "表示される内容（例。見張っている間は、プロンプトに戻りません）"
  },
  {
@@ -58,12 +58,12 @@
  },
  {
   "t": "out",
-  "text": "Events:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  20s   default-scheduler  Successfully assigned default/web to hitokoto-worker\n  Normal  Pulling    20s   kubelet            Pulling image \"nginx:1.30\"\n  Normal  Pulled     15s   kubelet            Successfully pulled image \"nginx:1.30\" in 4.8s (4.8s including waiting). Image size: 59000000 bytes.\n  Normal  Created    15s   kubelet            Container created\n  Normal  Started    15s   kubelet            Container started",
+  "text": "Events:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  40s   default-scheduler  Successfully assigned default/web to hitokoto-worker\n  Normal  Pulling    40s   kubelet            spec.containers{web}: Pulling image \"nginx:1.30\"\n  Normal  Pulled     38s   kubelet            spec.containers{web}: Successfully pulled image \"nginx:1.30\" in 1.476s (1.476s including waiting). Image size: 63639735 bytes.\n  Normal  Created    38s   kubelet            spec.containers{web}: Container created\n  Normal  Started    38s   kubelet            spec.containers{web}: Container started",
   "label": "表示される内容（いちばん下の Events。例）"
  },
  {
   "t": "out",
-  "text": "NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES\nweb    1/1     Running   0          40s   10.244.1.2   hitokoto-worker   <none>           <none>",
+  "text": "NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES\nweb    1/1     Running   0          40s   10.244.2.2   hitokoto-worker   <none>           <none>",
   "label": "表示される内容（例。店舗は人によって違います）"
  },
  {
@@ -161,6 +161,12 @@
  },
  {
   "t": "cmd",
+  "win": "for i in $(seq 30); do kubectl logs hitokoto | grep -q 'startup complete' && break; sleep 2; done",
+  "mac": "for i in $(seq 30); do kubectl logs hitokoto | grep -q 'startup complete' && break; sleep 2; done",
+  "timeout": 90
+ },
+ {
+  "t": "cmd",
   "win": "kubectl logs hitokoto",
   "mac": "kubectl logs hitokoto"
  },
@@ -172,7 +178,7 @@
  },
  {
   "t": "out",
-  "text": "INFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)",
+  "text": "INFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     hitokoto 2.0 を起動します（タイトル: ひとこと掲示板）\nINFO:     データベースを使わずに動きます（DB_HOST=none）\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)",
   "label": "表示される内容（例）"
  },
  {
@@ -232,7 +238,7 @@
  },
  {
   "t": "out",
-  "text": "uid=10001 gid=10001 groups=10001",
+  "text": "uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)",
   "label": "表示される内容（例）"
  },
  {
@@ -384,12 +390,12 @@
  },
  {
   "t": "out",
-  "text": "  Warning  Failed     10s   kubelet   Failed to pull image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": …not found\n  Warning  Failed     10s   kubelet   Error: ErrImagePull\n  Normal   BackOff    5s    kubelet   Back-off pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     5s    kubelet   Error: ImagePullBackOff",
+  "text": "  Warning  Failed     1s (x2 over 14s)  kubelet   spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": … not found\n  Warning  Failed     1s (x2 over 14s)  kubelet   spec.containers{app}: Error: ErrImagePull",
   "label": "表示される内容（いちばん下の Events。一部）"
  },
  {
   "t": "out",
-  "text": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   1          5m",
+  "text": "NAME       READY   STATUS    RESTARTS      AGE\nhitokoto   1/1     Running   1 (14s ago)   5m",
   "label": "表示される内容（例）"
  },
  {
