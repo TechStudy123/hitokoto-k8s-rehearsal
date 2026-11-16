@@ -178,7 +178,7 @@
  },
  {
   "t": "out",
-  "text": "INFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     hitokoto 2.0 を起動します（タイトル: ひとこと掲示板）\nINFO:     データベースを使わずに動きます（DB_HOST=none）\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)",
+  "text": " ⚡️ Starting FastAPI in production mode\n…\n  Logs:\n\nINFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     hitokoto 2.0 を起動します（タイトル: ひとこと掲示板）\nINFO:     データベースを使わずに動きます（DB_HOST=none）\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)",
   "label": "表示される内容（例）"
  },
  {
