@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitokoto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hitokoto
+  template:
+    metadata:
+      labels:
+        app: hitokoto
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:2.1
