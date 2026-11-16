@@ -1,0 +1,58 @@
+# ハンズオン8 の用意（会社では管理者が用意するもの）: 本番役の区画・そこで動く掲示板・権限を絞ったユーザー役
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hitokoto-prod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitokoto
+  namespace: hitokoto-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hitokoto
+  template:
+    metadata:
+      labels:
+        app: hitokoto
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:2.1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prod-user
+  namespace: hitokoto-prod
+---
+# 見るだけ（一覧・詳しく・ログ）。作る・消すは許さない
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: viewer
+  namespace: hitokoto-prod
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prod-user-viewer
+  namespace: hitokoto-prod
+subjects:
+  - kind: ServiceAccount
+    name: prod-user
+    namespace: hitokoto-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: viewer
