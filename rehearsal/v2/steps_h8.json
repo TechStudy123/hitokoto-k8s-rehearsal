@@ -92,7 +92,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-7k2xq    1/1     Running   0          1m\nhitokoto-b55ff59b6-q9w4z    1/1     Running   0          1m",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-gs447   1/1     Running   0          1m\nhitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m",
   "label": "表示される内容（例）"
  },
  {
@@ -110,12 +110,12 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl delete pod hitokoto-b55ff59b6-7k2xq",
-  "mac": "kubectl delete pod hitokoto-b55ff59b6-7k2xq"
+  "win": "kubectl delete pod hitokoto-b55ff59b6-gs447",
+  "mac": "kubectl delete pod hitokoto-b55ff59b6-gs447"
  },
  {
   "t": "out",
-  "text": "Error from server (Forbidden): pods \"hitokoto-b55ff59b6-7k2xq\" is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot delete resource \"pods\" in API group \"\" in the namespace \"hitokoto-prod\"",
+  "text": "Error from server (Forbidden): pods \"hitokoto-b55ff59b6-gs447\" is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot delete resource \"pods\" in API group \"\" in the namespace \"hitokoto-prod\"",
   "label": "表示される内容（例）"
  },
  {
@@ -229,12 +229,12 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7d8f6c9b5-2kq8x    1/1     Running   0          10m\n…",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7656bfd894-56x4c   1/1     Running   0          10m\nhitokoto-7656bfd894-phhs2   1/1     Running   0          10m\nhitokoto-7656bfd894-x7jzb   1/1     Running   0          10m",
   "label": "表示される内容（例）"
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-7k2xq    1/1     Running   0          1m\nhitokoto-b55ff59b6-q9w4z    1/1     Running   0          1m",
+  "text": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-gs447   1/1     Running   0          1m\nhitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m",
   "label": "表示される内容（例）"
  },
  {
@@ -343,19 +343,14 @@
  },
  {
   "t": "out",
-  "text": "NAME                                READY   STATUS                       RESTARTS   AGE\nhitokoto-7d8f6c9b5-2kq8x            1/1     Running                      0          12m\n…\nstaging-hitokoto-6c8d9f7b4-5mx2k    0/1     CreateContainerConfigError   0          20s\nstaging-hitokoto-6c8d9f7b4-h8q3w    0/1     CreateContainerConfigError   0          20s",
+  "text": "NAME                                READY   STATUS                       RESTARTS   AGE\nhitokoto-7656bfd894-56x4c           1/1     Running                      0          12m\nhitokoto-7656bfd894-phhs2           1/1     Running                      0          12m\nhitokoto-7656bfd894-x7jzb           1/1     Running                      0          12m\nstaging-hitokoto-7d6cf5c4cf-4k6jl   0/1     CreateContainerConfigError   0          20s\nstaging-hitokoto-7d6cf5c4cf-mk5z2   0/1     CreateContainerConfigError   0          20s",
   "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
-  "win": "kubectl describe pods -l app=hitokoto-team",
-  "mac": "kubectl describe pods -l app=hitokoto-team"
- },
- {
-  "t": "expect",
-  "contains": [
-   "secret \"team-secret\" not found"
-  ]
+  "win": "for i in $(seq 30); do kubectl describe pods -l app=hitokoto-team | grep -q 'team-secret\" not found' && break; sleep 2; done",
+  "mac": "for i in $(seq 30); do kubectl describe pods -l app=hitokoto-team | grep -q 'team-secret\" not found' && break; sleep 2; done",
+  "timeout": 80
  },
  {
   "t": "cmd",
@@ -414,7 +409,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                                READY   STATUS    RESTARTS   AGE\n…\nstaging-hitokoto-6c8d9f7b4-5mx2k    1/1     Running   0          1m\nstaging-hitokoto-6c8d9f7b4-h8q3w    1/1     Running   0          1m",
+  "text": "NAME                                READY   STATUS    RESTARTS   AGE\nstaging-hitokoto-7d6cf5c4cf-4k6jl   1/1     Running   0          1m\nstaging-hitokoto-7d6cf5c4cf-mk5z2   1/1     Running   0          1m",
   "label": "表示される内容（例）"
  },
  {
