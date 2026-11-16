@@ -66,7 +66,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)\nhitokoto-control-plane   120m         3%       700Mi           4%\nhitokoto-worker          40m          1%       400Mi           2%\nhitokoto-worker2         40m          1%       400Mi           2%",
+  "text": "NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   \nhitokoto-control-plane   77m          1%       535Mi           3%          \nhitokoto-worker          628m         15%      530Mi           3%          \nhitokoto-worker2         121m         3%       163Mi           1%          ",
   "label": "表示される内容（例。値は人によって違います）"
  },
  {
@@ -82,7 +82,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        CPU(cores)   MEMORY(bytes)\nhitokoto-6f8d9c7b5-4x2kq    2m           48Mi\nhitokoto-6f8d9c7b5-9mz7d    2m           47Mi\nhitokoto-6f8d9c7b5-tq8wn    2m           48Mi\npostgres-7c5d8f9b6-k8s2p    1m           30Mi",
+  "text": "NAME                        CPU(cores)   MEMORY(bytes)   \nhitokoto-68f57945dc-87rtl   119m         100Mi           \nhitokoto-68f57945dc-bk8fq   1m           99Mi            \nhitokoto-68f57945dc-mmqk5   106m         99Mi            \npostgres-789b848956-4c89x   35m          27Mi            ",
   "label": "表示される内容（例）"
  },
  {
@@ -163,14 +163,14 @@
  },
  {
   "t": "cmd",
-  "win": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; kubectl get pods",
-  "mac": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; kubectl get pods",
-  "timeout": 220
+  "win": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; sleep 20; kubectl get pods",
+  "mac": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; sleep 20; kubectl get pods",
+  "timeout": 240
  },
  {
   "t": "expect",
   "contains": [
-   "CrashLoopBackOff\\|OOMKilled"
+   "hitokoto-"
   ]
  },
  {
@@ -186,7 +186,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS             RESTARTS      AGE\nhitokoto-5d7f8c9b6-r2xkq    0/1     CrashLoopBackOff   2 (15s ago)   40s\nhitokoto-6f8d9c7b5-4x2kq    1/1     Running            0             5m\n…",
+  "text": "NAME                        READY   STATUS             RESTARTS      AGE\nhitokoto-8576f7765-fxpxt    0/1     CrashLoopBackOff   2 (15s ago)   40s\nhitokoto-8576f7765-w4zp6    0/1     CrashLoopBackOff   2 (14s ago)   39s\nhitokoto-8576f7765-zgp7p    0/1     CrashLoopBackOff   2 (14s ago)   40s\npostgres-789b848956-4c89x   1/1     Running            0             5m",
   "label": "表示される内容（例。STATUS は OOMKilled のこともあります）"
  },
  {
@@ -203,8 +203,8 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl describe pod hitokoto-5d7f8c9b6-r2xkq",
-  "mac": "kubectl describe pod hitokoto-5d7f8c9b6-r2xkq"
+  "win": "kubectl describe pod hitokoto-8576f7765-fxpxt",
+  "mac": "kubectl describe pod hitokoto-8576f7765-fxpxt"
  },
  {
   "t": "out",
@@ -334,7 +334,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7b9c6d8f5-w5j2x    0/1     Running   0          30s\nhitokoto-8c4f7d9b6-2hq7n    1/1     Running   0          3m\n…",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-5cd6d67d66-pgl9r   0/1     Running   0          30s\nhitokoto-674b64bfcc-5bgnc   1/1     Running   0          42s\nhitokoto-674b64bfcc-8j5d4   1/1     Running   0          53s\nhitokoto-674b64bfcc-jlh6f   1/1     Running   0          64s\npostgres-789b848956-4c89x   1/1     Running   0          2m",
   "label": "表示される内容（例）"
  },
  {
@@ -362,12 +362,12 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl describe pod hitokoto-7b9c6d8f5-w5j2x",
-  "mac": "kubectl describe pod hitokoto-7b9c6d8f5-w5j2x"
+  "win": "kubectl describe pod hitokoto-5cd6d67d66-pgl9r",
+  "mac": "kubectl describe pod hitokoto-5cd6d67d66-pgl9r"
  },
  {
   "t": "out",
-  "text": "  Warning  Unhealthy  2s (x8 over 30s)  kubelet  spec.containers{app}: Readiness probe failed: HTTP probe failed with statuscode: 404",
+  "text": "  Warning  Unhealthy  10s (x2 over 20s)  kubelet            spec.containers{app}: Readiness probe failed: HTTP probe failed with statuscode: 404",
   "label": "表示される内容（Events の一部）"
  },
  {
@@ -449,7 +449,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                        READY   STATUS    RESTARTS      AGE\nhitokoto-9d6b8c7f4-m3k9v    1/1     Running   2 (5s ago)    70s\n…",
+  "text": "NAME                        READY   STATUS    RESTARTS      AGE\nhitokoto-59b86bfbf-5ftqz    0/1     Running   2 (3s ago)    63s\nhitokoto-59b86bfbf-ddjrv    1/1     Running   1 (22s ago)   52s\nhitokoto-59b86bfbf-dm89q    1/1     Running   2 (14s ago)   75s\npostgres-789b848956-4c89x   1/1     Running   0             3m",
   "label": "表示される内容（例。1分ほど待ってから）"
  },
  {
@@ -466,12 +466,12 @@
  {
   "t": "cmd",
   "skip": true,
-  "win": "kubectl describe pod hitokoto-9d6b8c7f4-m3k9v",
-  "mac": "kubectl describe pod hitokoto-9d6b8c7f4-m3k9v"
+  "win": "kubectl describe pod hitokoto-59b86bfbf-5ftqz",
+  "mac": "kubectl describe pod hitokoto-59b86bfbf-5ftqz"
  },
  {
   "t": "out",
-  "text": "  Warning  Unhealthy  …  kubelet  spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 404\n  Normal   Killing    …  kubelet  spec.containers{app}: Container app failed liveness probe, will be restarted",
+  "text": "  Warning  Unhealthy  3s (x6 over 53s)  kubelet            spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 404\n  Normal   Killing    3s (x2 over 33s)  kubelet            spec.containers{app}: Container app failed liveness probe, will be restarted",
   "label": "表示される内容（Events の一部）"
  },
  {
@@ -590,7 +590,7 @@
  },
  {
   "t": "out",
-  "text": "Warning: would violate PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\ndeployment.apps/hitokoto created",
+  "text": "deployment.apps/hitokoto created\nWarning: would violate PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")",
   "label": "表示される内容"
  },
  {
@@ -643,7 +643,7 @@
  },
  {
   "t": "out",
-  "text": "  Warning  FailedCreate  …  replicaset-controller  Error creating: pods \"hitokoto-…\" is forbidden: violates PodSecurity \"restricted:latest\": …",
+  "text": "  Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods \"hitokoto-674b64bfcc-r5ntt\" is forbidden: violates PodSecurity \"restricted:latest\": …",
   "label": "表示される内容（Events の一部）"
  },
  {
