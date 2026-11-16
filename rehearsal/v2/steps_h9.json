@@ -45,7 +45,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                     READY   STATUS             RESTARTS      AGE\nshop1-6b8d7c9f5-k2xqp    0/1     ImagePullBackOff   0             1m\nshop2-7c9f8d6b4-m5x2w    0/1     CrashLoopBackOff   3 (20s ago)   1m\nshop3-5d7f6c8b9-q8w4z    1/1     Running            0             1m",
+  "text": "NAME                        READY   STATUS             RESTARTS      AGE\nhitokoto-7656bfd894-dlf8t   1/1     Running            0             4m\n…\nshop1-7d6687bfb-sklht       0/1     ImagePullBackOff   0             2m\nshop2-5ff6858dd-cpb22       0/1     CrashLoopBackOff   4 (63s ago)   2m\nshop3-745f54fb4b-bwfrl      1/1     Running            0             2m",
   "label": "表示される内容（shop の行。例）"
  },
  {
@@ -61,7 +61,7 @@
  },
  {
   "t": "out",
-  "text": "  Warning  Failed     …  kubelet  spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokotto:2.1\": … denied …\n  Warning  Failed     …  kubelet  spec.containers{app}: Error: ErrImagePull",
+  "text": "  Warning  Failed     7s (x5 over 2m51s)   kubelet            spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokotto:2.1\": …\n  Warning  Failed     7s (x5 over 2m51s)   kubelet            spec.containers{app}: Error: ErrImagePull",
   "label": "表示される内容（Events の一部）"
  },
  {
@@ -99,7 +99,7 @@
  },
  {
   "t": "out",
-  "text": "…\nError: Path does not exist mian.py",
+  "text": " ⚡️ Starting FastAPI in production mode\n\n    Path does not exist mian.py",
   "label": "表示される内容（最後の行）"
  },
  {
@@ -199,7 +199,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                    READY   STATUS    RESTARTS   AGE   LABELS\nshop3-5d7f6c8b9-q8w4z   1/1     Running   0          3m    app=shop3,pod-template-hash=5d7f6c8b9",
+  "text": "NAME                     READY   STATUS    RESTARTS   AGE   LABELS\nshop3-745f54fb4b-bwfrl   1/1     Running   0          3m    app=shop3,pod-template-hash=745f54fb4b",
   "label": "表示される内容（例）"
  },
  {
@@ -242,7 +242,7 @@
  },
  {
   "t": "out",
-  "text": "Selector:                 app=shop3\n…\nEndpoints:                10.244.1.12:8000\n…",
+  "text": "Selector:                 app=shop3\n…\nEndpoints:                10.244.2.23:8000\n…",
   "label": "表示される内容（一部）"
  },
  {
@@ -270,7 +270,7 @@
  },
  {
   "t": "out",
-  "text": "NAME                     READY   STATUS    RESTARTS   AGE\nshop1-5c7d9f8b6-x4k2m    1/1     Running   0          2m\nshop2-6d8f9c7b5-w2q8n    1/1     Running   0          1m\nshop3-5d7f6c8b9-q8w4z    1/1     Running   0          5m",
+  "text": "NAME                     READY   STATUS    RESTARTS   AGE\nshop1-7b9b4f7cb-w78sw    1/1     Running   0          17s\nshop2-6cb4594764-xsrxr   1/1     Running   0          17s\nshop3-745f54fb4b-bwfrl   1/1     Running   0          3m",
   "label": "表示される内容（例）"
  },
  {
@@ -301,6 +301,11 @@
   ]
  },
  {
+  "t": "out",
+  "text": "configmap \"hitokoto-config\" deleted from default namespace\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
   "t": "cmd",
   "win": "kind delete cluster --name hitokoto",
   "mac": "kind delete cluster --name hitokoto"
@@ -313,7 +318,7 @@
  },
  {
   "t": "out",
-  "text": "Deleting cluster \"hitokoto\" ...\nDeleted nodes: [\"hitokoto-worker2\" \"hitokoto-control-plane\" \"hitokoto-worker\"]",
+  "text": "Deleting cluster \"hitokoto\" ...\nDeleted nodes: [\"hitokoto-worker\" \"hitokoto-control-plane\" \"hitokoto-worker2\"]",
   "label": "表示される内容（例）"
  },
  {
@@ -345,7 +350,7 @@
  },
  {
   "t": "out",
-  "text": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          1         0         1.2GB     1.2GB (100%)\nContainers      0         0         0B        0B\nLocal Volumes   0         0         0B        0B\nBuild Cache     0         0         0B        0B",
+  "text": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          1         0         1.343GB   1.343GB (99%)\nContainers      0         0         0B        0B\nLocal Volumes   0         0         0B        0B\nBuild Cache     0         0         0B        0B",
   "label": "表示される内容（例）"
  },
  {
