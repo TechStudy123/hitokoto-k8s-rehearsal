@@ -13,7 +13,7 @@ for N in ${RH_HANDSON:-3}; do
   P=$((N-1))
   cp -r rehearsal/v2/H$P/manifests/. manifests/
   mkdir -p setup && cp -r rehearsal/v2/setup/. setup/ 2>/dev/null
-  cp -r rehearsal/v2/hitokoto-team . 2>/dev/null
+  cp -r rehearsal/v2/hitokoto-team rehearsal/v2/broken . 2>/dev/null
   if [ -f rehearsal/v2/restore_h$N.sh ]; then bash rehearsal/v2/restore_h$N.sh > results/restore_h$N.log 2>&1
   else [ -f manifests/pod.yaml ] && kubectl apply -f manifests/pod.yaml && kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s; fi
   python3 rehearsal/v2/rh.py run rehearsal/v2/steps_h$N.json --os mac --work . --out results/h$N.json > results/h$N.log 2>&1
