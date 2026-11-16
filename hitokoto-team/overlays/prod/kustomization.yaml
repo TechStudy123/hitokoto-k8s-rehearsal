@@ -1,0 +1,6 @@
+resources:
+  - ../../base
+namePrefix: prod-
+replicas:
+  - name: hitokoto
+    count: 5
