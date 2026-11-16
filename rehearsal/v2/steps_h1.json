@@ -1,0 +1,266 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl config current-context",
+  "mac": "kubectl config current-context"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kind-hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "kind-hitokoto",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get nodes -o wide",
+  "mac": "kubectl get nodes -o wide"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker2"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                    STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION   CONTAINER-RUNTIME\nhitokoto-control-plane  Ready    control-plane   5m    v1.37.0   172.18.0.4    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0\nhitokoto-worker         Ready    <none>          5m    v1.37.0   172.18.0.2    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0\nhitokoto-worker2        Ready    <none>          5m    v1.37.0   172.18.0.3    <none>        Debian GNU/Linux 12 (bookworm)   6.8.0-1030-azure   containerd://2.2.0",
+  "label": "表示される内容（例。IP・版は環境によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "docker ps --format \"table {{.Names}}\\t{{.Status}}\"",
+  "mac": "docker ps --format \"table {{.Names}}\\t{{.Status}}\""
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker2"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAMES                    STATUS\nhitokoto-worker2         Up 6 minutes\nhitokoto-control-plane   Up 6 minutes\nhitokoto-worker          Up 6 minutes",
+  "label": "表示される内容（例。並び方は環境によって変わります）"
+ },
+ {
+  "t": "cmd",
+  "win": "docker stop hitokoto-worker2",
+  "mac": "docker stop hitokoto-worker2"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker2"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hitokoto-worker2",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready=Unknown node/hitokoto-worker2 --timeout=150s",
+  "mac": "kubectl wait --for=condition=Ready=Unknown node/hitokoto-worker2 --timeout=150s",
+  "timeout": 170
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "NotReady"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     STATUS     ROLES           AGE   VERSION\nhitokoto-control-plane   Ready      control-plane   7m    v1.37.0\nhitokoto-worker          Ready      <none>          7m    v1.37.0\nhitokoto-worker2         NotReady   <none>          7m    v1.37.0",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "docker start hitokoto-worker2",
+  "mac": "docker start hitokoto-worker2"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker2"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hitokoto-worker2",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready node/hitokoto-worker2 --timeout=150s",
+  "mac": "kubectl wait --for=condition=Ready node/hitokoto-worker2 --timeout=150s",
+  "timeout": 170
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Ready"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   8m    v1.37.0\nhitokoto-worker          Ready    <none>          8m    v1.37.0\nhitokoto-worker2         Ready    <none>          8m    v1.37.0",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "No resources found"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "No resources found in default namespace.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get namespaces",
+  "mac": "kubectl get namespaces"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kube-system"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                 STATUS   AGE\ndefault              Active   9m\nkube-node-lease      Active   9m\nkube-public          Active   9m\nkube-system          Active   9m\nlocal-path-storage   Active   9m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -n kube-system",
+  "mac": "kubectl get pods -n kube-system"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "kube-apiserver-hitokoto-control-plane"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-…                                        1/1     Running   0          9m\ncoredns-…                                        1/1     Running   0          9m\netcd-hitokoto-control-plane                      1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkindnet-…                                        1/1     Running   0          9m\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          9m\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-proxy-…                                     1/1     Running   0          9m\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          9m",
+  "label": "表示される内容（例。名前の後ろの文字・AGE は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl explain pod",
+  "mac": "kubectl explain pod"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "FIELDS:"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "KIND:       Pod\nVERSION:    v1\n\nDESCRIPTION:\n    Pod is a collection of containers that can run on a host. This resource is\n    created by clients and scheduled onto hosts.\n\nFIELDS:\n  apiVersion\t<string>\n…\n  kind\t<string>\n…\n  metadata\t<ObjectMeta>\n…\n  spec\t<PodSpec>\n…\n  status\t<PodStatus>\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl explain pod.spec.containers.image",
+  "mac": "kubectl explain pod.spec.containers.image"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Container image name"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: image <string>\n\n\nDESCRIPTION:\n    Container image name.\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "out",
+  "text": "KIND:       Pod\nVERSION:    v1\n\nFIELD: labels <map[string]string>\n\n\nDESCRIPTION:\n    Map of string keys and values that can be used to organize and categorize\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl explain pod.metadata.labels",
+  "mac": "kubectl explain pod.metadata.labels"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "map[string]string"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl api-resources",
+  "mac": "kubectl api-resources"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "pods"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                                SHORTNAMES   APIVERSION                        NAMESPACED   KIND\n…\nnamespaces                          ns           v1                                false        Namespace\nnodes                               no           v1                                false        Node\n…\npods                                po           v1                                true         Pod\n…\nservices                            svc          v1                                true         Service\n…\ndeployments                         deploy       apps/v1                           true         Deployment\n…\nreplicasets                         rs           apps/v1                           true         ReplicaSet\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get po -n kube-system",
+  "mac": "kubectl get po -n kube-system"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "coredns"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-…                                        1/1     Running   0          10m\n…",
+  "label": "表示される内容（一部）"
+ }
+]
