@@ -1,0 +1,9 @@
+# Gateway の入り口のポートを 30080 に決める（kind の設定で、手元の 8080 につながっている）
+# kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type merge --patch-file setup/gateway-nodeport.yaml
+spec:
+  kubernetes:
+    service:
+      externalTrafficPolicy: Cluster
+      nodePorts:
+        - port: 30080
+          listenerPort: 80
