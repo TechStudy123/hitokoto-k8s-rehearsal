@@ -1,0 +1,80 @@
+[
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "docker info --format \"{{.MemTotal}}\"",
+  "mac": "docker info --format \"{{.MemTotal}}\""
+ },
+ {
+  "t": "out",
+  "text": "8178888704",
+  "label": "表示される内容（例。バイトの数。8178888704 はおよそ 7.6GB）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "winget install -e --id Kubernetes.kubectl",
+  "mac": "winget install -e --id Kubernetes.kubectl"
+ },
+ {
+  "t": "out",
+  "text": "見つかりました Kubernetes - kubectl [Kubernetes.kubectl] …\n…\nインストールが完了しました",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "winget install -e --id Kubernetes.kind",
+  "mac": "winget install -e --id Kubernetes.kind"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl version --client",
+  "mac": "kubectl version --client"
+ },
+ {
+  "t": "out",
+  "text": "Client Version: v1.37.1\nKustomize Version: v5.8.1",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kind version",
+  "mac": "kind version"
+ },
+ {
+  "t": "out",
+  "text": "kind v0.33.0 go1.26.7 windows/amd64",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "docker login -u <あなたのユーザー名>",
+  "mac": "docker login -u <あなたのユーザー名>"
+ },
+ {
+  "t": "out",
+  "text": "Login Succeeded",
+  "label": "成功したとき"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kind create cluster --config kind-config.yaml",
+  "mac": "kind create cluster --config kind-config.yaml"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl get nodes",
+  "mac": "kubectl get nodes"
+ },
+ {
+  "t": "out",
+  "text": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   60s   v1.37.0\nhitokoto-worker          Ready    <none>          45s   v1.37.0\nhitokoto-worker2         Ready    <none>          45s   v1.37.0",
+  "label": "表示される内容（例）"
+ }
+]
