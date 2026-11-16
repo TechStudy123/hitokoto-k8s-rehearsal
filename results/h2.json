@@ -1,0 +1,556 @@
+[
+ {
+  "n": 1,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/web.yaml"
+ },
+ {
+  "n": 2,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/web.yaml",
+  "out": "pod/web created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 3,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 4,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 5,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 6,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 7,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 8,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 9,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 10,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 11,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 124（期待 124）: kubectl delete -f manifests/web.yaml --wait=true && kubectl apply -f manifests/web.yaml && timeout 40 kubectl get pods -w",
+  "out": "pod \"web\" deleted from default namespace\npod/web created\nNAME   READY   STATUS              RESTARTS   AGE\nweb    0/1     ContainerCreating   0          0s\nweb    0/1     ContainerCreating   0          1s\nweb    1/1     Running             0          3s\n"
+ },
+ {
+  "n": 12,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 13,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe pod web",
+  "out": "Name:             web\nNamespace:        default\nPriority:         0\nService Account:  default\nNode:             hitokoto-worker/172.19.0.3\nStart Time:       Mon, 16 Nov 2026 03:00:44 +0000\nLabels:           <none>\nAnnotations:      <none>\nStatus:           Running\nIP:               10.244.1.2\nIPs:\n  IP:  10.244.1.2\nContainers:\n  web:\n    Container ID:   containerd://d43878d971ff77d292668c661e633a99b42181bce1aa4d22d81e5bfddfe6b673\n    Image:          nginx:1.30\n    Image ID:       docker.io/library/nginx@sha256:42c68eab6f7e22611786a9fe1d1c019e275c50185bd54b8f75dc2b9184322703\n    Port:           <none>\n    Host Port:      <none>\n    State:          Running\n      Started:      Mon, 16 Nov 2026 03:00:47 +0000\n    Ready:          True\n    Restart Count:  0\n    Environment:    <none>\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2mz8 (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-m2mz8:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  40s   default-scheduler  Successfully assigned default/web to hitokoto-worker\n  Normal  Pulling    39s   kubelet            spec.containers{web}: Pulling image \"nginx:1.30\"\n  Normal  Pulled     37s   kubelet            spec.containers{web}: Successfully pulled image \"nginx:1.30\" in 2.452s (2.452s including waiting). Image size: 63639735 bytes.\n  Normal  Created    37s   kubelet            spec.containers{web}: Container created\n  Normal  Started    37s   kubelet            spec.containers{web}: Container started\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 14,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 15,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 16,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES」が実際の出力に無い 「web    1/1     Running   0          40s   10.244.2.2   hitokoto-worker   <none>           <none>」が実際の出力に無い",
+  "warn": [
+   "「NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES」が実際の出力に無い",
+   "「web    1/1     Running   0          40s   10.244.2.2   hitokoto-worker   <none>           <none>」が実際の出力に無い"
+  ],
+  "out": "   /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2mz8 (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  kube-api-access-m2mz8:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type    Reason     Age   From               Message\n  ----    ------     ----  ----               -------\n  Normal  Scheduled  40s   default-scheduler  Successfully assigned default/web to hitokoto-worker\n  Normal  Pulling    39s   kubelet            spec.containers{web}: Pulling image \"nginx:1.30\"\n  Normal  Pulled     37s   kubelet            spec.containers{web}: Successfully pulled image \"nginx:1.30\" in 2.452s (2.452s including waiting). Image size: 63639735 bytes.\n  Normal  Created    37s   kubelet            spec.containers{web}: Container created\n  Normal  Started    37s   kubelet            spec.containers{web}: Container started\n"
+ },
+ {
+  "n": 17,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -o wide",
+  "out": "NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES\nweb    1/1     Running   0          40s   10.244.1.2   hitokoto-worker   <none>           <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 18,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 19,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/web.yaml",
+  "out": "pod \"web\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 20,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 21,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 22,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\nNo resources found in default namespace.\n"
+ },
+ {
+  "n": 23,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 24,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 25,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pod.yaml"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pod.yaml",
+  "out": "pod/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 27,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 28,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 29,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "out": "pod/hitokoto condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 30,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   0          4s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 32,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 33,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 34,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 30); do kubectl logs hitokoto | grep -q 'startup complete' && break; sleep 2; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 35,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl logs hitokoto",
+  "out": "\n ⚡️ Starting FastAPI in production mode\n \n 🐍 Using import string: main:app\n \n 🌐 Server started at http://0.0.0.0:8000\n    Documentation at http://0.0.0.0:8000/docs\n \n  Logs:\n \nINFO:     Started server process [1]\nINFO:     Waiting for application startup.\nINFO:     hitokoto 2.0 を起動します（タイトル: ひとこと掲示板）\nINFO:     データベースを使わずに動きます（DB_HOST=none）\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 36,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 37,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 38,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 39,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 40,
+  "t": "cmd",
+  "ok": true,
+  "msg": "起動 OK: kubectl port-forward pod/hitokoto 8000:8000",
+  "out": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000\nHandling connection for 8000\n"
+ },
+ {
+  "n": 41,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>ひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>ひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner memory\">データベースを使っていません（書き込みは、Pod ごとに別々で、Pod を消すと消えます）</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>まだ書き込みはありません</li>\n\n</ul>\n\n<footer>hitokoto 2.0 ・ Pod: hitokoto</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 42,
+  "t": "stop",
+  "ok": true,
+  "msg": "止めた"
+ },
+ {
+  "n": 43,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec hitokoto -- hostname",
+  "out": "hitokoto\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 44,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 45,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 46,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec hitokoto -- id",
+  "out": "uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 47,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 48,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 49,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pod.yaml"
+ },
+ {
+  "n": 50,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pod.yaml",
+  "out": "pod/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 51,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 52,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 53,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/web.yaml",
+  "out": "pod/web created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 54,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 55,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 56,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods --show-labels",
+  "out": "NAME       READY   STATUS              RESTARTS   AGE   LABELS\nhitokoto   1/1     Running             0          8s    app=hitokoto\nweb        0/1     ContainerCreating   0          0s    <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 57,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 58,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto   1/1     Running   0          3m    app=hitokoto」が実際の出力に無い 「web        1/1     Running   0          5s    <none>」が実際の出力に無い",
+  "warn": [
+   "「hitokoto   1/1     Running   0          3m    app=hitokoto」が実際の出力に無い",
+   "「web        1/1     Running   0          5s    <none>」が実際の出力に無い"
+  ],
+  "out": "NAME       READY   STATUS              RESTARTS   AGE   LABELS\nhitokoto   1/1     Running             0          8s    app=hitokoto\nweb        0/1     ContainerCreating   0          0s    <none>\n"
+ },
+ {
+  "n": 59,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -l app=hitokoto",
+  "out": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   0          8s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 60,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 61,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto   1/1     Running   0          3m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto   1/1     Running   0          3m」が実際の出力に無い"
+  ],
+  "out": "NAME       READY   STATUS    RESTARTS   AGE\nhitokoto   1/1     Running   0          8s\n"
+ },
+ {
+  "n": 62,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/web.yaml",
+  "out": "pod \"web\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 63,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 64,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 65,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pod.yaml"
+ },
+ {
+  "n": 66,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pod.yaml",
+  "out": "pod/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 67,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 68,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 69,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 60); do kubectl get pod hitokoto | grep -q ImagePullBackOff && break; sleep 2; done; kubectl get pod hitokoto",
+  "out": "NAME       READY   STATUS             RESTARTS   AGE\nhitokoto   0/1     ImagePullBackOff   0          26s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 70,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 71,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME       READY   STATUS             RESTARTS   AGE\nhitokoto   0/1     ImagePullBackOff   0          26s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 72,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 73,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto   0/1     ImagePullBackOff   0          4m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto   0/1     ImagePullBackOff   0          4m」が実際の出力に無い"
+  ],
+  "out": "NAME       READY   STATUS             RESTARTS   AGE\nhitokoto   0/1     ImagePullBackOff   0          26s\n"
+ },
+ {
+  "n": 74,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe pod hitokoto",
+  "out": "ason:       ImagePullBackOff\n    Last State:     Terminated\n      Reason:       Completed\n      Exit Code:    0\n      Started:      Mon, 16 Nov 2026 03:01:29 +0000\n      Finished:     Mon, 16 Nov 2026 03:01:35 +0000\n    Ready:          False\n    Restart Count:  0\n    Environment:    <none>\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-kgc97 (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  kube-api-access-kgc97:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age               From               Message\n  ----     ------     ----              ----               -------\n  Normal   Scheduled  26s               default-scheduler  Successfully assigned default/hitokoto to hitokoto-worker2\n  Normal   Pulling    26s               kubelet            spec.containers{app}: Pulling image \"ghcr.io/container-nyumon/hitokoto:2.0\"\n  Normal   Pulled     22s               kubelet            spec.containers{app}: Successfully pulled image \"ghcr.io/container-nyumon/hitokoto:2.0\" in 3.904s (3.904s including waiting). Image size: 84261610 bytes.\n  Normal   Created    22s               kubelet            spec.containers{app}: Container created\n  Normal   Started    22s               kubelet            spec.containers{app}: Container started\n  Normal   Killing    16s               kubelet            spec.containers{app}: Container app definition changed, will be restarted\n  Normal   BackOff    15s               kubelet            spec.containers{app}: Back-off pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     15s               kubelet            spec.containers{app}: Error: ImagePullBackOff\n  Normal   Pulling    1s (x2 over 16s)  kubelet            spec.containers{app}: Pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": rpc error: code = NotFound desc = failed to pull and unpack image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": failed to resolve reference \"ghcr.io/container-nyumon/hitokoto:2.0.0\": ghcr.io/container-nyumon/hitokoto:2.0.0: not found\n  Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Error: ErrImagePull\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 75,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 76,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 77,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「NAME       READY   STATUS    RESTARTS      AGE」が実際の出力に無い 「hitokoto   1/1     Running   1 (14s ago)   5m」が実際の出力に無い",
+  "warn": [
+   "「NAME       READY   STATUS    RESTARTS      AGE」が実際の出力に無い",
+   "「hitokoto   1/1     Running   1 (14s ago)   5m」が実際の出力に無い"
+  ],
+  "out": "let            spec.containers{app}: Pulling image \"ghcr.io/container-nyumon/hitokoto:2.0\"\n  Normal   Pulled     22s               kubelet            spec.containers{app}: Successfully pulled image \"ghcr.io/container-nyumon/hitokoto:2.0\" in 3.904s (3.904s including waiting). Image size: 84261610 bytes.\n  Normal   Created    22s               kubelet            spec.containers{app}: Container created\n  Normal   Started    22s               kubelet            spec.containers{app}: Container started\n  Normal   Killing    16s               kubelet            spec.containers{app}: Container app definition changed, will be restarted\n  Normal   BackOff    15s               kubelet            spec.containers{app}: Back-off pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     15s               kubelet            spec.containers{app}: Error: ImagePullBackOff\n  Normal   Pulling    1s (x2 over 16s)  kubelet            spec.containers{app}: Pulling image \"ghcr.io/container-nyumon/hitokoto:2.0.0\"\n  Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": rpc error: code = NotFound desc = failed to pull and unpack image \"ghcr.io/container-nyumon/hitokoto:2.0.0\": failed to resolve reference \"ghcr.io/container-nyumon/hitokoto:2.0.0\": ghcr.io/container-nyumon/hitokoto:2.0.0: not found\n  Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Error: ErrImagePull\n"
+ },
+ {
+  "n": 78,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pod.yaml"
+ },
+ {
+  "n": 79,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pod.yaml",
+  "out": "pod/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 80,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 81,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s",
+  "out": "pod/hitokoto condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 82,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 83,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME       READY   STATUS    RESTARTS      AGE\nhitokoto   1/1     Running   1 (17s ago)   27s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 84,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ }
+]

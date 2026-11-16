@@ -1,0 +1,107 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 file: write: manifests/configmap.yaml
+[OK] 02 cmd: exit 0: kubectl apply -f manifests/configmap.yaml
+[OK] 03 expect: 出力 OK
+[OK] 04 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 05 file: write: manifests/deployment.yaml
+[OK] 06 cmd: exit 0: kubectl apply -f manifests/deployment.yaml --dry-run=server
+[OK] 07 expect: 出力 OK
+[OK] 08 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 09 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 10 expect: 出力 OK
+[OK] 11 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 12 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 13 expect: 出力 OK
+[OK] 14 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 17 cmd: 起動 OK: kubectl port-forward service/hitokoto 8000:80
+[OK] 18 http: GET http://127.0.0.1:8000/ → 200
+[OK] 19 stop: 止めた
+[OK] 20 file: write: manifests/configmap.yaml
+[OK] 21 cmd: exit 0: kubectl apply -f manifests/configmap.yaml
+[OK] 22 expect: 出力 OK
+[OK] 23 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 24 cmd: exit 0: kubectl exec deployment/hitokoto -- printenv APP_TITLE
+[OK] 25 expect: 出力 OK
+[OK] 26 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 27 cmd: exit 0: kubectl rollout restart deployment/hitokoto
+[OK] 28 expect: 出力 OK
+[OK] 29 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 30 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 31 expect: 出力 OK
+[OK] 32 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 33 cmd: exit 0: kubectl exec deployment/hitokoto -- printenv APP_TITLE
+[OK] 34 expect: 出力 OK
+[OK] 35 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 36 file: write: manifests/deployment.yaml
+[OK] 37 cmd: exit 0: kubectl apply -f manifests/deployment.yaml --dry-run=server
+[OK] 38 expect: 出力 OK
+[OK] 39 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 40 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 41 expect: 出力 OK
+[OK] 42 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 43 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 44 expect: 出力 OK
+[OK] 45 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 46 cmd: exit 0: kubectl exec deployment/hitokoto -- cat /etc/hitokoto/APP_TITLE
+[OK] 47 expect: 出力 OK
+[OK] 48 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 49 out: 表示される内容と実際の出力が違う（WARN）: 「APP_TITLE」が実際の出力に無い
+      みんなのひとこと掲示板__CWD__=/workspaces/hitokoto-k8s-rehearsal
+      
+[OK] 50 cmd: exit 0: kubectl exec deployment/hitokoto -- ls /etc/hitokoto
+[OK] 51 expect: 出力 OK
+[OK] 52 cmd: exit 0: kubectl create secret generic db-secret --from-literal=POSTGRES_PASSWORD=hitokoto-pass
+[OK] 53 expect: 出力 OK
+[OK] 54 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 55 cmd: exit 0: kubectl get secrets
+[OK] 56 expect: 出力 OK
+[WARN] 57 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-gateway-nginx-agent-tls   kubernetes.io/tls   3      10m」が実際の出力に無い
+      NAME                               TYPE                DATA   AGE
+      db-secret                          Opaque              1      0s
+      hitokoto-gateway-nginx-agent-tls   kubernetes.io/tls   3      44s
+      
+[OK] 58 file: write: manifests/deployment.yaml
+[OK] 59 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 60 expect: 出力 OK
+[OK] 61 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 62 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 63 expect: 出力 OK
+[OK] 64 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 65 cmd: exit 0: kubectl exec deployment/hitokoto -- printenv DB_PASSWORD
+[OK] 66 expect: 出力 OK
+[OK] 67 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 68 cmd: exit 0: kubectl get secret db-secret -o yaml
+[OK] 69 expect: 出力 OK
+[OK] 70 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 71 cmd: exit 0: echo aGl0b2tvdG8tcGFzcw== | base64 -d
+[OK] 72 expect: 出力 OK
+[OK] 73 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 74 file: write: manifests/deployment.yaml
+[OK] 75 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 76 expect: 出力 OK
+[OK] 77 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 78 cmd: exit 0: for i in $(seq 40); do kubectl get pods | grep -q CreateContainerConfigError && break; sleep 2; done; kubectl get pods
+[OK] 79 expect: 出力 OK
+[OK] 80 cmd: exit 0: kubectl get pods
+[OK] 81 expect: 出力 OK
+[WARN] 82 out: 表示される内容と実際の出力が違う（WARN）: 「api-5f65f5b867-279cw                      1/1     Running                      0          10m」が実際の出力に無い 「hitokoto-6d6556f446-8qmm4                 1/1     Running                      0          2m」が実際の出力に無い 「hitokoto-6d6556f446-szjnj                 1/1     Running                      0          2m」が実際の出力に無い 「hitokoto-6d6556f446-x7n64                 1/1     Running                      0          2m」が実際の出力に無い 「hitokoto-fdd6467cf-gnfg4                  0/1     CreateContainerConfigError   0          20s」が実際の出力に無い 「hitokoto-gateway-nginx-79bbb478c8-5knm4   1/1     Run
+      NAME                                      READY   STATUS                       RESTARTS   AGE
+      api-5f65f5b867-2qk6f                      1/1     Running                      0          48s
+      hitokoto-587b6fc6d5-xgbzc                 0/1     CreateContainerConfigError   0          2s
+      hitokoto-658f6bcc6c-8nqr7                 1/1     Terminating                  0          5s
+      hitokoto-784cd9ccbd-gn572                 1/1     Terminating                  0          7s
+      hitokoto-df87f6688-5hxt8                  1/1     Running                      0          3s
+      hitokoto-df87f6688-kfttj                  1/1     Running                      0          3s
+      hitokoto-df87f6688-xxqbt                  1/1     Running                      0          4s
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running                      0          48s
+      
+[OK] 83 cmd: exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q CreateContainerConfigError && echo $p; done | head -n 1)
+[OK] 84 expect: 出力 OK
+[OK] 88 file: write: manifests/deployment.yaml
+[OK] 89 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 90 expect: 出力 OK
+[OK] 91 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 92 expect: 出力 OK
+WARN（表示される内容の違い）: 3 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 92 手順中 NG 0・WARN 3（表示される内容の違い）

@@ -1,0 +1,148 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 file: write: manifests/pvc.yaml
+[OK] 02 cmd: exit 0: kubectl apply -f manifests/pvc.yaml
+[OK] 03 expect: 出力 OK
+[OK] 04 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 05 cmd: exit 0: kubectl get pvc
+[OK] 06 expect: 出力 OK
+[OK] 07 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 08 cmd: exit 0: kubectl get storageclass
+[OK] 09 expect: 出力 OK
+[OK] 10 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 11 file: write: manifests/note.yaml
+[OK] 12 cmd: exit 0: kubectl apply -f manifests/note.yaml
+[OK] 13 expect: 出力 OK
+[OK] 14 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 15 cmd: exit 0: kubectl wait --for=condition=Ready pod/note --timeout=180s
+[OK] 16 expect: 出力 OK
+[OK] 17 cmd: exit 0: kubectl get pvc
+[OK] 18 expect: 出力 OK
+[WARN] 19 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-data   Bound    pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            standard       <unset>                 40s」が実際の出力に無い
+      NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+      hitokoto-data   Bound    pvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            standard       <unset>                 6s
+      
+[OK] 20 cmd: exit 0: kubectl get pv
+[OK] 21 expect: 出力 OK
+[WARN] 22 out: 表示される内容と実際の出力が違う（WARN）: 「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い
+      NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+      pvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          3s
+      
+[OK] 23 cmd: exit 0: kubectl exec note -- sh -c "echo hello > /data/memo.txt"
+[OK] 24 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 25 cmd: exit 0: kubectl exec note -- cat /data/memo.txt
+[OK] 26 expect: 出力 OK
+[OK] 27 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 28 cmd: exit 0: kubectl delete -f manifests/note.yaml
+[OK] 29 expect: 出力 OK
+[OK] 30 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 31 cmd: exit 0: kubectl apply -f manifests/note.yaml
+[OK] 32 expect: 出力 OK
+[OK] 33 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 34 cmd: exit 0: kubectl wait --for=condition=Ready pod/note --timeout=180s
+[OK] 35 expect: 出力 OK
+[OK] 36 cmd: exit 0: kubectl exec note -- cat /data/memo.txt
+[OK] 37 expect: 出力 OK
+[OK] 38 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 39 file: write: manifests/pvc-fast.yaml
+[OK] 40 cmd: exit 0: kubectl apply -f manifests/pvc-fast.yaml
+[OK] 41 expect: 出力 OK
+[OK] 42 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 43 cmd: exit 0: kubectl get pvc hitokoto-fast
+[OK] 44 expect: 出力 OK
+[OK] 45 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 46 cmd: exit 0: sleep 5
+[OK] 47 cmd: exit 0: kubectl describe pvc hitokoto-fast
+[OK] 48 expect: 出力 OK
+[WARN] 49 out: 表示される内容と実際の出力が違う（WARN）: 「Warning  ProvisioningFailed  5s    persistentvolume-controller  storageclass.storage.k8s.io "fast" not found」が実際の出力に無い
+      Name:          hitokoto-fast
+      Namespace:     default
+      StorageClass:  fast
+      Status:        Pending
+      Volume:        
+      Labels:        <none>
+      Annotations:   <none>
+      Finalizers:    [kubernetes.io/pvc-protection]
+      Capacity:      
+      Access Modes:  
+      VolumeMode:    Filesystem
+      Used By:       <none>
+      Events:
+        Type     Reason              Age              From                         Message
+        ----     ------              ----             ----                         -------
+        Warning  ProvisioningFailed  0s (x2 over 6s)  persistentvolume-controller  storageclass.storage.k8s.io "fast" not found
+      
+[WARN] 50 out: 表示される内容と実際の出力が違う（WARN）: 「persistentvolumeclaim "hitokoto-fast" deleted from default namespace」が実際の出力に無い
+      Name:          hitokoto-fast
+      Namespace:     default
+      StorageClass:  fast
+      Status:        Pending
+      Volume:        
+      Labels:        <none>
+      Annotations:   <none>
+      Finalizers:    [kubernetes.io/pvc-protection]
+      Capacity:      
+      Access Modes:  
+      VolumeMode:    Filesystem
+      Used By:       <none>
+      Events:
+        Type     Reason              Age              From                         Message
+        ----     ------              ----             ----                         -------
+        Warning  ProvisioningFailed  0s (x2 over 6s)  persistentvolume-controller  storageclass.storage.k8s.io "fast" not found
+      
+[OK] 51 cmd: exit 0: kubectl delete -f manifests/pvc-fast.yaml
+[OK] 52 expect: 出力 OK
+[OK] 53 cmd: exit 0: kubectl delete -f manifests/note.yaml
+[OK] 54 expect: 出力 OK
+[OK] 55 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 56 file: write: manifests/postgres.yaml
+[OK] 57 cmd: exit 0: kubectl apply -f manifests/postgres.yaml --dry-run=server
+[OK] 58 expect: 出力 OK
+[OK] 59 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 60 cmd: exit 0: kubectl apply -f manifests/postgres.yaml
+[OK] 61 expect: 出力 OK
+[OK] 62 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 63 cmd: exit 0: kubectl rollout status deployment/postgres
+[OK] 64 expect: 出力 OK
+[OK] 65 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 66 cmd: exit 0: for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done
+[OK] 67 cmd: exit 0: kubectl logs deployment/postgres
+[OK] 68 expect: 出力 OK
+[OK] 69 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 70 file: write: manifests/deployment.yaml
+[OK] 71 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 72 expect: 出力 OK
+[OK] 73 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 74 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 75 expect: 出力 OK
+[OK] 76 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 79 cmd: 起動 OK: kubectl port-forward service/hitokoto 8000:80
+[OK] 80 http: GET http://127.0.0.1:8000/ → 200
+[OK] 81 http: POST http://127.0.0.1:8000/ → 200
+[OK] 82 http: GET http://127.0.0.1:8000/ → 200
+[OK] 83 stop: 止めた
+[OK] 84 cmd: exit 0: kubectl delete pod -l app=postgres
+[OK] 85 expect: 出力 OK
+[WARN] 86 out: 表示される内容と実際の出力が違う（WARN）: 「pod "postgres-789b848956-w2ljz" deleted from default namespace」が実際の出力に無い
+      pod "postgres-789b848956-h4wnd" deleted from default namespace
+      
+[OK] 87 cmd: exit 0: kubectl rollout status deployment/postgres
+[OK] 88 expect: 出力 OK
+[OK] 89 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 90 cmd: exit 0: sleep 5; for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done
+[OK] 93 cmd: 起動 OK: kubectl port-forward service/hitokoto 8000:80
+[OK] 94 http: GET http://127.0.0.1:8000/ → 200
+[OK] 95 stop: 止めた
+[OK] 96 cmd: exit 0: kubectl get pv
+[OK] 97 expect: 出力 OK
+[WARN] 98 out: 表示される内容と実際の出力が違う（WARN）: 「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い
+      NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+      pvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          89s
+      
+[OK] 99 cmd: exit 0: kubectl rollout restart deployment/hitokoto && kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 100 expect: 出力 OK
+[OK] 101 cmd: 起動 OK: kubectl port-forward service/hitokoto 8000:80
+[OK] 102 http: GET http://127.0.0.1:8000/ → 200
+[OK] 103 stop: 止めた
+WARN（表示される内容の違い）: 6 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 103 手順中 NG 0・WARN 6（表示される内容の違い）

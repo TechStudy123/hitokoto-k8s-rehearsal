@@ -1,0 +1,458 @@
+[
+ {
+  "n": 1,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config get-contexts",
+  "out": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   default\n          prod            kind-hitokoto   prod-user       hitokoto-prod\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 2,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 3,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f broken/",
+  "out": "deployment.apps/shop1 created\ndeployment.apps/shop2 created\ndeployment.apps/shop3 created\nservice/shop3 created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 4,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 5,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 6,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 60); do kubectl get pods | grep -q 'shop2.*CrashLoopBackOff' && kubectl get pods | grep -q 'shop1.*ImagePullBackOff' && break; sleep 3; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 7,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                                      READY   STATUS             RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running            0             11m\nhitokoto-759c446686-25m99                 1/1     Running            0             4m32s\nhitokoto-759c446686-5rdnt                 1/1     Running            0             4m10s\nhitokoto-759c446686-gfqpp                 1/1     Running            0             4m20s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running            0             11m\npostgres-789b848956-hjqkn                 1/1     Running            0             8m55s\nshop1-7d6687bfb-q2pp6                     0/1     ImagePullBackOff   0             2m41s\nshop2-5ff6858dd-n6pmg                     0/1     CrashLoopBackOff   4 (80s ago)   2m41s\nshop3-745f54fb4b-5p4zz                    1/1     Running            0             2m41s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 8,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 9,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-dlf8t   1/1     Running            0             4m」が実際の出力に無い 「shop1-7d6687bfb-sklht       0/1     ImagePullBackOff   0             2m」が実際の出力に無い 「shop2-5ff6858dd-cpb22       0/1     CrashLoopBackOff   4 (63s ago)   2m」が実際の出力に無い 「shop3-745f54fb4b-bwfrl      1/1     Running            0             2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-7656bfd894-dlf8t   1/1     Running            0             4m」が実際の出力に無い",
+   "「shop1-7d6687bfb-sklht       0/1     ImagePullBackOff   0             2m」が実際の出力に無い",
+   "「shop2-5ff6858dd-cpb22       0/1     CrashLoopBackOff   4 (63s ago)   2m」が実際の出力に無い",
+   "「shop3-745f54fb4b-bwfrl      1/1     Running            0             2m」が実際の出力に無い"
+  ],
+  "out": "NAME                                      READY   STATUS             RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running            0             11m\nhitokoto-759c446686-25m99                 1/1     Running            0             4m32s\nhitokoto-759c446686-5rdnt                 1/1     Running            0             4m10s\nhitokoto-759c446686-gfqpp                 1/1     Running            0             4m20s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running            0             11m\npostgres-789b848956-hjqkn                 1/1     Running            0             8m55s\nshop1-7d6687bfb-q2pp6                     0/1     ImagePullBackOff   0             2m41s\nshop2-5ff6858dd-n6pmg                     0/1     CrashLoopBackOff   4 (80s ago)   2m41s\nshop3-745f54fb4b-5p4zz                    1/1     Running            0             2m41s\n"
+ },
+ {
+  "n": 10,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe pods -l app=shop1",
+  "out": "Name:             shop1-7d6687bfb-q2pp6\nNamespace:        default\nPriority:         0\nService Account:  default\nNode:             hitokoto-worker/172.19.0.3\nStart Time:       Mon, 16 Nov 2026 03:13:04 +0000\nLabels:           app=shop1\n                  pod-template-hash=7d6687bfb\nAnnotations:      <none>\nStatus:           Pending\nIP:               10.244.1.39\nIPs:\n  IP:           10.244.1.39\nControlled By:  ReplicaSet/shop1-7d6687bfb\nContainers:\n  app:\n    Container ID:   \n    Image:          ghcr.io/container-nyumon/hitokotto:2.1\n    Image ID:       \n    Port:           <none>\n    Host Port:      <none>\n    State:          Waiting\n      Reason:       ImagePullBackOff\n    Ready:          False\n    Restart Count:  0\n    Environment:    <none>\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7jrnh (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  kube-api-access-7jrnh:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age                  From               Message\n  ----     ------     ----                 ----               -------\n  Normal   Scheduled  2m41s                default-scheduler  Successfully assigned default/shop1-7d6687bfb-q2pp6 to hitokoto-worker\n  Normal   Pulling    76s (x4 over 2m41s)  kubelet            spec.containers{app}: Pulling image \"ghcr.io/container-nyumon/hitokotto:2.1\"\n  Warning  Failed     76s (x4 over 2m41s)  kubelet            spec.containers{app}: Failed to pull image \"ghcr.io/container-nyumon/hitokotto:2.1\": failed to pull and unpack image \"ghcr.io/container-nyumon/hitokotto:2.1\": failed to resolve reference \"ghcr.io/container-nyumon/hitokotto:2.1\": failed to authorize: failed to fetch anonymous token: unexpected status from GET request to https://ghcr.io/token?scope=repository%3Acontainer-nyumon%2Fhitokotto%3Apull&service=ghcr.io: 403 Forbidden\n  Warning  Failed     76s (x4 over 2m41s)  kubelet            spec.containers{app}: Error: ErrImagePull\n  Normal   BackOff    2s (x10 over 2m40s)  kubelet            spec.containers{app}: Back-off pulling image \"ghcr.io/container-nyumon/hitokotto:2.1\"\n  Warning  Failed     2s (x10 over 2m40s)  kubelet            spec.containers{app}: Error: ImagePullBackOff\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 11,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 12,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 13,
+  "t": "file",
+  "ok": true,
+  "msg": "write: broken/shop1.yaml"
+ },
+ {
+  "n": 14,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f broken/shop1.yaml",
+  "out": "deployment.apps/shop1 configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 15,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 16,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 17,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl logs deployment/shop2 --previous",
+  "out": "\n ⚡️ Starting FastAPI in production mode\n \n    Path does not exist mian.py\n\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 18,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 19,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 20,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「deployment.apps/shop2 configured」が実際の出力に無い",
+  "warn": [
+   "「deployment.apps/shop2 configured」が実際の出力に無い"
+  ],
+  "out": "\n ⚡️ Starting FastAPI in production mode\n \n    Path does not exist mian.py\n\n"
+ },
+ {
+  "n": 21,
+  "t": "file",
+  "ok": true,
+  "msg": "write: broken/shop2.yaml"
+ },
+ {
+  "n": 22,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f broken/shop2.yaml",
+  "out": "deployment.apps/shop2 configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 23,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 24,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/shop1 --timeout=180s && kubectl rollout status deployment/shop2 --timeout=180s",
+  "out": "Waiting for deployment \"shop1\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"shop1\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"shop1\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"shop1\" successfully rolled out\nWaiting for deployment \"shop2\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"shop2\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"shop2\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"shop2\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 25,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 27,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 28,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 29,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 30,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 7（期待 7）: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://shop3/health\"",
+  "out": "pod \"tmp\" deleted from default namespace\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\npod default/tmp terminated (Error)\n"
+ },
+ {
+  "n": 32,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service shop3",
+  "out": "Name:                     shop3\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=shop-3\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.157.25\nIPs:                      10.96.157.25\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                \nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:\n  Type     Reason                 Age    From                           Message\n  ----     ------                 ----   ----                           -------\n  Warning  ClusterIPNotAllocated  2m47s  ipallocator-repair-controller  Cluster IP [IPv4]: 10.96.157.25 is not allocated; repairing\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 33,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 34,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 35,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -l app=shop3 --show-labels",
+  "out": "NAME                     READY   STATUS    RESTARTS   AGE     LABELS\nshop3-745f54fb4b-5p4zz   1/1     Running   0          2m47s   app=shop3,pod-template-hash=745f54fb4b\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 36,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 37,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m    app=shop3,pod-template-hash=745f54fb4b」が実際の出力に無い",
+  "warn": [
+   "「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m    app=shop3,pod-template-hash=745f54fb4b」が実際の出力に無い"
+  ],
+  "out": "NAME                     READY   STATUS    RESTARTS   AGE     LABELS\nshop3-745f54fb4b-5p4zz   1/1     Running   0          2m47s   app=shop3,pod-template-hash=745f54fb4b\n"
+ },
+ {
+  "n": 38,
+  "t": "file",
+  "ok": true,
+  "msg": "write: broken/shop3.yaml"
+ },
+ {
+  "n": 39,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f broken/shop3.yaml",
+  "out": "deployment.apps/shop3 unchanged\nservice/shop3 configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 40,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 41,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 42,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 3",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 43,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service shop3",
+  "out": "Name:                     shop3\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=shop3\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.157.25\nIPs:                      10.96.157.25\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.40:8000\nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:\n  Type     Reason                 Age    From                           Message\n  ----     ------                 ----   ----                           -------\n  Warning  ClusterIPNotAllocated  2m50s  ipallocator-repair-controller  Cluster IP [IPv4]: 10.96.157.25 is not allocated; repairing\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 44,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 45,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 46,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://shop3/health\"",
+  "out": "{\"status\":\"ok\"}pod \"tmp\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\n"
+ },
+ {
+  "n": 47,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 48,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -l 'app in (shop1,shop2,shop3)'",
+  "out": "NAME                     READY   STATUS    RESTARTS   AGE\nshop1-7b9b4f7cb-v5jn5    1/1     Running   0          14s\nshop2-6cb4594764-vvfhl   1/1     Running   0          14s\nshop3-745f54fb4b-5p4zz   1/1     Running   0          2m55s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 49,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 50,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「shop1-7b9b4f7cb-w78sw    1/1     Running   0          17s」が実際の出力に無い 「shop2-6cb4594764-xsrxr   1/1     Running   0          17s」が実際の出力に無い 「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m」が実際の出力に無い",
+  "warn": [
+   "「shop1-7b9b4f7cb-w78sw    1/1     Running   0          17s」が実際の出力に無い",
+   "「shop2-6cb4594764-xsrxr   1/1     Running   0          17s」が実際の出力に無い",
+   "「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m」が実際の出力に無い"
+  ],
+  "out": "NAME                     READY   STATUS    RESTARTS   AGE\nshop1-7b9b4f7cb-v5jn5    1/1     Running   0          14s\nshop2-6cb4594764-vvfhl   1/1     Running   0          14s\nshop3-745f54fb4b-5p4zz   1/1     Running   0          2m55s\n"
+ },
+ {
+  "n": 51,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f broken/",
+  "out": "deployment.apps \"shop1\" deleted from default namespace\ndeployment.apps \"shop2\" deleted from default namespace\ndeployment.apps \"shop3\" deleted from default namespace\nservice \"shop3\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 52,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 53,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 54,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/ --ignore-not-found",
+  "out": "deployment.apps \"api\" deleted from default namespace\nservice \"api\" deleted from default namespace\nconfigmap \"hitokoto-config\" deleted from default namespace\ndeployment.apps \"hitokoto\" deleted from default namespace\ngateway.gateway.networking.k8s.io \"hitokoto-gateway\" deleted from default namespace\nhttproute.gateway.networking.k8s.io \"hitokoto\" deleted from default namespace\nnamespace \"hitokoto\" deleted\ndeployment.apps \"postgres\" deleted from default namespace\nservice \"postgres\" deleted from default namespace\npersistentvolumeclaim \"hitokoto-data\" deleted from default namespace\nservice \"hitokoto\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 55,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 56,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 57,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kind delete cluster --name hitokoto",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\nDeleting cluster \"hitokoto\" ...\nDeleted nodes: [\"hitokoto-worker\" \"hitokoto-worker2\" \"hitokoto-control-plane\"]\n"
+ },
+ {
+  "n": 58,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 59,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Deleted nodes: [\"hitokoto-worker\" \"hitokoto-control-plane\" \"hitokoto-worker2\"]」が実際の出力に無い",
+  "warn": [
+   "「Deleted nodes: [\"hitokoto-worker\" \"hitokoto-control-plane\" \"hitokoto-worker2\"]」が実際の出力に無い"
+  ],
+  "out": "Deleting cluster \"hitokoto\" ...\nDeleted nodes: [\"hitokoto-worker\" \"hitokoto-worker2\" \"hitokoto-control-plane\"]\n"
+ },
+ {
+  "n": 60,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker ps --format \"table {{.Names}}\\t{{.Status}}\"",
+  "out": "NAMES     STATUS\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 61,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 62,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 63,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker system df",
+  "out": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          1         0         1.343GB   1.343GB (99%)\nContainers      0         0         0B        0B\nLocal Volumes   0         0         0B        0B\nBuild Cache     0         0         0B        0B\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 64,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 65,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 66,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 67,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker system prune -a -f",
+  "out": "Deleted Networks:\nkind\n\nDeleted Images:\nuntagged: kindest/node@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5\ndeleted: sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5\ndeleted: sha256:1aac8018c42eb5d48fae5be507caaee789fc6d9b9b3f560359dd4157ac00d4f6\n\nTotal reclaimed space: 1.343GB\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 68,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ }
+]

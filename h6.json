@@ -1,0 +1,683 @@
+[
+ {
+  "n": 1,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pvc.yaml"
+ },
+ {
+  "n": 2,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pvc.yaml",
+  "out": "persistentvolumeclaim/hitokoto-data created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 3,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 4,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 5,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pvc",
+  "out": "NAME            STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Pending                                      standard       <unset>                 0s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 6,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 7,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 8,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get storageclass",
+  "out": "NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE\nstandard (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  6m5s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 9,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 10,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 11,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/note.yaml"
+ },
+ {
+  "n": 12,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/note.yaml",
+  "out": "pod/note created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 13,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 14,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 15,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "out": "pod/note condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 16,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 17,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pvc",
+  "out": "NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Bound    pvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            standard       <unset>                 6s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 18,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 19,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-data   Bound    pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            standard       <unset>                 40s」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-data   Bound    pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            standard       <unset>                 40s」が実際の出力に無い"
+  ],
+  "out": "NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Bound    pvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            standard       <unset>                 6s\n"
+ },
+ {
+  "n": 20,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pv",
+  "out": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          3s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 21,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 22,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い",
+  "warn": [
+   "「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い"
+  ],
+  "out": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          3s\n"
+ },
+ {
+  "n": 23,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec note -- sh -c \"echo hello > /data/memo.txt\"",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 24,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 25,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec note -- cat /data/memo.txt",
+  "out": "hello\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 26,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 27,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 28,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/note.yaml",
+  "out": "pod \"note\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 29,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 30,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/note.yaml",
+  "out": "pod/note created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 32,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 33,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 34,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "out": "pod/note condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 35,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 36,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec note -- cat /data/memo.txt",
+  "out": "hello\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 37,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 38,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 39,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/pvc-fast.yaml"
+ },
+ {
+  "n": 40,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/pvc-fast.yaml",
+  "out": "persistentvolumeclaim/hitokoto-fast created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 41,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 42,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 43,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pvc hitokoto-fast",
+  "out": "NAME            STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-fast   Pending                                      fast           <unset>                 1s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 44,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 45,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 46,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 5",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 47,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe pvc hitokoto-fast",
+  "out": "Name:          hitokoto-fast\nNamespace:     default\nStorageClass:  fast\nStatus:        Pending\nVolume:        \nLabels:        <none>\nAnnotations:   <none>\nFinalizers:    [kubernetes.io/pvc-protection]\nCapacity:      \nAccess Modes:  \nVolumeMode:    Filesystem\nUsed By:       <none>\nEvents:\n  Type     Reason              Age              From                         Message\n  ----     ------              ----             ----                         -------\n  Warning  ProvisioningFailed  0s (x2 over 6s)  persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 48,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 49,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Warning  ProvisioningFailed  5s    persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found」が実際の出力に無い",
+  "warn": [
+   "「Warning  ProvisioningFailed  5s    persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found」が実際の出力に無い"
+  ],
+  "out": "Name:          hitokoto-fast\nNamespace:     default\nStorageClass:  fast\nStatus:        Pending\nVolume:        \nLabels:        <none>\nAnnotations:   <none>\nFinalizers:    [kubernetes.io/pvc-protection]\nCapacity:      \nAccess Modes:  \nVolumeMode:    Filesystem\nUsed By:       <none>\nEvents:\n  Type     Reason              Age              From                         Message\n  ----     ------              ----             ----                         -------\n  Warning  ProvisioningFailed  0s (x2 over 6s)  persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found\n"
+ },
+ {
+  "n": 50,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「persistentvolumeclaim \"hitokoto-fast\" deleted from default namespace」が実際の出力に無い",
+  "warn": [
+   "「persistentvolumeclaim \"hitokoto-fast\" deleted from default namespace」が実際の出力に無い"
+  ],
+  "out": "Name:          hitokoto-fast\nNamespace:     default\nStorageClass:  fast\nStatus:        Pending\nVolume:        \nLabels:        <none>\nAnnotations:   <none>\nFinalizers:    [kubernetes.io/pvc-protection]\nCapacity:      \nAccess Modes:  \nVolumeMode:    Filesystem\nUsed By:       <none>\nEvents:\n  Type     Reason              Age              From                         Message\n  ----     ------              ----             ----                         -------\n  Warning  ProvisioningFailed  0s (x2 over 6s)  persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found\n"
+ },
+ {
+  "n": 51,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/pvc-fast.yaml",
+  "out": "persistentvolumeclaim \"hitokoto-fast\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 52,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 53,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/note.yaml",
+  "out": "pod \"note\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 54,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 55,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 56,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/postgres.yaml"
+ },
+ {
+  "n": 57,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/postgres.yaml --dry-run=server",
+  "out": "deployment.apps/postgres created (server dry run)\nservice/postgres created (server dry run)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 58,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 59,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 60,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/postgres.yaml",
+  "out": "deployment.apps/postgres created\nservice/postgres created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 61,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 62,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 63,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/postgres",
+  "out": "Waiting for deployment \"postgres\" rollout to finish: 0 of 1 updated replicas are available...\ndeployment \"postgres\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 64,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 65,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 66,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 67,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl logs deployment/postgres",
+  "out": "y been set to \"UTF8\".\nThe default text search configuration will be set to \"english\".\n\nData page checksums are enabled.\n\nfixing permissions on existing directory /var/lib/postgresql/18/docker ... ok\ncreating subdirectories ... ok\nselecting dynamic shared memory implementation ... posix\nselecting default \"max_connections\" ... 100\nselecting default \"shared_buffers\" ... 128MB\nselecting default time zone ... Etc/UTC\ncreating configuration files ... ok\nrunning bootstrap script ... ok\nperforming post-bootstrap initialization ... ok\nsyncing data to disk ... ok\n\n\nSuccess. You can now start the database server using:\n\n    pg_ctl -D /var/lib/postgresql/18/docker -l logfile start\n\ninitdb: warning: enabling \"trust\" authentication for local connections\ninitdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.\nwaiting for server to start....2026-11-16 03:06:44.487 UTC [60] LOG:  starting PostgreSQL 18.7 (Debian 18.7-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit\n2026-11-16 03:06:44.488 UTC [60] LOG:  listening on Unix socket \"/var/run/postgresql/.s.PGSQL.5432\"\n2026-11-16 03:06:44.490 UTC [66] LOG:  database system was shut down at 2026-11-16 03:06:44 UTC\n2026-11-16 03:06:44.491 UTC [60] LOG:  database system is ready to accept connections\n done\nserver started\n\n/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*\n\nwaiting for server to shut down...2026-11-16 03:06:44.600 UTC [60] LOG:  received fast shutdown request\n.2026-11-16 03:06:44.600 UTC [60] LOG:  aborting any active transactions\n2026-11-16 03:06:44.601 UTC [60] LOG:  background worker \"logical replication launcher\" (PID 69) exited with exit code 1\n2026-11-16 03:06:44.601 UTC [64] LOG:  shutting down\n2026-11-16 03:06:44.602 UTC [64] LOG:  checkpoint starting: shutdown immediate\n2026-11-16 03:06:44.603 UTC [64] LOG:  checkpoint complete: wrote 0 buffers (0.0%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1773F10, redo lsn=0/1773F10\n2026-11-16 03:06:44.606 UTC [60] LOG:  database system is shut down\n done\nserver stopped\n\nPostgreSQL init process complete; ready for start up.\n\n2026-11-16 03:06:44.714 UTC [1] LOG:  starting PostgreSQL 18.7 (Debian 18.7-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit\n2026-11-16 03:06:44.715 UTC [1] LOG:  listening on IPv4 address \"0.0.0.0\", port 5432\n2026-11-16 03:06:44.715 UTC [1] LOG:  listening on IPv6 address \"::\", port 5432\n2026-11-16 03:06:44.715 UTC [1] LOG:  listening on Unix socket \"/var/run/postgresql/.s.PGSQL.5432\"\n2026-11-16 03:06:44.717 UTC [80] LOG:  database system was shut down at 2026-11-16 03:06:44 UTC\n2026-11-16 03:06:44.719 UTC [1] LOG:  database system is ready to accept connections\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 68,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 69,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 70,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 71,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 72,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 73,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 74,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 75,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 76,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 77,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 78,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 79,
+  "t": "cmd",
+  "ok": true,
+  "msg": "起動 OK: kubectl port-forward service/hitokoto 8000:80",
+  "out": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000\nHandling connection for 8000\n"
+ },
+ {
+  "n": 80,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>みんなのひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>みんなのひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner db\">データベース（postgres）に保存しています</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>まだ書き込みはありません</li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-f97d9f665-69tfr</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 81,
+  "t": "http",
+  "ok": true,
+  "msg": "POST http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>みんなのひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>みんなのひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner db\">データベース（postgres）に保存しています</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>データベースに書きました<span class=\"time\">11/16 12:06</span></li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-f97d9f665-69tfr</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 82,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>みんなのひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>みんなのひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner db\">データベース（postgres）に保存しています</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>データベースに書きました<span class=\"time\">11/16 12:06</span></li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-f97d9f665-69tfr</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 83,
+  "t": "stop",
+  "ok": true,
+  "msg": "止めた"
+ },
+ {
+  "n": 84,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete pod -l app=postgres",
+  "out": "pod \"postgres-789b848956-h4wnd\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 85,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 86,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「pod \"postgres-789b848956-w2ljz\" deleted from default namespace」が実際の出力に無い",
+  "warn": [
+   "「pod \"postgres-789b848956-w2ljz\" deleted from default namespace」が実際の出力に無い"
+  ],
+  "out": "pod \"postgres-789b848956-h4wnd\" deleted from default namespace\n"
+ },
+ {
+  "n": 87,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/postgres",
+  "out": "Waiting for deployment \"postgres\" rollout to finish: 0 of 1 updated replicas are available...\ndeployment \"postgres\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 88,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 89,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 90,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 5; for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 91,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 92,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 93,
+  "t": "cmd",
+  "ok": true,
+  "msg": "起動 OK: kubectl port-forward service/hitokoto 8000:80",
+  "out": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000\nHandling connection for 8000\n"
+ },
+ {
+  "n": 94,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>みんなのひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>みんなのひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner db\">データベース（postgres）に保存しています</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>データベースに書きました<span class=\"time\">11/16 12:06</span></li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-f97d9f665-69tfr</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 95,
+  "t": "stop",
+  "ok": true,
+  "msg": "止めた"
+ },
+ {
+  "n": 96,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pv",
+  "out": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          89s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 97,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 98,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い",
+  "warn": [
+   "「pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s」が実際の出力に無い"
+  ],
+  "out": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-81db9c38-58f9-4155-94eb-ac2d7e43bff3   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          89s\n"
+ },
+ {
+  "n": 99,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout restart deployment/hitokoto && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "deployment.apps/hitokoto restarted\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 100,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 101,
+  "t": "cmd",
+  "ok": true,
+  "msg": "起動 OK: kubectl port-forward service/hitokoto 8000:80",
+  "out": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000\nHandling connection for 8000\n"
+ },
+ {
+  "n": 102,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>みんなのひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>みんなのひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner db\">データベース（postgres）に保存しています</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>データベースに書きました<span class=\"time\">11/16 12:06</span></li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-5574dd46c-rktpv</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 103,
+  "t": "stop",
+  "ok": true,
+  "msg": "止めた"
+ }
+]

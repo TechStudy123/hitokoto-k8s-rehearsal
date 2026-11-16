@@ -1,0 +1,3 @@
+NAMESPACE            NAME                                             READY   STATUS        RESTARTS   AGE
+default              api-5f65f5b867-2qk6f                             1/1     Running       0          7m11s
+default              hitokoto-5c4587cb5c-9r2tt                        1/1     Terminating   0          3m53s

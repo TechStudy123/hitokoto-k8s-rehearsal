@@ -1,0 +1,125 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 cmd: exit 0: kubectl config current-context
+[OK] 02 expect: 出力 OK
+[OK] 03 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 04 cmd: exit 0: kubectl get nodes
+[OK] 05 expect: 出力 OK
+[WARN] 06 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready    control-plane   5m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready    <none>          5m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         Ready    <none>          5m    v1.37.0」が実際の出力に無い
+      NAME                     STATUS     ROLES           AGE   VERSION
+      hitokoto-control-plane   NotReady   control-plane   14s   v1.37.0
+      hitokoto-worker          NotReady   <none>          0s    v1.37.0
+      hitokoto-worker2         NotReady   <none>          0s    v1.37.0
+      
+[OK] 07 cmd: exit 0: docker ps --format "table {{.Names}}\t{{.Status}}"
+[OK] 08 expect: 出力 OK
+[WARN] 09 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-worker2         Up 6 minutes」が実際の出力に無い 「hitokoto-control-plane   Up 6 minutes」が実際の出力に無い 「hitokoto-worker          Up 6 minutes」が実際の出力に無い
+      NAMES                    STATUS
+      hitokoto-worker          Up 19 seconds
+      hitokoto-worker2         Up 19 seconds
+      hitokoto-control-plane   Up 19 seconds
+      
+[OK] 10 cmd: exit 0: docker stop hitokoto-worker2
+[OK] 11 expect: 出力 OK
+[OK] 12 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 13 cmd: exit 0: kubectl wait --for=condition=Ready=Unknown node/hitokoto-worker2 --timeout=150s
+[OK] 14 expect: 出力 OK
+[OK] 15 cmd: exit 0: kubectl get nodes
+[OK] 16 expect: 出力 OK
+[WARN] 17 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready      control-plane   7m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready      <none>          7m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         NotReady   <none>          7m    v1.37.0」が実際の出力に無い
+      NAME                     STATUS     ROLES           AGE   VERSION
+      hitokoto-control-plane   Ready      control-plane   73s   v1.37.0
+      hitokoto-worker          Ready      <none>          59s   v1.37.0
+      hitokoto-worker2         NotReady   <none>          59s   v1.37.0
+      
+[OK] 18 cmd: exit 0: docker start hitokoto-worker2
+[OK] 19 expect: 出力 OK
+[OK] 20 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 21 cmd: exit 0: kubectl wait --for=condition=Ready node/hitokoto-worker2 --timeout=150s
+[OK] 22 expect: 出力 OK
+[OK] 23 cmd: exit 0: kubectl get nodes
+[OK] 24 expect: 出力 OK
+[WARN] 25 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready    control-plane   8m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready    <none>          8m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         Ready    <none>          8m    v1.37.0」が実際の出力に無い
+      NAME                     STATUS   ROLES           AGE   VERSION
+      hitokoto-control-plane   Ready    control-plane   86s   v1.37.0
+      hitokoto-worker          Ready    <none>          72s   v1.37.0
+      hitokoto-worker2         Ready    <none>          72s   v1.37.0
+      
+[OK] 26 cmd: exit 0: kubectl get pods
+[OK] 27 expect: 出力 OK
+[OK] 28 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 29 cmd: exit 0: kubectl get namespaces
+[OK] 30 expect: 出力 OK
+[WARN] 31 out: 表示される内容と実際の出力が違う（WARN）: 「default              Active   9m」が実際の出力に無い 「kube-node-lease      Active   9m」が実際の出力に無い 「kube-public          Active   9m」が実際の出力に無い 「kube-system          Active   9m」が実際の出力に無い 「local-path-storage   Active   9m」が実際の出力に無い
+      NAME                 STATUS   AGE
+      default              Active   86s
+      kube-node-lease      Active   86s
+      kube-public          Active   86s
+      kube-system          Active   86s
+      local-path-storage   Active   83s
+      
+[OK] 32 cmd: exit 0: kubectl get pods -n kube-system
+[OK] 33 expect: 出力 OK
+[WARN] 34 out: 表示される内容と実際の出力が違う（WARN）: 「coredns-559f6c778d-7sskz                         1/1     Running   0          9m」が実際の出力に無い 「coredns-559f6c778d-mvjf5                         1/1     Running   0          9m」が実際の出力に無い 「etcd-hitokoto-control-plane                      1/1     Running   0          9m」が実際の出力に無い 「kindnet-56m49                                    1/1     Running   0          9m」が実際の出力に無い 「kindnet-g7pl4                                    1/1     Running   0          9m」が実際の出力に無い 「kindnet-kz8bc                                    1/1     Running   0          9m」が実際の出力に無い 「kube-apiserver-hitokoto
+      NAME                                             READY   STATUS    RESTARTS   AGE
+      coredns-559f6c778d-j59wj                         1/1     Running   0          77s
+      coredns-559f6c778d-l66b9                         1/1     Running   0          77s
+      etcd-hitokoto-control-plane                      1/1     Running   0          85s
+      kindnet-724sh                                    1/1     Running   0          77s
+      kindnet-8v84l                                    1/1     Running   0          72s
+      kindnet-xb5lj                                    1/1     Running   0          72s
+      kube-apiserver-hitokoto-control-plane            1/1     Running   0          84s
+      kube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s
+      kube-proxy-8lbkv                                 1/1     Running   0          72s
+      kube-proxy-kqb7j                                 1/1     Running   0          72s
+      kube-proxy-tssp7                                 1/1     Running   0          77s
+      kube-scheduler-hitokoto-control-plane            1/1     Running   0          84s
+      
+[OK] 35 cmd: exit 0: kubectl explain pod
+[OK] 36 expect: 出力 OK
+[OK] 37 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 38 cmd: exit 0: kubectl explain pod.spec.containers.image
+[OK] 39 expect: 出力 OK
+[OK] 40 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 41 out: 表示される内容と実際の出力が違う（WARN）: 「FIELD: labels <map[string]string>」が実際の出力に無い 「Map of string keys and values that can be used to organize and categorize」が実際の出力に無い 「(scope and select) objects. May match selectors of replication controllers」が実際の出力に無い
+      KIND:       Pod
+      VERSION:    v1
+      
+      FIELD: image <string>
+      
+      
+      DESCRIPTION:
+          Container image name. More info:
+          https://kubernetes.io/docs/concepts/containers/images This field is optional
+          to allow higher level config management to default or override container
+          images in workload controllers like Deployments and StatefulSets.
+          
+      
+      
+[OK] 42 cmd: exit 0: kubectl explain pod.metadata.labels
+[OK] 43 expect: 出力 OK
+[OK] 44 cmd: exit 0: kubectl api-resources --api-group=""
+[OK] 45 expect: 出力 OK
+[OK] 46 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 47 cmd: exit 0: kubectl api-resources --api-group=apps
+[OK] 48 expect: 出力 OK
+[OK] 49 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 50 cmd: exit 0: kubectl get po -n kube-system
+[OK] 51 expect: 出力 OK
+[WARN] 52 out: 表示される内容と実際の出力が違う（WARN）: 「coredns-559f6c778d-7sskz                         1/1     Running   0          10m」が実際の出力に無い
+      NAME                                             READY   STATUS    RESTARTS   AGE
+      coredns-559f6c778d-j59wj                         1/1     Running   0          77s
+      coredns-559f6c778d-l66b9                         1/1     Running   0          77s
+      etcd-hitokoto-control-plane                      1/1     Running   0          85s
+      kindnet-724sh                                    1/1     Running   0          77s
+      kindnet-8v84l                                    1/1     Running   0          72s
+      kindnet-xb5lj                                    1/1     Running   0          72s
+      kube-apiserver-hitokoto-control-plane            1/1     Running   0          84s
+      kube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s
+      kube-proxy-8lbkv                                 1/1     Running   0          72s
+      kube-proxy-kqb7j                                 1/1     Running   0          72s
+      kube-proxy-tssp7                                 1/1     Running   0          77s
+      kube-scheduler-hitokoto-control-plane            1/1     Running   0          84s
+      
+WARN（表示される内容の違い）: 8 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 52 手順中 NG 0・WARN 8（表示される内容の違い）

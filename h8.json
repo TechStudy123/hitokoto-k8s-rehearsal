@@ -1,0 +1,541 @@
+[
+ {
+  "n": 1,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f setup/team.yaml",
+  "out": "namespace/hitokoto-prod created\ndeployment.apps/hitokoto created\nserviceaccount/prod-user created\nrole.rbac.authorization.k8s.io/viewer created\nrolebinding.rbac.authorization.k8s.io/prod-user-viewer created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 2,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 3,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 4,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config set-credentials prod-user --token=$(kubectl create token prod-user -n hitokoto-prod --duration=24h)",
+  "out": "User \"prod-user\" set.\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 5,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 6,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 7,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config set-context prod --cluster=kind-hitokoto --user=prod-user --namespace=hitokoto-prod",
+  "out": "Context \"prod\" created.\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 8,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 9,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 10,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config get-contexts",
+  "out": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   \n          prod            kind-hitokoto   prod-user       hitokoto-prod\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 11,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 12,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 13,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config use-context prod",
+  "out": "Switched to context \"prod\".\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 14,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 15,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 16,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS              RESTARTS   AGE\nhitokoto-b55ff59b6-8zhzv   0/1     ContainerCreating   0          0s\nhitokoto-b55ff59b6-qvcq9   0/1     ContainerCreating   0          0s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 17,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 18,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS              RESTARTS   AGE\nhitokoto-b55ff59b6-8zhzv   0/1     ContainerCreating   0          0s\nhitokoto-b55ff59b6-qvcq9   0/1     ContainerCreating   0          0s\n"
+ },
+ {
+  "n": 19,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl delete $(kubectl get pods -o name | head -n 1)",
+  "out": "Error from server (Forbidden): pods \"hitokoto-b55ff59b6-8zhzv\" is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot delete resource \"pods\" in API group \"\" in the namespace \"hitokoto-prod\"\n"
+ },
+ {
+  "n": 20,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 21,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 22,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 23,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl get pods -n hitokoto",
+  "out": "Error from server (Forbidden): pods is forbidden: User \"system:serviceaccount:hitokoto-prod:prod-user\" cannot list resource \"pods\" in API group \"\" in the namespace \"hitokoto\"\n"
+ },
+ {
+  "n": 24,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 25,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl auth can-i delete pods",
+  "out": "no\n"
+ },
+ {
+  "n": 27,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 28,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 29,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl auth can-i list pods",
+  "out": "yes\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 30,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 31,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 32,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config use-context kind-hitokoto",
+  "out": "Switched to context \"kind-hitokoto\".\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 33,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 34,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 35,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config set-context --current --namespace=hitokoto",
+  "out": "Context \"kind-hitokoto\" modified.\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 36,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 37,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 38,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config get-contexts",
+  "out": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   hitokoto\n          prod            kind-hitokoto   prod-user       hitokoto-prod\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 39,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 40,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 41,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7656bfd894-9f4sw   1/1     Running   0          44s\nhitokoto-7656bfd894-pn2jc   1/1     Running   0          67s\nhitokoto-7656bfd894-r6vwj   1/1     Running   0          56s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 42,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 43,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-56x4c   1/1     Running   0          10m」が実際の出力に無い 「hitokoto-7656bfd894-phhs2   1/1     Running   0          10m」が実際の出力に無い 「hitokoto-7656bfd894-x7jzb   1/1     Running   0          10m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-7656bfd894-56x4c   1/1     Running   0          10m」が実際の出力に無い",
+   "「hitokoto-7656bfd894-phhs2   1/1     Running   0          10m」が実際の出力に無い",
+   "「hitokoto-7656bfd894-x7jzb   1/1     Running   0          10m」が実際の出力に無い"
+  ],
+  "out": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7656bfd894-9f4sw   1/1     Running   0          44s\nhitokoto-7656bfd894-pn2jc   1/1     Running   0          67s\nhitokoto-7656bfd894-r6vwj   1/1     Running   0          56s\n"
+ },
+ {
+  "n": 44,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い"
+  ],
+  "out": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7656bfd894-9f4sw   1/1     Running   0          44s\nhitokoto-7656bfd894-pn2jc   1/1     Running   0          67s\nhitokoto-7656bfd894-r6vwj   1/1     Running   0          56s\n"
+ },
+ {
+  "n": 45,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods --context prod",
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-b55ff59b6-8zhzv   1/1     Running   0          0s\nhitokoto-b55ff59b6-qvcq9   1/1     Running   0          0s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 46,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 47,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl kustomize hitokoto-team/overlays/staging",
+  "out": "apiVersion: v1\nkind: Service\nmetadata:\n  name: staging-hitokoto\nspec:\n  ports:\n  - port: 80\n    targetPort: 8000\n  selector:\n    app: hitokoto-team\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: staging-hitokoto\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: hitokoto-team\n  template:\n    metadata:\n      labels:\n        app: hitokoto-team\n    spec:\n      containers:\n      - env:\n        - name: DB_PASSWORD\n          valueFrom:\n            secretKeyRef:\n              key: DB_PASSWORD\n              name: team-secret\n        image: ghcr.io/container-nyumon/hitokoto:2.1\n        name: app\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n            - ALL\n          runAsNonRoot: true\n          seccompProfile:\n            type: RuntimeDefault\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 48,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 49,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 50,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl kustomize hitokoto-team/overlays/prod",
+  "out": "apiVersion: v1\nkind: Service\nmetadata:\n  name: prod-hitokoto\nspec:\n  ports:\n  - port: 80\n    targetPort: 8000\n  selector:\n    app: hitokoto-team\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: prod-hitokoto\nspec:\n  replicas: 5\n  selector:\n    matchLabels:\n      app: hitokoto-team\n  template:\n    metadata:\n      labels:\n        app: hitokoto-team\n    spec:\n      containers:\n      - env:\n        - name: DB_PASSWORD\n          valueFrom:\n            secretKeyRef:\n              key: DB_PASSWORD\n              name: team-secret\n        image: ghcr.io/container-nyumon/hitokoto:2.1\n        name: app\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n            - ALL\n          runAsNonRoot: true\n          seccompProfile:\n            type: RuntimeDefault\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 51,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 52,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 53,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config get-contexts",
+  "out": "CURRENT   NAME            CLUSTER         AUTHINFO        NAMESPACE\n*         kind-hitokoto   kind-hitokoto   kind-hitokoto   hitokoto\n          prod            kind-hitokoto   prod-user       hitokoto-prod\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 54,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 55,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 56,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl diff -k hitokoto-team/overlays/staging",
+  "out": "diff -u -N /tmp/LIVE-1854482173/apps.v1.Deployment.hitokoto.staging-hitokoto /tmp/MERGED-1476422359/apps.v1.Deployment.hitokoto.staging-hitokoto\n--- /tmp/LIVE-1854482173/apps.v1.Deployment.hitokoto.staging-hitokoto\t2026-11-16 03:11:48.128615517 +0000\n+++ /tmp/MERGED-1476422359/apps.v1.Deployment.hitokoto.staging-hitokoto\t2026-11-16 03:11:48.128615517 +0000\n@@ -0,0 +1,52 @@\n+apiVersion: apps/v1\n+kind: Deployment\n+metadata:\n+  creationTimestamp: \"2026-11-16T03:11:48Z\"\n+  generation: 1\n+  name: staging-hitokoto\n+  namespace: hitokoto\n+  uid: 03d9609d-d4a2-4749-99e3-b9e2698f0dd3\n+spec:\n+  progressDeadlineSeconds: 600\n+  replicas: 2\n+  revisionHistoryLimit: 10\n+  selector:\n+    matchLabels:\n+      app: hitokoto-team\n+  strategy:\n+    rollingUpdate:\n+      maxSurge: 25%\n+      maxUnavailable: 25%\n+    type: RollingUpdate\n+  template:\n+    metadata:\n+      labels:\n+        app: hitokoto-team\n+    spec:\n+      containers:\n+      - env:\n+        - name: DB_PASSWORD\n+          valueFrom:\n+            secretKeyRef:\n+              key: DB_PASSWORD\n+              name: team-secret\n+        image: ghcr.io/container-nyumon/hitokoto:2.1\n+        imagePullPolicy: IfNotPresent\n+        name: app\n+        resources: {}\n+        securityContext:\n+          allowPrivilegeEscalation: false\n+          capabilities:\n+            drop:\n+            - ALL\n+          runAsNonRoot: true\n+          seccompProfile:\n+            type: RuntimeDefault\n+        terminationMessagePath: /dev/termination-log\n+        terminationMessagePolicy: File\n+      dnsPolicy: ClusterFirst\n+      restartPolicy: Always\n+      schedulerName: default-scheduler\n+      securityContext: {}\n+      terminationGracePeriodSeconds: 30\n+status: {}\ndiff -u -N /tmp/LIVE-1854482173/v1.Service.hitokoto.staging-hitokoto /tmp/MERGED-1476422359/v1.Service.hitokoto.staging-hitokoto\n--- /tmp/LIVE-1854482173/v1.Service.hitokoto.staging-hitokoto\t2026-11-16 03:11:48.123615473 +0000\n+++ /tmp/MERGED-1476422359/v1.Service.hitokoto.staging-hitokoto\t2026-11-16 03:11:48.124615482 +0000\n@@ -0,0 +1,25 @@\n+apiVersion: v1\n+kind: Service\n+metadata:\n+  creationTimestamp: \"2026-11-16T03:11:48Z\"\n+  name: staging-hitokoto\n+  namespace: hitokoto\n+  uid: e3632f0d-3cb8-4478-a623-0f99f59657ae\n+spec:\n+  clusterIP: 10.96.0.0\n+  clusterIPs:\n+  - 10.96.0.0\n+  internalTrafficPolicy: Cluster\n+  ipFamilies:\n+  - IPv4\n+  ipFamilyPolicy: SingleStack\n+  ports:\n+  - port: 80\n+    protocol: TCP\n+    targetPort: 8000\n+  selector:\n+    app: hitokoto-team\n+  sessionAffinity: None\n+  type: ClusterIP\n+status:\n+  loadBalancer: {}\n"
+ },
+ {
+  "n": 57,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 58,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -k hitokoto-team/overlays/staging",
+  "out": "service/staging-hitokoto created\ndeployment.apps/staging-hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 59,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 60,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 61,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 40); do kubectl get pods | grep -q CreateContainerConfigError && break; sleep 2; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 62,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                                READY   STATUS                       RESTARTS   AGE\nhitokoto-7656bfd894-9f4sw           1/1     Running                      0          47s\nhitokoto-7656bfd894-pn2jc           1/1     Running                      0          70s\nhitokoto-7656bfd894-r6vwj           1/1     Running                      0          59s\nstaging-hitokoto-7d6cf5c4cf-jqxfm   0/1     CreateContainerConfigError   0          2s\nstaging-hitokoto-7d6cf5c4cf-mvwq6   0/1     CreateContainerConfigError   0          2s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 63,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 64,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-56x4c           1/1     Running                      0          12m」が実際の出力に無い 「hitokoto-7656bfd894-phhs2           1/1     Running                      0          12m」が実際の出力に無い 「hitokoto-7656bfd894-x7jzb           1/1     Running                      0          12m」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-4k6jl   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-mk5z2   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-7656bfd894-56x4c           1/1     Running                      0          12m」が実際の出力に無い",
+   "「hitokoto-7656bfd894-phhs2           1/1     Running                      0          12m」が実際の出力に無い",
+   "「hitokoto-7656bfd894-x7jzb           1/1     Running                      0          12m」が実際の出力に無い",
+   "「staging-hitokoto-7d6cf5c4cf-4k6jl   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い",
+   "「staging-hitokoto-7d6cf5c4cf-mk5z2   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い"
+  ],
+  "out": "NAME                                READY   STATUS                       RESTARTS   AGE\nhitokoto-7656bfd894-9f4sw           1/1     Running                      0          47s\nhitokoto-7656bfd894-pn2jc           1/1     Running                      0          70s\nhitokoto-7656bfd894-r6vwj           1/1     Running                      0          59s\nstaging-hitokoto-7d6cf5c4cf-jqxfm   0/1     CreateContainerConfigError   0          2s\nstaging-hitokoto-7d6cf5c4cf-mvwq6   0/1     CreateContainerConfigError   0          2s\n"
+ },
+ {
+  "n": 65,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 30); do kubectl describe pods -l app=hitokoto-team | grep -q 'team-secret\" not found' && break; sleep 2; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 66,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe pods -l app=hitokoto-team",
+  "out": " <none>\n    Host Port:       <none>\n    SeccompProfile:  RuntimeDefault\n    State:           Waiting\n      Reason:        CreateContainerConfigError\n    Ready:           False\n    Restart Count:   0\n    Environment:\n      DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'team-secret'>  Optional: false\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-8gvhv (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  kube-api-access-8gvhv:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\n\n\nName:             staging-hitokoto-7d6cf5c4cf-mvwq6\nNamespace:        hitokoto\nPriority:         0\nService Account:  default\nNode:             hitokoto-worker2/172.19.0.4\nStart Time:       Mon, 16 Nov 2026 03:11:48 +0000\nLabels:           app=hitokoto-team\n                  pod-template-hash=7d6cf5c4cf\nAnnotations:      <none>\nStatus:           Pending\nIP:               10.244.2.45\nIPs:\n  IP:           10.244.2.45\nControlled By:  ReplicaSet/staging-hitokoto-7d6cf5c4cf\nContainers:\n  app:\n    Container ID:    \n    Image:           ghcr.io/container-nyumon/hitokoto:2.1\n    Image ID:        \n    Port:            <none>\n    Host Port:       <none>\n    SeccompProfile:  RuntimeDefault\n    State:           Waiting\n      Reason:        CreateContainerConfigError\n    Ready:           False\n    Restart Count:   0\n    Environment:\n      DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'team-secret'>  Optional: false\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xmrjn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  kube-api-access-xmrjn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 67,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 68,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Warning  Failed     …  kubelet  spec.containers{app}: Error: secret \"team-secret\" not found」が実際の出力に無い",
+  "warn": [
+   "「Warning  Failed     …  kubelet  spec.containers{app}: Error: secret \"team-secret\" not found」が実際の出力に無い"
+  ],
+  "out": "te-hash=7d6cf5c4cf\nAnnotations:      <none>\nStatus:           Pending\nIP:               10.244.2.45\nIPs:\n  IP:           10.244.2.45\nControlled By:  ReplicaSet/staging-hitokoto-7d6cf5c4cf\nContainers:\n  app:\n    Container ID:    \n    Image:           ghcr.io/container-nyumon/hitokoto:2.1\n    Image ID:        \n    Port:            <none>\n    Host Port:       <none>\n    SeccompProfile:  RuntimeDefault\n    State:           Waiting\n      Reason:        CreateContainerConfigError\n    Ready:           False\n    Restart Count:   0\n    Environment:\n      DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'team-secret'>  Optional: false\n    Mounts:\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xmrjn (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  kube-api-access-xmrjn:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   BestEffort\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\n"
+ },
+ {
+  "n": 69,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl create secret generic team-secret --from-literal=DB_PASSWORD=team-pass",
+  "out": "secret/team-secret created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 70,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 71,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 72,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/staging-hitokoto --timeout=180s",
+  "out": "Waiting for deployment \"staging-hitokoto\" rollout to finish: 0 of 2 updated replicas are available...\nWaiting for deployment \"staging-hitokoto\" rollout to finish: 1 of 2 updated replicas are available...\ndeployment \"staging-hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 73,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 74,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -l app=hitokoto-team",
+  "out": "NAME                                READY   STATUS    RESTARTS   AGE\nstaging-hitokoto-7d6cf5c4cf-jqxfm   1/1     Running   0          75s\nstaging-hitokoto-7d6cf5c4cf-mvwq6   1/1     Running   0          75s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 75,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 76,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「staging-hitokoto-7d6cf5c4cf-4k6jl   1/1     Running   0          1m」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-mk5z2   1/1     Running   0          1m」が実際の出力に無い",
+  "warn": [
+   "「staging-hitokoto-7d6cf5c4cf-4k6jl   1/1     Running   0          1m」が実際の出力に無い",
+   "「staging-hitokoto-7d6cf5c4cf-mk5z2   1/1     Running   0          1m」が実際の出力に無い"
+  ],
+  "out": "NAME                                READY   STATUS    RESTARTS   AGE\nstaging-hitokoto-7d6cf5c4cf-jqxfm   1/1     Running   0          75s\nstaging-hitokoto-7d6cf5c4cf-mvwq6   1/1     Running   0          75s\n"
+ },
+ {
+  "n": 77,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Context \"kind-hitokoto\" modified.」が実際の出力に無い",
+  "warn": [
+   "「Context \"kind-hitokoto\" modified.」が実際の出力に無い"
+  ],
+  "out": "NAME                                READY   STATUS    RESTARTS   AGE\nstaging-hitokoto-7d6cf5c4cf-jqxfm   1/1     Running   0          75s\nstaging-hitokoto-7d6cf5c4cf-mvwq6   1/1     Running   0          75s\n"
+ },
+ {
+  "n": 78,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config set-context --current --namespace=default",
+  "out": "Context \"kind-hitokoto\" modified.\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 79,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ }
+]

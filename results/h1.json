@@ -1,0 +1,389 @@
+[
+ {
+  "n": 1,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl config current-context",
+  "out": "kind-hitokoto\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 2,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 3,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 4,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get nodes",
+  "out": "NAME                     STATUS     ROLES           AGE   VERSION\nhitokoto-control-plane   NotReady   control-plane   14s   v1.37.0\nhitokoto-worker          NotReady   <none>          0s    v1.37.0\nhitokoto-worker2         NotReady   <none>          0s    v1.37.0\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 5,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 6,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready    control-plane   5m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready    <none>          5m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         Ready    <none>          5m    v1.37.0」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-control-plane   Ready    control-plane   5m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker          Ready    <none>          5m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker2         Ready    <none>          5m    v1.37.0」が実際の出力に無い"
+  ],
+  "out": "NAME                     STATUS     ROLES           AGE   VERSION\nhitokoto-control-plane   NotReady   control-plane   14s   v1.37.0\nhitokoto-worker          NotReady   <none>          0s    v1.37.0\nhitokoto-worker2         NotReady   <none>          0s    v1.37.0\n"
+ },
+ {
+  "n": 7,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker ps --format \"table {{.Names}}\\t{{.Status}}\"",
+  "out": "NAMES                    STATUS\nhitokoto-worker          Up 19 seconds\nhitokoto-worker2         Up 19 seconds\nhitokoto-control-plane   Up 19 seconds\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 8,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 9,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-worker2         Up 6 minutes」が実際の出力に無い 「hitokoto-control-plane   Up 6 minutes」が実際の出力に無い 「hitokoto-worker          Up 6 minutes」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-worker2         Up 6 minutes」が実際の出力に無い",
+   "「hitokoto-control-plane   Up 6 minutes」が実際の出力に無い",
+   "「hitokoto-worker          Up 6 minutes」が実際の出力に無い"
+  ],
+  "out": "NAMES                    STATUS\nhitokoto-worker          Up 19 seconds\nhitokoto-worker2         Up 19 seconds\nhitokoto-control-plane   Up 19 seconds\n"
+ },
+ {
+  "n": 10,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker stop hitokoto-worker2",
+  "out": "hitokoto-worker2\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 11,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 12,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 13,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready=Unknown node/hitokoto-worker2 --timeout=150s",
+  "out": "node/hitokoto-worker2 condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 14,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 15,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get nodes",
+  "out": "NAME                     STATUS     ROLES           AGE   VERSION\nhitokoto-control-plane   Ready      control-plane   73s   v1.37.0\nhitokoto-worker          Ready      <none>          59s   v1.37.0\nhitokoto-worker2         NotReady   <none>          59s   v1.37.0\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 16,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 17,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready      control-plane   7m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready      <none>          7m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         NotReady   <none>          7m    v1.37.0」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-control-plane   Ready      control-plane   7m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker          Ready      <none>          7m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker2         NotReady   <none>          7m    v1.37.0」が実際の出力に無い"
+  ],
+  "out": "NAME                     STATUS     ROLES           AGE   VERSION\nhitokoto-control-plane   Ready      control-plane   73s   v1.37.0\nhitokoto-worker          Ready      <none>          59s   v1.37.0\nhitokoto-worker2         NotReady   <none>          59s   v1.37.0\n"
+ },
+ {
+  "n": 18,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: docker start hitokoto-worker2",
+  "out": "hitokoto-worker2\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 19,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 20,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 21,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Ready node/hitokoto-worker2 --timeout=150s",
+  "out": "node/hitokoto-worker2 condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 22,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 23,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get nodes",
+  "out": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   86s   v1.37.0\nhitokoto-worker          Ready    <none>          72s   v1.37.0\nhitokoto-worker2         Ready    <none>          72s   v1.37.0\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 24,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 25,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-control-plane   Ready    control-plane   8m    v1.37.0」が実際の出力に無い 「hitokoto-worker          Ready    <none>          8m    v1.37.0」が実際の出力に無い 「hitokoto-worker2         Ready    <none>          8m    v1.37.0」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-control-plane   Ready    control-plane   8m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker          Ready    <none>          8m    v1.37.0」が実際の出力に無い",
+   "「hitokoto-worker2         Ready    <none>          8m    v1.37.0」が実際の出力に無い"
+  ],
+  "out": "NAME                     STATUS   ROLES           AGE   VERSION\nhitokoto-control-plane   Ready    control-plane   86s   v1.37.0\nhitokoto-worker          Ready    <none>          72s   v1.37.0\nhitokoto-worker2         Ready    <none>          72s   v1.37.0\n"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\nNo resources found in default namespace.\n"
+ },
+ {
+  "n": 27,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 28,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 29,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get namespaces",
+  "out": "NAME                 STATUS   AGE\ndefault              Active   86s\nkube-node-lease      Active   86s\nkube-public          Active   86s\nkube-system          Active   86s\nlocal-path-storage   Active   83s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 30,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 31,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「default              Active   9m」が実際の出力に無い 「kube-node-lease      Active   9m」が実際の出力に無い 「kube-public          Active   9m」が実際の出力に無い 「kube-system          Active   9m」が実際の出力に無い 「local-path-storage   Active   9m」が実際の出力に無い",
+  "warn": [
+   "「default              Active   9m」が実際の出力に無い",
+   "「kube-node-lease      Active   9m」が実際の出力に無い",
+   "「kube-public          Active   9m」が実際の出力に無い",
+   "「kube-system          Active   9m」が実際の出力に無い",
+   "「local-path-storage   Active   9m」が実際の出力に無い"
+  ],
+  "out": "NAME                 STATUS   AGE\ndefault              Active   86s\nkube-node-lease      Active   86s\nkube-public          Active   86s\nkube-system          Active   86s\nlocal-path-storage   Active   83s\n"
+ },
+ {
+  "n": 32,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -n kube-system",
+  "out": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-j59wj                         1/1     Running   0          77s\ncoredns-559f6c778d-l66b9                         1/1     Running   0          77s\netcd-hitokoto-control-plane                      1/1     Running   0          85s\nkindnet-724sh                                    1/1     Running   0          77s\nkindnet-8v84l                                    1/1     Running   0          72s\nkindnet-xb5lj                                    1/1     Running   0          72s\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          84s\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s\nkube-proxy-8lbkv                                 1/1     Running   0          72s\nkube-proxy-kqb7j                                 1/1     Running   0          72s\nkube-proxy-tssp7                                 1/1     Running   0          77s\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          84s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 33,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 34,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「coredns-559f6c778d-7sskz                         1/1     Running   0          9m」が実際の出力に無い 「coredns-559f6c778d-mvjf5                         1/1     Running   0          9m」が実際の出力に無い 「etcd-hitokoto-control-plane                      1/1     Running   0          9m」が実際の出力に無い 「kindnet-56m49                                    1/1     Running   0          9m」が実際の出力に無い 「kindnet-g7pl4                                    1/1     Running   0          9m」が実際の出力に無い 「kindnet-kz8bc                                    1/1     Running   0          9m」が実際の出力に無い 「kube-apiserver-hitokoto-control-plane            1/1     Running   0          9m」が実際の出力に無い 「kube-controller-manager-hitokoto-control-plane   1/1     Running   0          9m」が実際の出力に無い",
+  "warn": [
+   "「coredns-559f6c778d-7sskz                         1/1     Running   0          9m」が実際の出力に無い",
+   "「coredns-559f6c778d-mvjf5                         1/1     Running   0          9m」が実際の出力に無い",
+   "「etcd-hitokoto-control-plane                      1/1     Running   0          9m」が実際の出力に無い",
+   "「kindnet-56m49                                    1/1     Running   0          9m」が実際の出力に無い",
+   "「kindnet-g7pl4                                    1/1     Running   0          9m」が実際の出力に無い",
+   "「kindnet-kz8bc                                    1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-apiserver-hitokoto-control-plane            1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-controller-manager-hitokoto-control-plane   1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-proxy-krvf2                                 1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-proxy-mnkn7                                 1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-proxy-qstml                                 1/1     Running   0          9m」が実際の出力に無い",
+   "「kube-scheduler-hitokoto-control-plane            1/1     Running   0          9m」が実際の出力に無い"
+  ],
+  "out": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-j59wj                         1/1     Running   0          77s\ncoredns-559f6c778d-l66b9                         1/1     Running   0          77s\netcd-hitokoto-control-plane                      1/1     Running   0          85s\nkindnet-724sh                                    1/1     Running   0          77s\nkindnet-8v84l                                    1/1     Running   0          72s\nkindnet-xb5lj                                    1/1     Running   0          72s\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          84s\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s\nkube-proxy-8lbkv                                 1/1     Running   0          72s\nkube-proxy-kqb7j                                 1/1     Running   0          72s\nkube-proxy-tssp7                                 1/1     Running   0          77s\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          84s\n"
+ },
+ {
+  "n": 35,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl explain pod",
+  "out": "KIND:       Pod\nVERSION:    v1\n\nDESCRIPTION:\n    Pod is a collection of containers that can run on a host. This resource is\n    created by clients and scheduled onto hosts.\n    \nFIELDS:\n  apiVersion\t<string>\n    APIVersion defines the versioned schema of this representation of an object.\n    Servers should convert recognized schemas to the latest internal value, and\n    may reject unrecognized values. More info:\n    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\n\n  kind\t<string>\n    Kind is a string value representing the REST resource this object\n    represents. Servers may infer this from the endpoint the client submits\n    requests to. Cannot be updated. In CamelCase. More info:\n    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\n\n  metadata\t<ObjectMeta>\n    Standard object's metadata. More info:\n    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata\n\n  spec\t<PodSpec>\n    Specification of the desired behavior of the pod. More info:\n    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status\n\n  status\t<PodStatus>\n    Most recently observed status of the pod. This data may not be up to date.\n    Populated by the system. Read-only. More info:\n    https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status\n\n\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 36,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 37,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 38,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl explain pod.spec.containers.image",
+  "out": "KIND:       Pod\nVERSION:    v1\n\nFIELD: image <string>\n\n\nDESCRIPTION:\n    Container image name. More info:\n    https://kubernetes.io/docs/concepts/containers/images This field is optional\n    to allow higher level config management to default or override container\n    images in workload controllers like Deployments and StatefulSets.\n    \n\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 39,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 40,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 41,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「FIELD: labels <map[string]string>」が実際の出力に無い 「Map of string keys and values that can be used to organize and categorize」が実際の出力に無い 「(scope and select) objects. May match selectors of replication controllers」が実際の出力に無い",
+  "warn": [
+   "「FIELD: labels <map[string]string>」が実際の出力に無い",
+   "「Map of string keys and values that can be used to organize and categorize」が実際の出力に無い",
+   "「(scope and select) objects. May match selectors of replication controllers」が実際の出力に無い"
+  ],
+  "out": "KIND:       Pod\nVERSION:    v1\n\nFIELD: image <string>\n\n\nDESCRIPTION:\n    Container image name. More info:\n    https://kubernetes.io/docs/concepts/containers/images This field is optional\n    to allow higher level config management to default or override container\n    images in workload controllers like Deployments and StatefulSets.\n    \n\n"
+ },
+ {
+  "n": 42,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl explain pod.metadata.labels",
+  "out": "KIND:       Pod\nVERSION:    v1\n\nFIELD: labels <map[string]string>\n\n\nDESCRIPTION:\n    Map of string keys and values that can be used to organize and categorize\n    (scope and select) objects. May match selectors of replication controllers\n    and services. More info:\n    https://kubernetes.io/docs/concepts/overview/working-with-objects/labels\n    \n\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 43,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 44,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl api-resources --api-group=\"\"",
+  "out": "NAME                     SHORTNAMES   APIVERSION   NAMESPACED   KIND\nbindings                              v1           true         Binding\ncomponentstatuses        cs           v1           false        ComponentStatus\nconfigmaps               cm           v1           true         ConfigMap\nendpoints                ep           v1           true         Endpoints\nevents                   ev           v1           true         Event\nlimitranges              limits       v1           true         LimitRange\nnamespaces               ns           v1           false        Namespace\nnodes                    no           v1           false        Node\npersistentvolumeclaims   pvc          v1           true         PersistentVolumeClaim\npersistentvolumes        pv           v1           false        PersistentVolume\npods                     po           v1           true         Pod\npodtemplates                          v1           true         PodTemplate\nreplicationcontrollers   rc           v1           true         ReplicationController\nresourcequotas           quota        v1           true         ResourceQuota\nsecrets                               v1           true         Secret\nserviceaccounts          sa           v1           true         ServiceAccount\nservices                 svc          v1           true         Service\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 45,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 46,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 47,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl api-resources --api-group=apps",
+  "out": "NAME                  SHORTNAMES   APIVERSION   NAMESPACED   KIND\ncontrollerrevisions                apps/v1      true         ControllerRevision\ndaemonsets            ds           apps/v1      true         DaemonSet\ndeployments           deploy       apps/v1      true         Deployment\nreplicasets           rs           apps/v1      true         ReplicaSet\nstatefulsets          sts          apps/v1      true         StatefulSet\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 48,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 49,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 50,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get po -n kube-system",
+  "out": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-j59wj                         1/1     Running   0          77s\ncoredns-559f6c778d-l66b9                         1/1     Running   0          77s\netcd-hitokoto-control-plane                      1/1     Running   0          85s\nkindnet-724sh                                    1/1     Running   0          77s\nkindnet-8v84l                                    1/1     Running   0          72s\nkindnet-xb5lj                                    1/1     Running   0          72s\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          84s\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s\nkube-proxy-8lbkv                                 1/1     Running   0          72s\nkube-proxy-kqb7j                                 1/1     Running   0          72s\nkube-proxy-tssp7                                 1/1     Running   0          77s\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          84s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 51,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 52,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「coredns-559f6c778d-7sskz                         1/1     Running   0          10m」が実際の出力に無い",
+  "warn": [
+   "「coredns-559f6c778d-7sskz                         1/1     Running   0          10m」が実際の出力に無い"
+  ],
+  "out": "NAME                                             READY   STATUS    RESTARTS   AGE\ncoredns-559f6c778d-j59wj                         1/1     Running   0          77s\ncoredns-559f6c778d-l66b9                         1/1     Running   0          77s\netcd-hitokoto-control-plane                      1/1     Running   0          85s\nkindnet-724sh                                    1/1     Running   0          77s\nkindnet-8v84l                                    1/1     Running   0          72s\nkindnet-xb5lj                                    1/1     Running   0          72s\nkube-apiserver-hitokoto-control-plane            1/1     Running   0          84s\nkube-controller-manager-hitokoto-control-plane   1/1     Running   0          84s\nkube-proxy-8lbkv                                 1/1     Running   0          72s\nkube-proxy-kqb7j                                 1/1     Running   0          72s\nkube-proxy-tssp7                                 1/1     Running   0          77s\nkube-scheduler-hitokoto-control-plane            1/1     Running   0          84s\n"
+ }
+]

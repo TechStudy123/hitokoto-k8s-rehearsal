@@ -1,0 +1,94 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 cmd: exit 0: kubectl config get-contexts
+[OK] 02 expect: 出力 OK
+[OK] 03 cmd: exit 0: kubectl apply -f broken/
+[OK] 04 expect: 出力 OK
+[OK] 05 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 06 cmd: exit 0: for i in $(seq 60); do kubectl get pods | grep -q 'shop2.*CrashLoopBackOff' && kubectl get pods | grep -q 'shop1.*ImagePullBackOff' && break; sleep 3; done
+[OK] 07 cmd: exit 0: kubectl get pods
+[OK] 08 expect: 出力 OK
+[WARN] 09 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-dlf8t   1/1     Running            0             4m」が実際の出力に無い 「shop1-7d6687bfb-sklht       0/1     ImagePullBackOff   0             2m」が実際の出力に無い 「shop2-5ff6858dd-cpb22       0/1     CrashLoopBackOff   4 (63s ago)   2m」が実際の出力に無い 「shop3-745f54fb4b-bwfrl      1/1     Running            0             2m」が実際の出力に無い
+      NAME                                      READY   STATUS             RESTARTS      AGE
+      api-5f65f5b867-2qk6f                      1/1     Running            0             11m
+      hitokoto-759c446686-25m99                 1/1     Running            0             4m32s
+      hitokoto-759c446686-5rdnt                 1/1     Running            0             4m10s
+      hitokoto-759c446686-gfqpp                 1/1     Running            0             4m20s
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running            0             11m
+      postgres-789b848956-hjqkn                 1/1     Running            0             8m55s
+      shop1-7d6687bfb-q2pp6                     0/1     ImagePullBackOff   0             2m41s
+      shop2-5ff6858dd-n6pmg                     0/1     CrashLoopBackOff   4 (80s ago)   2m41s
+      shop3-745f54fb4b-5p4zz                    1/1     Running            0             2m41s
+      
+[OK] 10 cmd: exit 0: kubectl describe pods -l app=shop1
+[OK] 11 expect: 出力 OK
+[OK] 12 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 13 file: write: broken/shop1.yaml
+[OK] 14 cmd: exit 0: kubectl apply -f broken/shop1.yaml
+[OK] 15 expect: 出力 OK
+[OK] 16 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 17 cmd: exit 0: kubectl logs deployment/shop2 --previous
+[OK] 18 expect: 出力 OK
+[OK] 19 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 20 out: 表示される内容と実際の出力が違う（WARN）: 「deployment.apps/shop2 configured」が実際の出力に無い
+      
+       ⚡️ Starting FastAPI in production mode
+       
+          Path does not exist mian.py
+      
+      
+[OK] 21 file: write: broken/shop2.yaml
+[OK] 22 cmd: exit 0: kubectl apply -f broken/shop2.yaml
+[OK] 23 expect: 出力 OK
+[OK] 24 cmd: exit 0: kubectl rollout status deployment/shop1 --timeout=180s && kubectl rollout status deployment/shop2 --timeout=180s
+[OK] 25 expect: 出力 OK
+[OK] 31 cmd: exit 7（期待 7）: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; curl -s -m 5 http://shop3/health"
+[OK] 32 cmd: exit 0: kubectl describe service shop3
+[OK] 33 expect: 出力 OK
+[OK] 34 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 35 cmd: exit 0: kubectl get pods -l app=shop3 --show-labels
+[OK] 36 expect: 出力 OK
+[WARN] 37 out: 表示される内容と実際の出力が違う（WARN）: 「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m    app=shop3,pod-template-hash=745f54fb4b」が実際の出力に無い
+      NAME                     READY   STATUS    RESTARTS   AGE     LABELS
+      shop3-745f54fb4b-5p4zz   1/1     Running   0          2m47s   app=shop3,pod-template-hash=745f54fb4b
+      
+[OK] 38 file: write: broken/shop3.yaml
+[OK] 39 cmd: exit 0: kubectl apply -f broken/shop3.yaml
+[OK] 40 expect: 出力 OK
+[OK] 41 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 42 cmd: exit 0: sleep 3
+[OK] 43 cmd: exit 0: kubectl describe service shop3
+[OK] 44 expect: 出力 OK
+[OK] 45 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 46 cmd: exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; curl -s http://shop3/health"
+[OK] 47 expect: 出力 OK
+[OK] 48 cmd: exit 0: kubectl get pods -l 'app in (shop1,shop2,shop3)'
+[OK] 49 expect: 出力 OK
+[WARN] 50 out: 表示される内容と実際の出力が違う（WARN）: 「shop1-7b9b4f7cb-w78sw    1/1     Running   0          17s」が実際の出力に無い 「shop2-6cb4594764-xsrxr   1/1     Running   0          17s」が実際の出力に無い 「shop3-745f54fb4b-bwfrl   1/1     Running   0          3m」が実際の出力に無い
+      NAME                     READY   STATUS    RESTARTS   AGE
+      shop1-7b9b4f7cb-v5jn5    1/1     Running   0          14s
+      shop2-6cb4594764-vvfhl   1/1     Running   0          14s
+      shop3-745f54fb4b-5p4zz   1/1     Running   0          2m55s
+      
+[OK] 51 cmd: exit 0: kubectl delete -f broken/
+[OK] 52 expect: 出力 OK
+[OK] 53 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 54 cmd: exit 0: kubectl delete -f manifests/ --ignore-not-found
+[OK] 55 expect: 出力 OK
+[OK] 56 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 57 cmd: exit 0: kind delete cluster --name hitokoto
+[OK] 58 expect: 出力 OK
+[WARN] 59 out: 表示される内容と実際の出力が違う（WARN）: 「Deleted nodes: ["hitokoto-worker" "hitokoto-control-plane" "hitokoto-worker2"]」が実際の出力に無い
+      Deleting cluster "hitokoto" ...
+      Deleted nodes: ["hitokoto-worker" "hitokoto-worker2" "hitokoto-control-plane"]
+      
+[OK] 60 cmd: exit 0: docker ps --format "table {{.Names}}\t{{.Status}}"
+[OK] 61 expect: 出力 OK
+[OK] 62 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 63 cmd: exit 0: docker system df
+[OK] 64 expect: 出力 OK
+[OK] 65 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 67 cmd: exit 0: docker system prune -a -f
+[OK] 68 expect: 出力 OK
+WARN（表示される内容の違い）: 5 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 68 手順中 NG 0・WARN 5（表示される内容の違い）

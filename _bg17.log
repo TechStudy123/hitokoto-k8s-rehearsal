@@ -1,0 +1,5 @@
+Forwarding from 127.0.0.1:8000 -> 8000
+Forwarding from [::1]:8000 -> 8000
+Handling connection for 8000
+E1116 03:05:14.843324   14114 portforward.go:525] "Error copying from local connection to remote stream" err="writeto tcp4 127.0.0.1:8000->127.0.0.1:45820: read tcp4 127.0.0.1:8000->127.0.0.1:45820: read: connection reset by peer" localPort=8000 remotePort=8000
+Handling connection for 8000

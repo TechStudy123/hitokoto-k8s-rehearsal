@@ -1,0 +1,129 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 file: write: manifests/web.yaml
+[OK] 02 cmd: exit 0: kubectl apply -f manifests/web.yaml
+[OK] 03 expect: 出力 OK
+[OK] 04 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 11 cmd: exit 124（期待 124）: kubectl delete -f manifests/web.yaml --wait=true && kubectl apply -f manifests/web.yaml && timeout 40 kubectl get pods -w
+[OK] 12 expect: 出力 OK
+[OK] 13 cmd: exit 0: kubectl describe pod web
+[OK] 14 expect: 出力 OK
+[OK] 15 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 16 out: 表示される内容と実際の出力が違う（WARN）: 「NAME   READY   STATUS    RESTARTS   AGE   IP           NODE              NOMINATED NODE   READINESS GATES」が実際の出力に無い 「web    1/1     Running   0          40s   10.244.2.2   hitokoto-worker   <none>           <none>」が実際の出力に無い
+         /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2mz8 (ro)
+      Conditions:
+        Type                        Status
+        PodReadyToStartContainers   True 
+        Initialized                 True 
+        Ready                       True 
+        ContainersReady             True 
+        PodScheduled                True 
+      Volumes:
+        kube-api-access-m2mz8:
+          Type:                    Projected (a volume that contains injected data from multiple sources)
+          TokenExpirationSeconds:  3607
+          ConfigMapName:           kube-root-ca.crt
+          Optional:                false
+          DownwardAPI:             true
+      QoS Class:                   BestEffort
+      Node-Selectors:              <none>
+      Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                                   node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+      Events:
+        Type    Reason     Age   From               Message
+        ----    ------     ----  ----               -------
+        Normal  Scheduled  40s   default-scheduler  Successfully assigned default/web to hitokoto-worker
+        Normal  Pulling    39s   kubelet            spec.containers{web}: Pulling image "nginx:1.30"
+        Normal  Pulled     37s   kubelet            spec.containers{web}: Successfully pulled image "nginx:1.30" in 2.452s (2.452s including waiting). Image size: 63639735 bytes.
+        Normal  Created    37s   kubelet            spec.containers{web}: Container created
+        Normal  Started    37s   kubelet            spec.containers{web}: Container started
+      
+[OK] 17 cmd: exit 0: kubectl get pods -o wide
+[OK] 18 expect: 出力 OK
+[OK] 19 cmd: exit 0: kubectl delete -f manifests/web.yaml
+[OK] 20 expect: 出力 OK
+[OK] 21 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 22 cmd: exit 0: kubectl get pods
+[OK] 23 expect: 出力 OK
+[OK] 24 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 25 file: write: manifests/pod.yaml
+[OK] 26 cmd: exit 0: kubectl apply -f manifests/pod.yaml
+[OK] 27 expect: 出力 OK
+[OK] 28 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 29 cmd: exit 0: kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s
+[OK] 30 expect: 出力 OK
+[OK] 31 cmd: exit 0: kubectl get pods
+[OK] 32 expect: 出力 OK
+[OK] 33 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 34 cmd: exit 0: for i in $(seq 30); do kubectl logs hitokoto | grep -q 'startup complete' && break; sleep 2; done
+[OK] 35 cmd: exit 0: kubectl logs hitokoto
+[OK] 36 expect: 出力 OK
+[OK] 37 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 40 cmd: 起動 OK: kubectl port-forward pod/hitokoto 8000:8000
+[OK] 41 http: GET http://127.0.0.1:8000/ → 200
+[OK] 42 stop: 止めた
+[OK] 43 cmd: exit 0: kubectl exec hitokoto -- hostname
+[OK] 44 expect: 出力 OK
+[OK] 45 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 46 cmd: exit 0: kubectl exec hitokoto -- id
+[OK] 47 expect: 出力 OK
+[OK] 48 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 49 file: write: manifests/pod.yaml
+[OK] 50 cmd: exit 0: kubectl apply -f manifests/pod.yaml
+[OK] 51 expect: 出力 OK
+[OK] 52 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 53 cmd: exit 0: kubectl apply -f manifests/web.yaml
+[OK] 54 expect: 出力 OK
+[OK] 55 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 56 cmd: exit 0: kubectl get pods --show-labels
+[OK] 57 expect: 出力 OK
+[WARN] 58 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto   1/1     Running   0          3m    app=hitokoto」が実際の出力に無い 「web        1/1     Running   0          5s    <none>」が実際の出力に無い
+      NAME       READY   STATUS              RESTARTS   AGE   LABELS
+      hitokoto   1/1     Running             0          8s    app=hitokoto
+      web        0/1     ContainerCreating   0          0s    <none>
+      
+[OK] 59 cmd: exit 0: kubectl get pods -l app=hitokoto
+[OK] 60 expect: 出力 OK
+[WARN] 61 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto   1/1     Running   0          3m」が実際の出力に無い
+      NAME       READY   STATUS    RESTARTS   AGE
+      hitokoto   1/1     Running   0          8s
+      
+[OK] 62 cmd: exit 0: kubectl delete -f manifests/web.yaml
+[OK] 63 expect: 出力 OK
+[OK] 64 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 65 file: write: manifests/pod.yaml
+[OK] 66 cmd: exit 0: kubectl apply -f manifests/pod.yaml
+[OK] 67 expect: 出力 OK
+[OK] 68 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 69 cmd: exit 0: for i in $(seq 60); do kubectl get pod hitokoto | grep -q ImagePullBackOff && break; sleep 2; done; kubectl get pod hitokoto
+[OK] 70 expect: 出力 OK
+[OK] 71 cmd: exit 0: kubectl get pods
+[OK] 72 expect: 出力 OK
+[WARN] 73 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto   0/1     ImagePullBackOff   0          4m」が実際の出力に無い
+      NAME       READY   STATUS             RESTARTS   AGE
+      hitokoto   0/1     ImagePullBackOff   0          26s
+      
+[OK] 74 cmd: exit 0: kubectl describe pod hitokoto
+[OK] 75 expect: 出力 OK
+[OK] 76 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 77 out: 表示される内容と実際の出力が違う（WARN）: 「NAME       READY   STATUS    RESTARTS      AGE」が実際の出力に無い 「hitokoto   1/1     Running   1 (14s ago)   5m」が実際の出力に無い
+      let            spec.containers{app}: Pulling image "ghcr.io/container-nyumon/hitokoto:2.0"
+        Normal   Pulled     22s               kubelet            spec.containers{app}: Successfully pulled image "ghcr.io/container-nyumon/hitokoto:2.0" in 3.904s (3.904s including waiting). Image size: 84261610 bytes.
+        Normal   Created    22s               kubelet            spec.containers{app}: Container created
+        Normal   Started    22s               kubelet            spec.containers{app}: Container started
+        Normal   Killing    16s               kubelet            spec.containers{app}: Container app definition changed, will be restarted
+        Normal   BackOff    15s               kubelet            spec.containers{app}: Back-off pulling image "ghcr.io/container-nyumon/hitokoto:2.0.0"
+        Warning  Failed     15s               kubelet            spec.containers{app}: Error: ImagePullBackOff
+        Normal   Pulling    1s (x2 over 16s)  kubelet            spec.containers{app}: Pulling image "ghcr.io/container-nyumon/hitokoto:2.0.0"
+        Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Failed to pull image "ghcr.io/container-nyumon/hitokoto:2.0.0": rpc error: code = NotFound desc = failed to pull and unpack image "ghcr.io/container-nyumon/hitokoto:2.0.0": failed to resolve reference "ghcr.io/container-nyumon/hitokoto:2.0.0": ghcr.io/container-nyumon/hitokoto:2.0.0: not found
+        Warning  Failed     0s (x2 over 15s)  kubelet            spec.containers{app}: Error: ErrImagePull
+      
+[OK] 78 file: write: manifests/pod.yaml
+[OK] 79 cmd: exit 0: kubectl apply -f manifests/pod.yaml
+[OK] 80 expect: 出力 OK
+[OK] 81 cmd: exit 0: kubectl wait --for=condition=Ready pod/hitokoto --timeout=180s
+[OK] 82 expect: 出力 OK
+[OK] 83 cmd: exit 0: kubectl get pods
+[OK] 84 expect: 出力 OK
+WARN（表示される内容の違い）: 5 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 84 手順中 NG 0・WARN 5（表示される内容の違い）

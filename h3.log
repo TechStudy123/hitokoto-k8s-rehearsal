@@ -1,0 +1,160 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 cmd: exit 0: kubectl delete -f manifests/pod.yaml
+[OK] 02 expect: 出力 OK
+[OK] 03 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 04 file: write: manifests/deployment.yaml
+[OK] 05 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 06 expect: 出力 OK
+[OK] 07 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 08 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 09 expect: 出力 OK
+[OK] 10 cmd: exit 0: kubectl get deployments
+[OK] 11 expect: 出力 OK
+[OK] 12 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 13 cmd: exit 0: kubectl get rs
+[OK] 14 expect: 出力 OK
+[OK] 15 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 16 cmd: exit 0: kubectl get pods
+[OK] 17 expect: 出力 OK
+[WARN] 18 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-p4p6k   1/1     Running   0          30s」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          30s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          30s」が実際の出力に無い
+      NAME                       READY   STATUS    RESTARTS   AGE
+      hitokoto-5745d576f-ljq7c   1/1     Running   0          3s
+      hitokoto-5745d576f-qs9pz   1/1     Running   0          3s
+      hitokoto-5745d576f-t2l9l   1/1     Running   0          3s
+      
+[OK] 19 cmd: exit 0: kubectl get pods -o wide
+[OK] 20 expect: 出力 OK
+[WARN] 21 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-p4p6k   1/1     Running   0          40s   10.244.1.3   hitokoto-worker2   <none>           <none>」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker    <none>           <none>」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          40s   10.244.2.3   hitokoto-worker    <none>           <none>」が実際の出力に無い
+      NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES
+      hitokoto-5745d576f-ljq7c   1/1     Running   0          3s    10.244.2.4   hitokoto-worker2   <none>           <none>
+      hitokoto-5745d576f-qs9pz   1/1     Running   0          3s    10.244.1.3   hitokoto-worker    <none>           <none>
+      hitokoto-5745d576f-t2l9l   1/1     Running   0          3s    10.244.2.3   hitokoto-worker2   <none>           <none>
+      
+[OK] 24 cmd: exit 0: kubectl delete $(kubectl get pods -o name | head -n 1)
+[OK] 25 expect: 出力 OK
+[OK] 26 cmd: exit 0: sleep 3; kubectl rollout status deployment/hitokoto --timeout=120s
+[OK] 27 expect: 出力 OK
+[OK] 28 cmd: exit 0: kubectl get pods
+[OK] 29 expect: 出力 OK
+[WARN] 30 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-mlt98   1/1     Running   0          4s」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          1m」が実際の出力に無い
+      NAME                       READY   STATUS    RESTARTS   AGE
+      hitokoto-5745d576f-qs9pz   1/1     Running   0          8s
+      hitokoto-5745d576f-t2l9l   1/1     Running   0          8s
+      hitokoto-5745d576f-zqv9t   1/1     Running   0          5s
+      
+[OK] 31 cmd: exit 0: kubectl scale deployment/hitokoto --replicas=5
+[OK] 32 expect: 出力 OK
+[OK] 33 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 34 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=120s
+[OK] 35 expect: 出力 OK
+[OK] 36 cmd: exit 0: kubectl get pods
+[OK] 37 expect: 出力 OK
+[WARN] 38 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-m6h2x   1/1     Running   0          5s」が実際の出力に無い 「hitokoto-5745d576f-mlt98   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          2m」が実際の出力に無い 「hitokoto-5745d576f-t9q5k   1/1     Running   0          5s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          2m」が実際の出力に無い
+      NAME                       READY   STATUS    RESTARTS   AGE
+      hitokoto-5745d576f-fjv8t   1/1     Running   0          0s
+      hitokoto-5745d576f-kmmhx   1/1     Running   0          0s
+      hitokoto-5745d576f-qs9pz   1/1     Running   0          8s
+      hitokoto-5745d576f-t2l9l   1/1     Running   0          8s
+      hitokoto-5745d576f-zqv9t   1/1     Running   0          5s
+      
+[OK] 39 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 40 expect: 出力 OK
+[OK] 41 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 42 cmd: exit 0: sleep 5; kubectl rollout status deployment/hitokoto --timeout=120s
+[OK] 43 expect: 出力 OK
+[OK] 44 cmd: exit 0: kubectl get pods
+[OK] 45 expect: 出力 OK
+[WARN] 46 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-m6h2x   1/1     Running       0          20s」が実際の出力に無い 「hitokoto-5745d576f-mlt98   1/1     Running       0          1m」が実際の出力に無い 「hitokoto-5745d576f-t9q5k   1/1     Terminating   0          20s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running       0          2m」が実際の出力に無い
+      NAME                       READY   STATUS        RESTARTS   AGE
+      hitokoto-5745d576f-fjv8t   1/1     Terminating   0          5s
+      hitokoto-5745d576f-kmmhx   1/1     Terminating   0          5s
+      hitokoto-5745d576f-qs9pz   1/1     Running       0          13s
+      hitokoto-5745d576f-t2l9l   1/1     Running       0          13s
+      hitokoto-5745d576f-zqv9t   1/1     Running       0          10s
+      
+[OK] 47 file: write: manifests/deployment.yaml
+[OK] 48 cmd: exit 0: kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s
+[OK] 49 expect: 出力 OK
+[OK] 50 cmd: exit 0: kubectl get deployments
+[OK] 51 expect: 出力 OK
+[WARN] 52 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto   4/4     4            4           3m」が実際の出力に無い
+      NAME       READY   UP-TO-DATE   AVAILABLE   AGE
+      hitokoto   4/4     4            4           16s
+      
+[OK] 53 file: write: manifests/deployment.yaml
+[OK] 54 cmd: exit 0: kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s && kubectl get deployments
+[OK] 55 expect: 出力 OK
+[OK] 56 file: write: manifests/deployment.yaml
+[OK] 57 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 58 expect: 出力 OK
+[OK] 59 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 60 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 61 expect: 出力 OK
+[OK] 62 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 63 cmd: exit 0: kubectl get rs
+[OK] 64 expect: 出力 OK
+[WARN] 65 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f   0         0         0       4m」が実際の出力に無い
+      NAME                 DESIRED   CURRENT   READY   AGE
+      hitokoto-5745d576f   0         0         0       27s
+      hitokoto-b55ff59b6   3         3         3       7s
+      
+[OK] 68 cmd: 起動 OK: kubectl port-forward deployment/hitokoto 8000:8000
+[OK] 69 http: GET http://127.0.0.1:8000/ → 200
+[OK] 70 stop: 止めた
+[OK] 71 file: write: manifests/deployment.yaml
+[OK] 72 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 73 expect: 出力 OK
+[OK] 74 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 77 cmd: exit 1（期待 1）: kubectl rollout status deployment/hitokoto --timeout=40s
+[OK] 78 expect: 出力 OK
+[OK] 79 cmd: exit 0: kubectl get pods
+[OK] 80 expect: 出力 OK
+[WARN] 81 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-6d666f5f4c-czll2   0/1     ImagePullBackOff   0          40s」が実際の出力に無い 「hitokoto-b55ff59b6-5gw9r    1/1     Running            0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-b25gk    1/1     Running            0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-wtjhs    1/1     Running            0          2m」が実際の出力に無い
+      NAME                        READY   STATUS             RESTARTS   AGE
+      hitokoto-6d666f5f4c-n8hkn   0/1     ImagePullBackOff   0          40s
+      hitokoto-b55ff59b6-dzs7k    1/1     Running            0          48s
+      hitokoto-b55ff59b6-gfqmt    1/1     Running            0          42s
+      hitokoto-b55ff59b6-gpjd4    1/1     Running            0          45s
+      
+[OK] 82 cmd: exit 0: kubectl rollout undo deployment/hitokoto
+[OK] 83 expect: 出力 OK
+[OK] 84 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 85 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 86 expect: 出力 OK
+[OK] 87 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 88 cmd: exit 0: kubectl get pods
+[OK] 89 expect: 出力 OK
+[WARN] 90 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-6d666f5f4c-czll2   0/1     Terminating   0          41s」が実際の出力に無い 「hitokoto-b55ff59b6-5gw9r    1/1     Running       0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-b25gk    1/1     Running       0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-wtjhs    1/1     Running       0          2m」が実際の出力に無い
+      NAME                        READY   STATUS        RESTARTS   AGE
+      hitokoto-6d666f5f4c-n8hkn   0/1     Terminating   0          40s
+      hitokoto-b55ff59b6-dzs7k    1/1     Running       0          48s
+      hitokoto-b55ff59b6-gfqmt    1/1     Running       0          42s
+      hitokoto-b55ff59b6-gpjd4    1/1     Running       0          45s
+      
+[OK] 91 cmd: exit 0: kubectl rollout history deployment/hitokoto
+[OK] 92 expect: 出力 OK
+[OK] 93 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 94 file: write: manifests/deployment.yaml
+[OK] 95 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 96 expect: 出力 OK
+[OK] 97 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 98 file: write: manifests/deployment.yaml
+[OK] 99 cmd: exit 0: kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 100 expect: 出力 OK
+[OK] 101 cmd: exit 0: kubectl get pods
+[OK] 102 expect: 出力 OK
+[WARN] 103 out: 表示される内容と実際の出力が違う（WARN）: 「deployment "hitokoto" successfully rolled out」が実際の出力に無い
+      NAME                       READY   STATUS        RESTARTS   AGE
+      hitokoto-5745d576f-mt8ks   1/1     Running       0          2s
+      hitokoto-5745d576f-nhz6j   1/1     Running       0          1s
+      hitokoto-5745d576f-v4cms   1/1     Running       0          1s
+      hitokoto-b55ff59b6-dzs7k   1/1     Terminating   0          50s
+      hitokoto-b55ff59b6-gfqmt   0/1     Completed     0          44s
+      hitokoto-b55ff59b6-gpjd4   1/1     Terminating   0          47s
+      
+[OK] 104 file: write: manifests/deployment.yaml
+[OK] 105 cmd: exit 0: kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 106 expect: 出力 OK
+WARN（表示される内容の違い）: 10 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 106 手順中 NG 0・WARN 10（表示される内容の違い）

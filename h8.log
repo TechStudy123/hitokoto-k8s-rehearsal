@@ -1,0 +1,152 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 cmd: exit 0: kubectl apply -f setup/team.yaml
+[OK] 02 expect: 出力 OK
+[OK] 03 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 04 cmd: exit 0: kubectl config set-credentials prod-user --token=$(kubectl create token prod-user -n hitokoto-prod --duration=24h)
+[OK] 05 expect: 出力 OK
+[OK] 06 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 07 cmd: exit 0: kubectl config set-context prod --cluster=kind-hitokoto --user=prod-user --namespace=hitokoto-prod
+[OK] 08 expect: 出力 OK
+[OK] 09 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 10 cmd: exit 0: kubectl config get-contexts
+[OK] 11 expect: 出力 OK
+[OK] 12 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 13 cmd: exit 0: kubectl config use-context prod
+[OK] 14 expect: 出力 OK
+[OK] 15 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 16 cmd: exit 0: kubectl get pods
+[OK] 17 expect: 出力 OK
+[WARN] 18 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い
+      NAME                       READY   STATUS              RESTARTS   AGE
+      hitokoto-b55ff59b6-8zhzv   0/1     ContainerCreating   0          0s
+      hitokoto-b55ff59b6-qvcq9   0/1     ContainerCreating   0          0s
+      
+[OK] 19 cmd: exit 1（期待 1）: kubectl delete $(kubectl get pods -o name | head -n 1)
+[OK] 20 expect: 出力 OK
+[OK] 23 cmd: exit 1（期待 1）: kubectl get pods -n hitokoto
+[OK] 24 expect: 出力 OK
+[OK] 25 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 26 cmd: exit 1（期待 1）: kubectl auth can-i delete pods
+[OK] 27 expect: 出力 OK
+[OK] 28 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 29 cmd: exit 0: kubectl auth can-i list pods
+[OK] 30 expect: 出力 OK
+[OK] 31 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 32 cmd: exit 0: kubectl config use-context kind-hitokoto
+[OK] 33 expect: 出力 OK
+[OK] 34 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 35 cmd: exit 0: kubectl config set-context --current --namespace=hitokoto
+[OK] 36 expect: 出力 OK
+[OK] 37 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 38 cmd: exit 0: kubectl config get-contexts
+[OK] 39 expect: 出力 OK
+[OK] 40 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 41 cmd: exit 0: kubectl get pods
+[OK] 42 expect: 出力 OK
+[WARN] 43 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-56x4c   1/1     Running   0          10m」が実際の出力に無い 「hitokoto-7656bfd894-phhs2   1/1     Running   0          10m」が実際の出力に無い 「hitokoto-7656bfd894-x7jzb   1/1     Running   0          10m」が実際の出力に無い
+      NAME                        READY   STATUS    RESTARTS   AGE
+      hitokoto-7656bfd894-9f4sw   1/1     Running   0          44s
+      hitokoto-7656bfd894-pn2jc   1/1     Running   0          67s
+      hitokoto-7656bfd894-r6vwj   1/1     Running   0          56s
+      
+[WARN] 44 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-b55ff59b6-gs447   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-b55ff59b6-hl7wr   1/1     Running   0          1m」が実際の出力に無い
+      NAME                        READY   STATUS    RESTARTS   AGE
+      hitokoto-7656bfd894-9f4sw   1/1     Running   0          44s
+      hitokoto-7656bfd894-pn2jc   1/1     Running   0          67s
+      hitokoto-7656bfd894-r6vwj   1/1     Running   0          56s
+      
+[OK] 45 cmd: exit 0: kubectl get pods --context prod
+[OK] 46 expect: 出力 OK
+[OK] 47 cmd: exit 0: kubectl kustomize hitokoto-team/overlays/staging
+[OK] 48 expect: 出力 OK
+[OK] 49 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 50 cmd: exit 0: kubectl kustomize hitokoto-team/overlays/prod
+[OK] 51 expect: 出力 OK
+[OK] 52 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 53 cmd: exit 0: kubectl config get-contexts
+[OK] 54 expect: 出力 OK
+[OK] 55 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 56 cmd: exit 1（期待 1）: kubectl diff -k hitokoto-team/overlays/staging
+[OK] 57 expect: 出力 OK
+[OK] 58 cmd: exit 0: kubectl apply -k hitokoto-team/overlays/staging
+[OK] 59 expect: 出力 OK
+[OK] 60 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 61 cmd: exit 0: for i in $(seq 40); do kubectl get pods | grep -q CreateContainerConfigError && break; sleep 2; done
+[OK] 62 cmd: exit 0: kubectl get pods
+[OK] 63 expect: 出力 OK
+[WARN] 64 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-7656bfd894-56x4c           1/1     Running                      0          12m」が実際の出力に無い 「hitokoto-7656bfd894-phhs2           1/1     Running                      0          12m」が実際の出力に無い 「hitokoto-7656bfd894-x7jzb           1/1     Running                      0          12m」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-4k6jl   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-mk5z2   0/1     CreateContainerConfigError   0          20s」が実際の出力に無い
+      NAME                                READY   STATUS                       RESTARTS   AGE
+      hitokoto-7656bfd894-9f4sw           1/1     Running                      0          47s
+      hitokoto-7656bfd894-pn2jc           1/1     Running                      0          70s
+      hitokoto-7656bfd894-r6vwj           1/1     Running                      0          59s
+      staging-hitokoto-7d6cf5c4cf-jqxfm   0/1     CreateContainerConfigError   0          2s
+      staging-hitokoto-7d6cf5c4cf-mvwq6   0/1     CreateContainerConfigError   0          2s
+      
+[OK] 65 cmd: exit 0: for i in $(seq 30); do kubectl describe pods -l app=hitokoto-team | grep -q 'team-secret" not found' && break; sleep 2; done
+[OK] 66 cmd: exit 0: kubectl describe pods -l app=hitokoto-team
+[OK] 67 expect: 出力 OK
+[WARN] 68 out: 表示される内容と実際の出力が違う（WARN）: 「Warning  Failed     …  kubelet  spec.containers{app}: Error: secret "team-secret" not found」が実際の出力に無い
+      te-hash=7d6cf5c4cf
+      Annotations:      <none>
+      Status:           Pending
+      IP:               10.244.2.45
+      IPs:
+        IP:           10.244.2.45
+      Controlled By:  ReplicaSet/staging-hitokoto-7d6cf5c4cf
+      Containers:
+        app:
+          Container ID:    
+          Image:           ghcr.io/container-nyumon/hitokoto:2.1
+          Image ID:        
+          Port:            <none>
+          Host Port:       <none>
+          SeccompProfile:  RuntimeDefault
+          State:           Waiting
+            Reason:        CreateContainerConfigError
+          Ready:           False
+          Restart Count:   0
+          Environment:
+            DB_PASSWORD:  <set to the key 'DB_PASSWORD' in secret 'team-secret'>  Optional: false
+          Mounts:
+            /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xmrjn (ro)
+      Conditions:
+        Type                        Status
+        PodReadyToStartContainers   True 
+        Initialized                 True 
+        Ready                       False 
+        ContainersReady             False 
+        PodScheduled                True 
+      Volumes:
+        kube-api-access-xmrjn:
+          Type:                    Projected (a volume that contains injected data from multiple sources)
+          TokenExpirationSeconds:  3607
+          ConfigMapName:           kube-root-ca.crt
+          Optional:                false
+          DownwardAPI:             true
+      QoS Class:                   BestEffort
+      Node-Selectors:              <none>
+      Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                                   node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+      
+[OK] 69 cmd: exit 0: kubectl create secret generic team-secret --from-literal=DB_PASSWORD=team-pass
+[OK] 70 expect: 出力 OK
+[OK] 71 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 72 cmd: exit 0: kubectl rollout status deployment/staging-hitokoto --timeout=180s
+[OK] 73 expect: 出力 OK
+[OK] 74 cmd: exit 0: kubectl get pods -l app=hitokoto-team
+[OK] 75 expect: 出力 OK
+[WARN] 76 out: 表示される内容と実際の出力が違う（WARN）: 「staging-hitokoto-7d6cf5c4cf-4k6jl   1/1     Running   0          1m」が実際の出力に無い 「staging-hitokoto-7d6cf5c4cf-mk5z2   1/1     Running   0          1m」が実際の出力に無い
+      NAME                                READY   STATUS    RESTARTS   AGE
+      staging-hitokoto-7d6cf5c4cf-jqxfm   1/1     Running   0          75s
+      staging-hitokoto-7d6cf5c4cf-mvwq6   1/1     Running   0          75s
+      
+[WARN] 77 out: 表示される内容と実際の出力が違う（WARN）: 「Context "kind-hitokoto" modified.」が実際の出力に無い
+      NAME                                READY   STATUS    RESTARTS   AGE
+      staging-hitokoto-7d6cf5c4cf-jqxfm   1/1     Running   0          75s
+      staging-hitokoto-7d6cf5c4cf-mvwq6   1/1     Running   0          75s
+      
+[OK] 78 cmd: exit 0: kubectl config set-context --current --namespace=default
+[OK] 79 expect: 出力 OK
+WARN（表示される内容の違い）: 7 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 79 手順中 NG 0・WARN 7（表示される内容の違い）

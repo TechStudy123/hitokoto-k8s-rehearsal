@@ -1,0 +1,173 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 cmd: exit 0: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml
+[OK] 02 expect: 出力 OK
+[OK] 03 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 04 cmd: exit 0: kubectl patch deployment metrics-server -n kube-system --type json --patch-file setup/metrics-server-tls.json
+[OK] 05 expect: 出力 OK
+[OK] 06 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 07 cmd: exit 0: kubectl rollout status deployment/metrics-server -n kube-system
+[OK] 08 expect: 出力 OK
+[OK] 09 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 10 cmd: exit 0: for i in $(seq 40); do kubectl top pods >/dev/null 2>&1 && break; sleep 5; done
+[OK] 11 cmd: exit 0: kubectl top nodes
+[OK] 12 expect: 出力 OK
+[OK] 13 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 14 cmd: exit 0: kubectl top pods
+[OK] 15 expect: 出力 OK
+[WARN] 16 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-68f57945dc-87rtl   119m         100Mi」が実際の出力に無い 「hitokoto-68f57945dc-bk8fq   1m           99Mi」が実際の出力に無い 「hitokoto-68f57945dc-mmqk5   106m         99Mi」が実際の出力に無い 「postgres-789b848956-4c89x   35m          27Mi」が実際の出力に無い
+      NAME                                      CPU(cores)   MEMORY(bytes)   
+      api-5f65f5b867-2qk6f                      0m           1Mi             
+      hitokoto-5574dd46c-cbx8f                  1m           98Mi            
+      hitokoto-5574dd46c-mjnd7                  108m         98Mi            
+      hitokoto-5574dd46c-rktpv                  121m         99Mi            
+      hitokoto-f97d9f665-c86lv                  1m           98Mi            
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1m           27Mi            
+      postgres-789b848956-hjqkn                 8m           31Mi            
+      
+[OK] 17 file: write: manifests/deployment.yaml
+[OK] 18 cmd: exit 0: kubectl apply -f manifests/deployment.yaml --dry-run=server
+[OK] 19 expect: 出力 OK
+[OK] 20 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 21 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 22 expect: 出力 OK
+[OK] 23 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 24 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 25 expect: 出力 OK
+[OK] 26 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 27 file: write: manifests/deployment.yaml
+[OK] 28 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 29 expect: 出力 OK
+[OK] 30 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 31 cmd: exit 0: for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\|OOMKilled' && break; sleep 3; done; sleep 20; kubectl get pods
+[OK] 32 expect: 出力 OK
+[OK] 33 cmd: exit 0: kubectl get pods
+[OK] 34 expect: 出力 OK
+[WARN] 35 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-8576f7765-fxpxt    0/1     CrashLoopBackOff   2 (15s ago)   40s」が実際の出力に無い 「hitokoto-8576f7765-w4zp6    0/1     CrashLoopBackOff   2 (14s ago)   39s」が実際の出力に無い 「hitokoto-8576f7765-zgp7p    0/1     CrashLoopBackOff   2 (14s ago)   40s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running            0             5m」が実際の出力に無い
+      NAME                                      READY   STATUS        RESTARTS      AGE
+      api-5f65f5b867-2qk6f                      1/1     Running       0             3m16s
+      hitokoto-559569f869-d8p5p                 1/1     Terminating   0             27s
+      hitokoto-559569f869-pk2wb                 1/1     Terminating   0             28s
+      hitokoto-6f7bbcb597-c9x8d                 0/1     OOMKilled     2 (23s ago)   26s
+      hitokoto-6f7bbcb597-g4m5t                 0/1     OOMKilled     2 (23s ago)   27s
+      hitokoto-6f7bbcb597-kcbjq                 0/1     OOMKilled     2 (23s ago)   25s
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running       0             3m16s
+      postgres-789b848956-hjqkn                 1/1     Running       0             61s
+      
+[OK] 36 cmd: exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'CrashLoopBackOff\|OOMKilled\|Error' && echo $p; done | head -n 1)
+[OK] 37 expect: 出力 OK
+[OK] 41 file: write: manifests/deployment.yaml
+[OK] 42 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 43 expect: 出力 OK
+[OK] 44 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 45 expect: 出力 OK
+[OK] 46 file: write: manifests/deployment.yaml
+[OK] 47 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 48 expect: 出力 OK
+[OK] 49 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 50 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 51 expect: 出力 OK
+[OK] 52 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 53 cmd: exit 0: kubectl get pods -l app=hitokoto
+[OK] 54 expect: 出力 OK
+[OK] 55 file: write: manifests/deployment.yaml
+[OK] 56 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 57 expect: 出力 OK
+[OK] 58 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 59 cmd: exit 0: sleep 30
+[OK] 60 cmd: exit 0: kubectl get pods
+[OK] 61 expect: 出力 OK
+[WARN] 62 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-5cd6d67d66-pgl9r   0/1     Running   0          30s」が実際の出力に無い 「hitokoto-674b64bfcc-5bgnc   1/1     Running   0          42s」が実際の出力に無い 「hitokoto-674b64bfcc-8j5d4   1/1     Running   0          53s」が実際の出力に無い 「hitokoto-674b64bfcc-jlh6f   1/1     Running   0          64s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running   0          2m」が実際の出力に無い
+      NAME                                      READY   STATUS    RESTARTS   AGE
+      api-5f65f5b867-2qk6f                      1/1     Running   0          4m21s
+      hitokoto-5c4587cb5c-9p4lg                 1/1     Running   0          52s
+      hitokoto-5c4587cb5c-9r2tt                 1/1     Running   0          63s
+      hitokoto-5c4587cb5c-glgkd                 1/1     Running   0          41s
+      hitokoto-7fd98f5f46-p4ptd                 0/1     Running   0          30s
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0          4m21s
+      postgres-789b848956-hjqkn                 1/1     Running   0          2m6s
+      
+[OK] 63 cmd: exit 0: kubectl describe service hitokoto
+[OK] 64 expect: 出力 OK
+[OK] 65 cmd: exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q '0/1' && echo $p; done | head -n 1)
+[OK] 66 expect: 出力 OK
+[OK] 69 file: write: manifests/deployment.yaml
+[OK] 70 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 71 expect: 出力 OK
+[OK] 72 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 73 cmd: exit 0: kubectl rollout status deployment/hitokoto
+[OK] 74 expect: 出力 OK
+[OK] 75 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 76 file: write: manifests/deployment.yaml
+[OK] 77 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 78 expect: 出力 OK
+[OK] 79 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 80 cmd: exit 0: sleep 75
+[OK] 81 cmd: exit 0: kubectl get pods
+[OK] 82 expect: 出力 OK
+[WARN] 83 out: 表示される内容と実際の出力が違う（WARN）: 「hitokoto-59b86bfbf-5ftqz    0/1     Running   2 (3s ago)    63s」が実際の出力に無い 「hitokoto-59b86bfbf-ddjrv    1/1     Running   1 (22s ago)   52s」が実際の出力に無い 「hitokoto-59b86bfbf-dm89q    1/1     Running   2 (14s ago)   75s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running   0             3m」が実際の出力に無い
+      NAME                                      READY   STATUS    RESTARTS      AGE
+      api-5f65f5b867-2qk6f                      1/1     Running   0             5m37s
+      hitokoto-5c4587cb5c-9r2tt                 1/1     Running   0             2m19s
+      hitokoto-df6887f57-kdnk5                  1/1     Running   1 (23s ago)   54s
+      hitokoto-df6887f57-s5ppz                  1/1     Running   2 (14s ago)   75s
+      hitokoto-df6887f57-sh6nb                  0/1     Running   2 (4s ago)    65s
+      hitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0             5m37s
+      postgres-789b848956-hjqkn                 1/1     Running   0             3m22s
+      
+[OK] 84 cmd: exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'hitokoto-' && echo $p; done | head -n 1)
+[NG] 85 expect: 「Liveness probe failed」が出力に無い。
+[OK] 89 file: write: manifests/deployment.yaml
+[OK] 90 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 91 expect: 出力 OK
+[OK] 92 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 93 expect: 出力 OK
+[OK] 94 file: write: manifests/namespace.yaml
+[OK] 95 cmd: exit 0: kubectl apply -f manifests/namespace.yaml
+[OK] 96 expect: 出力 OK
+[OK] 97 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 98 cmd: exit 0: kubectl get pods -n hitokoto
+[OK] 99 expect: 出力 OK
+[OK] 100 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 101 cmd: exit 0: kubectl apply -f manifests/configmap.yaml -n hitokoto
+[OK] 102 expect: 出力 OK
+[OK] 103 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 104 cmd: exit 0: kubectl create secret generic db-secret --from-literal=POSTGRES_PASSWORD=hitokoto-pass -n hitokoto
+[OK] 105 expect: 出力 OK
+[OK] 106 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 107 cmd: exit 0: kubectl apply -f manifests/deployment.yaml -n hitokoto
+[OK] 108 expect: 出力 OK
+[OK] 109 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 110 cmd: exit 0: kubectl get deployment -n hitokoto
+[OK] 111 expect: 出力 OK
+[OK] 112 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 113 cmd: exit 0: kubectl get pods -n hitokoto
+[OK] 114 expect: 出力 OK
+[OK] 115 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 116 cmd: exit 0: sleep 5
+[OK] 117 cmd: exit 0: kubectl describe replicaset -n hitokoto
+[OK] 118 expect: 出力 OK
+[WARN] 119 out: 表示される内容と実際の出力が違う（WARN）: 「Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods "hitokoto-674b64bfcc-r5ntt" is forbidden: violates PodSecurity "restricted:latest": …」が実際の出力に無い
+      ation=false), unrestricted capabilities (container "app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+        Warning  FailedCreate  4s    replicaset-controller  Error creating: pods "hitokoto-674b64bfcc-ndq9g" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "app" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+        Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods "hitokoto-674b64bfcc-c5xlf" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "app" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "app" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "app" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "app" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+      
+[OK] 120 file: write: manifests/deployment.yaml
+[OK] 121 cmd: exit 0: kubectl apply -f manifests/deployment.yaml -n hitokoto
+[OK] 122 expect: 出力 OK
+[OK] 123 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 124 cmd: exit 0: kubectl rollout status deployment/hitokoto -n hitokoto
+[OK] 125 expect: 出力 OK
+[OK] 126 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 127 cmd: exit 0: kubectl exec -n hitokoto deployment/hitokoto -- whoami
+[OK] 128 expect: 出力 OK
+[OK] 129 out: 表示される内容 OK（行が同じ順で出た）
+[WARN] 130 out: 表示される内容と実際の出力が違う（WARN）: 「deployment "hitokoto" successfully rolled out」が実際の出力に無い
+      appuser
+      
+[OK] 131 cmd: exit 0: kubectl apply -f manifests/deployment.yaml
+[OK] 132 expect: 出力 OK
+[OK] 133 cmd: exit 0: kubectl rollout status deployment/hitokoto --timeout=180s
+[OK] 134 expect: 出力 OK
+WARN（表示される内容の違い）: 6 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 134 手順中 NG 1・WARN 6（表示される内容の違い）

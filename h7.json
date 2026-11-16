@@ -1,0 +1,888 @@
+[
+ {
+  "n": 1,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml",
+  "out": "serviceaccount/metrics-server created\nclusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created\nclusterrole.rbac.authorization.k8s.io/system:metrics-server created\nrolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader created\nclusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator created\nclusterrolebinding.rbac.authorization.k8s.io/system:metrics-server created\nservice/metrics-server created\ndeployment.apps/metrics-server created\napiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 2,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 3,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 4,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl patch deployment metrics-server -n kube-system --type json --patch-file setup/metrics-server-tls.json",
+  "out": "deployment.apps/metrics-server patched\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 5,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 6,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 7,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/metrics-server -n kube-system",
+  "out": "Waiting for deployment \"metrics-server\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"metrics-server\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"metrics-server\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"metrics-server\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 8,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 9,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 10,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 40); do kubectl top pods >/dev/null 2>&1 && break; sleep 5; done",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 11,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl top nodes",
+  "out": "NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   \nhitokoto-control-plane   127m         3%       837Mi           5%          \nhitokoto-worker          188m         4%       411Mi           2%          \nhitokoto-worker2         23m          0%       565Mi           3%          \n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 12,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 13,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 14,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl top pods",
+  "out": "NAME                                      CPU(cores)   MEMORY(bytes)   \napi-5f65f5b867-2qk6f                      0m           1Mi             \nhitokoto-5574dd46c-cbx8f                  1m           98Mi            \nhitokoto-5574dd46c-mjnd7                  108m         98Mi            \nhitokoto-5574dd46c-rktpv                  121m         99Mi            \nhitokoto-f97d9f665-c86lv                  1m           98Mi            \nhitokoto-gateway-nginx-859dc4897d-j2cg2   1m           27Mi            \npostgres-789b848956-hjqkn                 8m           31Mi            \n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 15,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 16,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-68f57945dc-87rtl   119m         100Mi」が実際の出力に無い 「hitokoto-68f57945dc-bk8fq   1m           99Mi」が実際の出力に無い 「hitokoto-68f57945dc-mmqk5   106m         99Mi」が実際の出力に無い 「postgres-789b848956-4c89x   35m          27Mi」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-68f57945dc-87rtl   119m         100Mi」が実際の出力に無い",
+   "「hitokoto-68f57945dc-bk8fq   1m           99Mi」が実際の出力に無い",
+   "「hitokoto-68f57945dc-mmqk5   106m         99Mi」が実際の出力に無い",
+   "「postgres-789b848956-4c89x   35m          27Mi」が実際の出力に無い"
+  ],
+  "out": "NAME                                      CPU(cores)   MEMORY(bytes)   \napi-5f65f5b867-2qk6f                      0m           1Mi             \nhitokoto-5574dd46c-cbx8f                  1m           98Mi            \nhitokoto-5574dd46c-mjnd7                  108m         98Mi            \nhitokoto-5574dd46c-rktpv                  121m         99Mi            \nhitokoto-f97d9f665-c86lv                  1m           98Mi            \nhitokoto-gateway-nginx-859dc4897d-j2cg2   1m           27Mi            \npostgres-789b848956-hjqkn                 8m           31Mi            \n"
+ },
+ {
+  "n": 17,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 18,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml --dry-run=server",
+  "out": "deployment.apps/hitokoto configured (server dry run)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 19,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 20,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 21,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 22,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 23,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 24,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 25,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 26,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 27,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 28,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 29,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 30,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; sleep 20; kubectl get pods",
+  "out": "NAME                                      READY   STATUS        RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running       0             3m16s\nhitokoto-559569f869-d8p5p                 1/1     Terminating   0             27s\nhitokoto-559569f869-pk2wb                 1/1     Terminating   0             28s\nhitokoto-6f7bbcb597-c9x8d                 0/1     OOMKilled     2 (23s ago)   26s\nhitokoto-6f7bbcb597-g4m5t                 0/1     OOMKilled     2 (23s ago)   27s\nhitokoto-6f7bbcb597-kcbjq                 0/1     OOMKilled     2 (23s ago)   25s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running       0             3m16s\npostgres-789b848956-hjqkn                 1/1     Running       0             61s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 32,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 33,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                                      READY   STATUS        RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running       0             3m16s\nhitokoto-559569f869-d8p5p                 1/1     Terminating   0             27s\nhitokoto-559569f869-pk2wb                 1/1     Terminating   0             28s\nhitokoto-6f7bbcb597-c9x8d                 0/1     OOMKilled     2 (23s ago)   26s\nhitokoto-6f7bbcb597-g4m5t                 0/1     OOMKilled     2 (23s ago)   27s\nhitokoto-6f7bbcb597-kcbjq                 0/1     OOMKilled     2 (23s ago)   25s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running       0             3m16s\npostgres-789b848956-hjqkn                 1/1     Running       0             61s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 34,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 35,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-8576f7765-fxpxt    0/1     CrashLoopBackOff   2 (15s ago)   40s」が実際の出力に無い 「hitokoto-8576f7765-w4zp6    0/1     CrashLoopBackOff   2 (14s ago)   39s」が実際の出力に無い 「hitokoto-8576f7765-zgp7p    0/1     CrashLoopBackOff   2 (14s ago)   40s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running            0             5m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-8576f7765-fxpxt    0/1     CrashLoopBackOff   2 (15s ago)   40s」が実際の出力に無い",
+   "「hitokoto-8576f7765-w4zp6    0/1     CrashLoopBackOff   2 (14s ago)   39s」が実際の出力に無い",
+   "「hitokoto-8576f7765-zgp7p    0/1     CrashLoopBackOff   2 (14s ago)   40s」が実際の出力に無い",
+   "「postgres-789b848956-4c89x   1/1     Running            0             5m」が実際の出力に無い"
+  ],
+  "out": "NAME                                      READY   STATUS        RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running       0             3m16s\nhitokoto-559569f869-d8p5p                 1/1     Terminating   0             27s\nhitokoto-559569f869-pk2wb                 1/1     Terminating   0             28s\nhitokoto-6f7bbcb597-c9x8d                 0/1     OOMKilled     2 (23s ago)   26s\nhitokoto-6f7bbcb597-g4m5t                 0/1     OOMKilled     2 (23s ago)   27s\nhitokoto-6f7bbcb597-kcbjq                 0/1     OOMKilled     2 (23s ago)   25s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running       0             3m16s\npostgres-789b848956-hjqkn                 1/1     Running       0             61s\n"
+ },
+ {
+  "n": 36,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'CrashLoopBackOff\\|OOMKilled\\|Error' && echo $p; done | head -n 1)",
+  "out": "840d25d727721b3db6e077ec19b7cfcbbfeee8edab8bc58a\n    Image:          ghcr.io/container-nyumon/hitokoto:2.1\n    Image ID:       ghcr.io/container-nyumon/hitokoto@sha256:716b694a17471362abf8ed8915154a9e81b1bcddd47ee137c762a730d5a93105\n    Port:           <none>\n    Host Port:      <none>\n    State:          Terminated\n      Reason:       OOMKilled\n      Exit Code:    137\n      Started:      Mon, 16 Nov 2026 03:07:40 +0000\n      Finished:     Mon, 16 Nov 2026 03:07:40 +0000\n    Last State:     Terminated\n      Reason:       OOMKilled\n      Exit Code:    137\n      Started:      Mon, 16 Nov 2026 03:07:27 +0000\n      Finished:     Mon, 16 Nov 2026 03:07:28 +0000\n    Ready:          False\n    Restart Count:  2\n    Limits:\n      cpu:     500m\n      memory:  32Mi\n    Requests:\n      cpu:     100m\n      memory:  32Mi\n    Environment:\n      APP_TITLE:    <set to the key 'APP_TITLE' of config map 'hitokoto-config'>  Optional: false\n      DB_HOST:      postgres\n      DB_PASSWORD:  <set to the key 'POSTGRES_PASSWORD' in secret 'db-secret'>  Optional: false\n    Mounts:\n      /etc/hitokoto from config (rw)\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-jdxps (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  config:\n    Type:      ConfigMap (a volume populated by a ConfigMap)\n    Name:      hitokoto-config\n    Optional:  false\n  kube-api-access-jdxps:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age                From               Message\n  ----     ------     ----               ----               -------\n  Normal   Scheduled  26s                default-scheduler  Successfully assigned default/hitokoto-6f7bbcb597-c9x8d to hitokoto-worker\n  Normal   Pulled     11s (x3 over 26s)  kubelet            spec.containers{app}: Container image \"ghcr.io/container-nyumon/hitokoto:2.1\" already present on machine and can be accessed by the pod\n  Normal   Created    11s (x3 over 26s)  kubelet            spec.containers{app}: Container created\n  Normal   Started    11s (x3 over 26s)  kubelet            spec.containers{app}: Container started\n  Warning  BackOff    10s (x2 over 22s)  kubelet            spec.containers{app}: Back-off restarting failed container app in pod hitokoto-6f7bbcb597-c9x8d_default(5f88b2bd-2e59-4fab-a596-6dd427330af9)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 37,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 38,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 39,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 40,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 41,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 42,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 43,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 44,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 45,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 46,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 47,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 48,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 49,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 50,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 0 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 51,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 52,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 53,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -l app=hitokoto",
+  "out": "NAME                        READY   STATUS        RESTARTS   AGE\nhitokoto-559569f869-nrp8g   1/1     Terminating   0          34s\nhitokoto-5c4587cb5c-9p4lg   1/1     Running       0          22s\nhitokoto-5c4587cb5c-9r2tt   1/1     Running       0          33s\nhitokoto-5c4587cb5c-glgkd   1/1     Running       0          11s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 54,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 55,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 56,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 57,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 58,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 59,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 30",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 60,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                                      READY   STATUS    RESTARTS   AGE\napi-5f65f5b867-2qk6f                      1/1     Running   0          4m21s\nhitokoto-5c4587cb5c-9p4lg                 1/1     Running   0          52s\nhitokoto-5c4587cb5c-9r2tt                 1/1     Running   0          63s\nhitokoto-5c4587cb5c-glgkd                 1/1     Running   0          41s\nhitokoto-7fd98f5f46-p4ptd                 0/1     Running   0          30s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0          4m21s\npostgres-789b848956-hjqkn                 1/1     Running   0          2m6s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 61,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 62,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5cd6d67d66-pgl9r   0/1     Running   0          30s」が実際の出力に無い 「hitokoto-674b64bfcc-5bgnc   1/1     Running   0          42s」が実際の出力に無い 「hitokoto-674b64bfcc-8j5d4   1/1     Running   0          53s」が実際の出力に無い 「hitokoto-674b64bfcc-jlh6f   1/1     Running   0          64s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running   0          2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5cd6d67d66-pgl9r   0/1     Running   0          30s」が実際の出力に無い",
+   "「hitokoto-674b64bfcc-5bgnc   1/1     Running   0          42s」が実際の出力に無い",
+   "「hitokoto-674b64bfcc-8j5d4   1/1     Running   0          53s」が実際の出力に無い",
+   "「hitokoto-674b64bfcc-jlh6f   1/1     Running   0          64s」が実際の出力に無い",
+   "「postgres-789b848956-4c89x   1/1     Running   0          2m」が実際の出力に無い"
+  ],
+  "out": "NAME                                      READY   STATUS    RESTARTS   AGE\napi-5f65f5b867-2qk6f                      1/1     Running   0          4m21s\nhitokoto-5c4587cb5c-9p4lg                 1/1     Running   0          52s\nhitokoto-5c4587cb5c-9r2tt                 1/1     Running   0          63s\nhitokoto-5c4587cb5c-glgkd                 1/1     Running   0          41s\nhitokoto-7fd98f5f46-p4ptd                 0/1     Running   0          30s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0          4m21s\npostgres-789b848956-hjqkn                 1/1     Running   0          2m6s\n"
+ },
+ {
+  "n": 63,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service hitokoto",
+  "out": "Name:                     hitokoto\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=hitokoto\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.75.100\nIPs:                      10.96.75.100\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.35:8000,10.244.1.31:8000,10.244.2.36:8000 + 0 more...\nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:                   <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 64,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 65,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q '0/1' && echo $p; done | head -n 1)",
+  "out": "o/container-nyumon/hitokoto:2.1\n    Image ID:       ghcr.io/container-nyumon/hitokoto@sha256:716b694a17471362abf8ed8915154a9e81b1bcddd47ee137c762a730d5a93105\n    Port:           <none>\n    Host Port:      <none>\n    State:          Running\n      Started:      Mon, 16 Nov 2026 03:08:27 +0000\n    Ready:          False\n    Restart Count:  0\n    Limits:\n      cpu:     500m\n      memory:  256Mi\n    Requests:\n      cpu:      100m\n      memory:   128Mi\n    Liveness:   http-get http://:8000/health delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3\n    Readiness:  http-get http://:8000/ready delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3\n    Environment:\n      APP_TITLE:    <set to the key 'APP_TITLE' of config map 'hitokoto-config'>  Optional: false\n      DB_HOST:      postgres\n      DB_PASSWORD:  <set to the key 'POSTGRES_PASSWORD' in secret 'db-secret'>  Optional: false\n    Mounts:\n      /etc/hitokoto from config (rw)\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-zd7hw (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       False \n  ContainersReady             False \n  PodScheduled                True \nVolumes:\n  config:\n    Type:      ConfigMap (a volume populated by a ConfigMap)\n    Name:      hitokoto-config\n    Optional:  false\n  kube-api-access-zd7hw:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age                From               Message\n  ----     ------     ----               ----               -------\n  Normal   Scheduled  31s                default-scheduler  Successfully assigned default/hitokoto-7fd98f5f46-p4ptd to hitokoto-worker2\n  Normal   Pulled     30s                kubelet            spec.containers{app}: Container image \"ghcr.io/container-nyumon/hitokoto:2.1\" already present on machine and can be accessed by the pod\n  Normal   Created    30s                kubelet            spec.containers{app}: Container created\n  Normal   Started    30s                kubelet            spec.containers{app}: Container started\n  Warning  Unhealthy  30s (x2 over 30s)  kubelet            spec.containers{app}: Readiness probe failed: Get \"http://10.244.2.37:8000/ready\": dial tcp 10.244.2.37:8000: connect: connection refused\n  Warning  Unhealthy  10s (x2 over 20s)  kubelet            spec.containers{app}: Readiness probe failed: HTTP probe failed with statuscode: 404\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 66,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 67,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 68,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 69,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 70,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 71,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 72,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 73,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "deployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 74,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 75,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 76,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 77,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 78,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 79,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 80,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 75",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 81,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                                      READY   STATUS    RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running   0             5m37s\nhitokoto-5c4587cb5c-9r2tt                 1/1     Running   0             2m19s\nhitokoto-df6887f57-kdnk5                  1/1     Running   1 (23s ago)   54s\nhitokoto-df6887f57-s5ppz                  1/1     Running   2 (14s ago)   75s\nhitokoto-df6887f57-sh6nb                  0/1     Running   2 (4s ago)    65s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0             5m37s\npostgres-789b848956-hjqkn                 1/1     Running   0             3m22s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 82,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 83,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-59b86bfbf-5ftqz    0/1     Running   2 (3s ago)    63s」が実際の出力に無い 「hitokoto-59b86bfbf-ddjrv    1/1     Running   1 (22s ago)   52s」が実際の出力に無い 「hitokoto-59b86bfbf-dm89q    1/1     Running   2 (14s ago)   75s」が実際の出力に無い 「postgres-789b848956-4c89x   1/1     Running   0             3m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-59b86bfbf-5ftqz    0/1     Running   2 (3s ago)    63s」が実際の出力に無い",
+   "「hitokoto-59b86bfbf-ddjrv    1/1     Running   1 (22s ago)   52s」が実際の出力に無い",
+   "「hitokoto-59b86bfbf-dm89q    1/1     Running   2 (14s ago)   75s」が実際の出力に無い",
+   "「postgres-789b848956-4c89x   1/1     Running   0             3m」が実際の出力に無い"
+  ],
+  "out": "NAME                                      READY   STATUS    RESTARTS      AGE\napi-5f65f5b867-2qk6f                      1/1     Running   0             5m37s\nhitokoto-5c4587cb5c-9r2tt                 1/1     Running   0             2m19s\nhitokoto-df6887f57-kdnk5                  1/1     Running   1 (23s ago)   54s\nhitokoto-df6887f57-s5ppz                  1/1     Running   2 (14s ago)   75s\nhitokoto-df6887f57-sh6nb                  0/1     Running   2 (4s ago)    65s\nhitokoto-gateway-nginx-859dc4897d-j2cg2   1/1     Running   0             5m37s\npostgres-789b848956-hjqkn                 1/1     Running   0             3m22s\n"
+ },
+ {
+  "n": 84,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'hitokoto-' && echo $p; done | head -n 1)",
+  "out": "ntainer ID:   containerd://10723d8afd3d900236af86cd09f762a1787708e4570dcc26c070df140ecbafbe\n    Image:          ghcr.io/container-nyumon/hitokoto:2.1\n    Image ID:       ghcr.io/container-nyumon/hitokoto@sha256:716b694a17471362abf8ed8915154a9e81b1bcddd47ee137c762a730d5a93105\n    Port:           <none>\n    Host Port:      <none>\n    State:          Running\n      Started:      Mon, 16 Nov 2026 03:07:53 +0000\n    Ready:          True\n    Restart Count:  0\n    Limits:\n      cpu:     500m\n      memory:  256Mi\n    Requests:\n      cpu:      100m\n      memory:   128Mi\n    Liveness:   http-get http://:8000/health delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3\n    Readiness:  http-get http://:8000/health delay=0s timeout=1s period=10s successThreshold=1 failureThreshold=3\n    Environment:\n      APP_TITLE:    <set to the key 'APP_TITLE' of config map 'hitokoto-config'>  Optional: false\n      DB_HOST:      postgres\n      DB_PASSWORD:  <set to the key 'POSTGRES_PASSWORD' in secret 'db-secret'>  Optional: false\n    Mounts:\n      /etc/hitokoto from config (rw)\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-h4fn4 (ro)\nConditions:\n  Type                        Status\n  PodReadyToStartContainers   True \n  Initialized                 True \n  Ready                       True \n  ContainersReady             True \n  PodScheduled                True \nVolumes:\n  config:\n    Type:      ConfigMap (a volume populated by a ConfigMap)\n    Name:      hitokoto-config\n    Optional:  false\n  kube-api-access-h4fn4:\n    Type:                    Projected (a volume that contains injected data from multiple sources)\n    TokenExpirationSeconds:  3607\n    ConfigMapName:           kube-root-ca.crt\n    Optional:                false\n    DownwardAPI:             true\nQoS Class:                   Burstable\nNode-Selectors:              <none>\nTolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\n                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\nEvents:\n  Type     Reason     Age                    From               Message\n  ----     ------     ----                   ----               -------\n  Normal   Scheduled  2m19s                  default-scheduler  Successfully assigned default/hitokoto-5c4587cb5c-9r2tt to hitokoto-worker2\n  Normal   Pulled     2m19s                  kubelet            spec.containers{app}: Container image \"ghcr.io/container-nyumon/hitokoto:2.1\" already present on machine and can be accessed by the pod\n  Normal   Created    2m19s                  kubelet            spec.containers{app}: Container created\n  Normal   Started    2m19s                  kubelet            spec.containers{app}: Container started\n  Warning  Unhealthy  2m18s (x2 over 2m19s)  kubelet            spec.containers{app}: Readiness probe failed: Get \"http://10.244.2.35:8000/health\": dial tcp 10.244.2.35:8000: connect: connection refused\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 85,
+  "t": "expect",
+  "ok": false,
+  "msg": "「Liveness probe failed」が出力に無い。"
+ },
+ {
+  "n": 86,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 87,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 88,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 89,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 90,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 91,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 92,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 93,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 94,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/namespace.yaml"
+ },
+ {
+  "n": 95,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/namespace.yaml",
+  "out": "namespace/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 96,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 97,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 98,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -n hitokoto",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\nNo resources found in hitokoto namespace.\n"
+ },
+ {
+  "n": 99,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 100,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 101,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/configmap.yaml -n hitokoto",
+  "out": "configmap/hitokoto-config created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 102,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 103,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 104,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl create secret generic db-secret --from-literal=POSTGRES_PASSWORD=hitokoto-pass -n hitokoto",
+  "out": "secret/db-secret created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 105,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 106,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 107,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml -n hitokoto",
+  "out": "deployment.apps/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nWarning: would violate PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n"
+ },
+ {
+  "n": 108,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 109,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 110,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get deployment -n hitokoto",
+  "out": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   0/3     0            0           0s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 111,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 112,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 113,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -n hitokoto",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\nNo resources found in hitokoto namespace.\n"
+ },
+ {
+  "n": 114,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 115,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 116,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 5",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 117,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe replicaset -n hitokoto",
+  "out": "eccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  5s    replicaset-controller  Error creating: pods \"hitokoto-674b64bfcc-4q9wq\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  5s    replicaset-controller  Error creating: pods \"hitokoto-674b64bfcc-5cfph\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  5s    replicaset-controller  Error creating: pods \"hitokoto-674b64bfcc-glqxm\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  4s    replicaset-controller  Error creating: pods \"hitokoto-674b64bfcc-ndq9g\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods \"hitokoto-674b64bfcc-c5xlf\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 118,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 119,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods \"hitokoto-674b64bfcc-r5ntt\" is forbidden: violates PodSecurity \"restricted:latest\": …」が実際の出力に無い",
+  "warn": [
+   "「Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods \"hitokoto-674b64bfcc-r5ntt\" is forbidden: violates PodSecurity \"restricted:latest\": …」が実際の出力に無い"
+  ],
+  "out": "ation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  4s    replicaset-controller  Error creating: pods \"hitokoto-674b64bfcc-ndq9g\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n  Warning  FailedCreate  3s    replicaset-controller  (combined from similar events): Error creating: pods \"hitokoto-674b64bfcc-c5xlf\" is forbidden: violates PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\n"
+ },
+ {
+  "n": 120,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 121,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml -n hitokoto",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 122,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 123,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 124,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto -n hitokoto",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 of 3 updated replicas are available...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 125,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 126,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 127,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl exec -n hitokoto deployment/hitokoto -- whoami",
+  "out": "appuser\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 128,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 129,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 130,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「deployment \"hitokoto\" successfully rolled out」が実際の出力に無い",
+  "warn": [
+   "「deployment \"hitokoto\" successfully rolled out」が実際の出力に無い"
+  ],
+  "out": "appuser\n"
+ },
+ {
+  "n": 131,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 132,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 133,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 134,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ }
+]

@@ -1,0 +1,172 @@
+/workspaces/hitokoto-k8s-rehearsal/rehearsal/v2/rh.py:302: SyntaxWarning: invalid escape sequence '\ '
+  """出力から作業の場所（__CWD__=）を読む。行の先頭にあり、絶対パス（/ か X:\ で始まる）の、最後の1つだけを使う。
+[OK] 01 file: write: manifests/service.yaml
+[OK] 02 cmd: exit 0: kubectl apply -f manifests/service.yaml --dry-run=server
+[OK] 03 expect: 出力 OK
+[OK] 04 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 05 cmd: exit 0: kubectl apply -f manifests/service.yaml
+[OK] 06 expect: 出力 OK
+[OK] 07 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 08 cmd: exit 0: kubectl get services
+[OK] 09 expect: 出力 OK
+[OK] 10 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 11 cmd: exit 0: kubectl describe service hitokoto
+[OK] 12 expect: 出力 OK
+[OK] 13 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 18 cmd: exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; curl -s http://hitokoto/health"
+[OK] 19 expect: 出力 OK
+[OK] 22 cmd: exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done"
+[OK] 23 expect: 出力 OK
+[OK] 26 cmd: exit 0: kubectl get pods
+[OK] 27 cmd: exit 0: kubectl delete $(kubectl get pods -l app=hitokoto -o name | head -n 1)
+[OK] 28 expect: 出力 OK
+[OK] 37 cmd: exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; curl -s http://hitokoto/health"
+[OK] 38 expect: 出力 OK
+[OK] 39 cmd: exit 0: kubectl describe service hitokoto
+[OK] 40 expect: 出力 OK
+[OK] 41 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 42 file: write: manifests/service.yaml
+[OK] 43 cmd: exit 1（期待 1）: kubectl diff -f manifests/service.yaml
+[OK] 44 expect: 出力 OK
+[OK] 45 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 46 cmd: exit 0: kubectl apply -f manifests/service.yaml
+[OK] 47 expect: 出力 OK
+[OK] 48 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 49 cmd: exit 0: kubectl describe service hitokoto
+[OK] 50 expect: 出力 OK
+[OK] 51 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 58 cmd: exit 7（期待 7）: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c "sleep 3; curl -s -m 5 http://hitokoto/health"
+[WARN] 59 out: 表示される内容と実際の出力が違う（WARN）: 「Name:                     hitokoto」が実際の出力に無い 「Namespace:                default」が実際の出力に無い 「Selector:                 app=hitokoto」が実際の出力に無い 「Type:                     ClusterIP」が実際の出力に無い 「Port:                     <unset>  80/TCP」が実際の出力に無い 「TargetPort:               8000/TCP」が実際の出力に無い 「Endpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000」が実際の出力に無い
+      pod "tmp" deleted from default namespace
+      All commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.
+      If you don't see a command prompt, try pressing enter.
+      pod default/tmp terminated (Error)
+      
+[OK] 60 file: write: manifests/service.yaml
+[OK] 61 cmd: exit 0: kubectl apply -f manifests/service.yaml
+[OK] 62 expect: 出力 OK
+[OK] 63 cmd: exit 0: sleep 3; kubectl describe service hitokoto
+[OK] 64 expect: 出力 OK
+[OK] 65 cmd: exit 0: kubectl api-resources --api-group=gateway.networking.k8s.io
+[OK] 66 expect: 出力 OK
+[OK] 67 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 68 cmd: exit 0: kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
+[OK] 69 expect: 出力 OK
+[OK] 70 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 71 cmd: exit 0: kubectl api-resources --api-group=gateway.networking.k8s.io
+[OK] 72 expect: 出力 OK
+[OK] 73 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 74 cmd: exit 0: kubectl apply --server-side -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/crds.yaml
+[OK] 75 expect: 出力 OK
+[OK] 76 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 77 cmd: exit 0: kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/nodeport/deploy.yaml
+[OK] 78 expect: 出力 OK
+[OK] 79 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 80 cmd: exit 0: kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type merge --patch-file setup/gateway-nodeport.yaml
+[OK] 81 expect: 出力 OK
+[OK] 82 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 83 cmd: exit 0: kubectl wait --for=condition=Available deployment/nginx-gateway -n nginx-gateway --timeout=180s
+[OK] 84 expect: 出力 OK
+[OK] 85 cmd: exit 0: kubectl get gatewayclass
+[OK] 86 expect: 出力 OK
+[OK] 87 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 88 file: write: manifests/api.yaml
+[OK] 89 cmd: exit 0: kubectl apply -f manifests/api.yaml
+[OK] 90 expect: 出力 OK
+[OK] 91 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 92 file: write: manifests/gateway.yaml
+[OK] 93 file: write: manifests/httproute.yaml
+[OK] 94 cmd: exit 0: kubectl apply -f manifests/gateway.yaml
+[OK] 95 expect: 出力 OK
+[OK] 96 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 97 cmd: exit 0: kubectl apply -f manifests/httproute.yaml
+[OK] 98 expect: 出力 OK
+[OK] 99 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 100 cmd: exit 0: kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s && sleep 15
+[OK] 101 expect: 出力 OK
+[OK] 102 cmd: exit 0: kubectl get gateway
+[OK] 103 expect: 出力 OK
+[OK] 104 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 105 http: GET http://127.0.0.1:8080/ → 200
+[OK] 106 http: GET http://127.0.0.1:8080/api → 200
+[WARN] 107 out: 表示される内容と実際の出力が違う（WARN）: 「hello from api」が実際の出力に無い
+      NAME               CLASS   ADDRESS        PROGRAMMED   AGE
+      hitokoto-gateway   nginx   10.96.36.175   True         15s
+      
+[OK] 108 http: GET http://127.0.0.1:8080/api/hello → 200
+[OK] 109 cmd: exit 0: kubectl describe httproute hitokoto
+[OK] 110 expect: 出力 OK
+[OK] 111 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 112 file: write: manifests/httproute.yaml
+[OK] 113 cmd: exit 0: kubectl apply -f manifests/httproute.yaml
+[OK] 114 expect: 出力 OK
+[OK] 115 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 116 cmd: exit 0: sleep 10
+[OK] 117 cmd: exit 0: kubectl describe httproute hitokoto
+[OK] 118 expect: 出力 OK
+[OK] 119 out: 表示される内容 OK（行が同じ順で出た）
+[OK] 120 http: GET http://127.0.0.1:8080/api → 500
+[OK] 121 http: GET http://127.0.0.1:8080/ → 200
+[WARN] 122 out: 表示される内容と実際の出力が違う（WARN）: 「hello from api」が実際の出力に無い
+      tadata:
+        Creation Timestamp:  2026-11-16T03:04:35Z
+        Generation:          2
+        Resource Version:    2012
+        UID:                 4813d95c-fb40-45cc-81b3-e73c94cf181f
+      Spec:
+        Parent Refs:
+          Group:  gateway.networking.k8s.io
+          Kind:   Gateway
+          Name:   hitokoto-gateway
+        Rules:
+          Backend Refs:
+            Group:   
+            Kind:    Service
+            Name:    apii
+            Port:    80
+            Weight:  1
+          Matches:
+            Path:
+              Type:   PathPrefix
+              Value:  /api
+          Backend Refs:
+            Group:   
+            Kind:    Service
+            Name:    hitokoto
+            Port:    80
+            Weight:  1
+          Matches:
+            Path:
+              Type:   PathPrefix
+              Value:  /
+      Status:
+        Parents:
+          Conditions:
+            Last Transition Time:  2026-11-16T03:04:52Z
+            Message:               The Route is accepted
+            Observed Generation:   2
+            Reason:                Accepted
+            Status:                True
+            Type:                  Accepted
+            Last Transition Time:  2026-11-16T03:04:52Z
+            Message:               spec.rules[0].backendRefs[0].name: Not found: "apii"
+            Observed Generation:   2
+            Reason:                BackendNotFound
+            Status:                False
+            Type:                  ResolvedRefs
+          Controller Name:         gateway.nginx.org/nginx-gateway-controller
+          Parent Ref:
+            Group:         gateway.networking.k8s.io
+            Kind:          Gateway
+            Name:          hitokoto-gateway
+            Namespace:     default
+            Section Name:  http
+      Events:              <none>
+      
+[OK] 123 file: write: manifests/httproute.yaml
+[OK] 124 cmd: exit 0: kubectl apply -f manifests/httproute.yaml
+[OK] 125 expect: 出力 OK
+[OK] 126 cmd: exit 0: sleep 10
+[OK] 127 http: GET http://127.0.0.1:8080/api → 200
+WARN（表示される内容の違い）: 3 か所。資料の「表示される内容」を、受講者と同じ環境の対話のシェルで取った出力に合わせる（ガイド01 §28 の 7）
+結果: 127 手順中 NG 0・WARN 3（表示される内容の違い）

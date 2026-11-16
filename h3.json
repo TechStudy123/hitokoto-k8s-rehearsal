@@ -1,0 +1,732 @@
+[
+ {
+  "n": 1,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete -f manifests/pod.yaml",
+  "out": "pod \"hitokoto\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 2,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 3,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 4,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 5,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 6,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 7,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 8,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 0 of 3 updated replicas are available...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 of 3 updated replicas are available...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 of 3 updated replicas are available...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 9,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 10,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get deployments",
+  "out": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   3/3     3            3           3s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 11,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 12,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 13,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get rs",
+  "out": "NAME                 DESIRED   CURRENT   READY   AGE\nhitokoto-5745d576f   3         3         3       3s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 14,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 15,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 16,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-ljq7c   1/1     Running   0          3s\nhitokoto-5745d576f-qs9pz   1/1     Running   0          3s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          3s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 17,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 18,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-p4p6k   1/1     Running   0          30s」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          30s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          30s」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f-p4p6k   1/1     Running   0          30s」が実際の出力に無い",
+   "「hitokoto-5745d576f-sxtsd   1/1     Running   0          30s」が実際の出力に無い",
+   "「hitokoto-5745d576f-twljb   1/1     Running   0          30s」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-ljq7c   1/1     Running   0          3s\nhitokoto-5745d576f-qs9pz   1/1     Running   0          3s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          3s\n"
+ },
+ {
+  "n": 19,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods -o wide",
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES\nhitokoto-5745d576f-ljq7c   1/1     Running   0          3s    10.244.2.4   hitokoto-worker2   <none>           <none>\nhitokoto-5745d576f-qs9pz   1/1     Running   0          3s    10.244.1.3   hitokoto-worker    <none>           <none>\nhitokoto-5745d576f-t2l9l   1/1     Running   0          3s    10.244.2.3   hitokoto-worker2   <none>           <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 20,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 21,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-p4p6k   1/1     Running   0          40s   10.244.1.3   hitokoto-worker2   <none>           <none>」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker    <none>           <none>」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          40s   10.244.2.3   hitokoto-worker    <none>           <none>」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f-p4p6k   1/1     Running   0          40s   10.244.1.3   hitokoto-worker2   <none>           <none>」が実際の出力に無い",
+   "「hitokoto-5745d576f-sxtsd   1/1     Running   0          40s   10.244.2.2   hitokoto-worker    <none>           <none>」が実際の出力に無い",
+   "「hitokoto-5745d576f-twljb   1/1     Running   0          40s   10.244.2.3   hitokoto-worker    <none>           <none>」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES\nhitokoto-5745d576f-ljq7c   1/1     Running   0          3s    10.244.2.4   hitokoto-worker2   <none>           <none>\nhitokoto-5745d576f-qs9pz   1/1     Running   0          3s    10.244.1.3   hitokoto-worker    <none>           <none>\nhitokoto-5745d576f-t2l9l   1/1     Running   0          3s    10.244.2.3   hitokoto-worker2   <none>           <none>\n"
+ },
+ {
+  "n": 22,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 23,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 24,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete $(kubectl get pods -o name | head -n 1)",
+  "out": "pod \"hitokoto-5745d576f-ljq7c\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 25,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 3; kubectl rollout status deployment/hitokoto --timeout=120s",
+  "out": "deployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 27,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 28,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-qs9pz   1/1     Running   0          8s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          8s\nhitokoto-5745d576f-zqv9t   1/1     Running   0          5s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 29,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 30,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-mlt98   1/1     Running   0          4s」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          1m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f-mlt98   1/1     Running   0          4s」が実際の出力に無い",
+   "「hitokoto-5745d576f-sxtsd   1/1     Running   0          1m」が実際の出力に無い",
+   "「hitokoto-5745d576f-twljb   1/1     Running   0          1m」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-qs9pz   1/1     Running   0          8s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          8s\nhitokoto-5745d576f-zqv9t   1/1     Running   0          5s\n"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl scale deployment/hitokoto --replicas=5",
+  "out": "deployment.apps/hitokoto scaled\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 32,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 33,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 34,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto --timeout=120s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 3 of 5 updated replicas are available...\nWaiting for deployment \"hitokoto\" rollout to finish: 4 of 5 updated replicas are available...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 35,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 36,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-fjv8t   1/1     Running   0          0s\nhitokoto-5745d576f-kmmhx   1/1     Running   0          0s\nhitokoto-5745d576f-qs9pz   1/1     Running   0          8s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          8s\nhitokoto-5745d576f-zqv9t   1/1     Running   0          5s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 37,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 38,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-m6h2x   1/1     Running   0          5s」が実際の出力に無い 「hitokoto-5745d576f-mlt98   1/1     Running   0          1m」が実際の出力に無い 「hitokoto-5745d576f-sxtsd   1/1     Running   0          2m」が実際の出力に無い 「hitokoto-5745d576f-t9q5k   1/1     Running   0          5s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running   0          2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f-m6h2x   1/1     Running   0          5s」が実際の出力に無い",
+   "「hitokoto-5745d576f-mlt98   1/1     Running   0          1m」が実際の出力に無い",
+   "「hitokoto-5745d576f-sxtsd   1/1     Running   0          2m」が実際の出力に無い",
+   "「hitokoto-5745d576f-t9q5k   1/1     Running   0          5s」が実際の出力に無い",
+   "「hitokoto-5745d576f-twljb   1/1     Running   0          2m」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS    RESTARTS   AGE\nhitokoto-5745d576f-fjv8t   1/1     Running   0          0s\nhitokoto-5745d576f-kmmhx   1/1     Running   0          0s\nhitokoto-5745d576f-qs9pz   1/1     Running   0          8s\nhitokoto-5745d576f-t2l9l   1/1     Running   0          8s\nhitokoto-5745d576f-zqv9t   1/1     Running   0          5s\n"
+ },
+ {
+  "n": 39,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 40,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 41,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 42,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 5; kubectl rollout status deployment/hitokoto --timeout=120s",
+  "out": "deployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 43,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 44,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-fjv8t   1/1     Terminating   0          5s\nhitokoto-5745d576f-kmmhx   1/1     Terminating   0          5s\nhitokoto-5745d576f-qs9pz   1/1     Running       0          13s\nhitokoto-5745d576f-t2l9l   1/1     Running       0          13s\nhitokoto-5745d576f-zqv9t   1/1     Running       0          10s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 45,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 46,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f-m6h2x   1/1     Running       0          20s」が実際の出力に無い 「hitokoto-5745d576f-mlt98   1/1     Running       0          1m」が実際の出力に無い 「hitokoto-5745d576f-t9q5k   1/1     Terminating   0          20s」が実際の出力に無い 「hitokoto-5745d576f-twljb   1/1     Running       0          2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f-m6h2x   1/1     Running       0          20s」が実際の出力に無い",
+   "「hitokoto-5745d576f-mlt98   1/1     Running       0          1m」が実際の出力に無い",
+   "「hitokoto-5745d576f-t9q5k   1/1     Terminating   0          20s」が実際の出力に無い",
+   "「hitokoto-5745d576f-twljb   1/1     Running       0          2m」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-fjv8t   1/1     Terminating   0          5s\nhitokoto-5745d576f-kmmhx   1/1     Terminating   0          5s\nhitokoto-5745d576f-qs9pz   1/1     Running       0          13s\nhitokoto-5745d576f-t2l9l   1/1     Running       0          13s\nhitokoto-5745d576f-zqv9t   1/1     Running       0          10s\n"
+ },
+ {
+  "n": 47,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 48,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s",
+  "out": "deployment.apps/hitokoto configured\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 49,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 50,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get deployments",
+  "out": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   4/4     4            4           16s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 51,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 52,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto   4/4     4            4           3m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto   4/4     4            4           3m」が実際の出力に無い"
+  ],
+  "out": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   4/4     4            4           16s\n"
+ },
+ {
+  "n": 53,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 54,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml && sleep 3 && kubectl rollout status deployment/hitokoto --timeout=120s && kubectl get deployments",
+  "out": "deployment.apps/hitokoto configured\ndeployment \"hitokoto\" successfully rolled out\nNAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   3/3     3            3           20s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 55,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 56,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 57,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 58,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 59,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 60,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 61,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 62,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 63,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get rs",
+  "out": "NAME                 DESIRED   CURRENT   READY   AGE\nhitokoto-5745d576f   0         0         0       27s\nhitokoto-b55ff59b6   3         3         3       7s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 64,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 65,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-5745d576f   0         0         0       4m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-5745d576f   0         0         0       4m」が実際の出力に無い"
+  ],
+  "out": "NAME                 DESIRED   CURRENT   READY   AGE\nhitokoto-5745d576f   0         0         0       27s\nhitokoto-b55ff59b6   3         3         3       7s\n"
+ },
+ {
+  "n": 66,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 67,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 68,
+  "t": "cmd",
+  "ok": true,
+  "msg": "起動 OK: kubectl port-forward deployment/hitokoto 8000:8000",
+  "out": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000\nHandling connection for 8000\n"
+ },
+ {
+  "n": 69,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8000/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>ひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>ひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner memory\">データベースを使っていません（書き込みは、Pod ごとに別々で、Pod を消すと消えます）</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>まだ書き込みはありません</li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-dzs7k</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 70,
+  "t": "stop",
+  "ok": true,
+  "msg": "止めた"
+ },
+ {
+  "n": 71,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 72,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 73,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 74,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 75,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 76,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 77,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl rollout status deployment/hitokoto --timeout=40s",
+  "out": "Waiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nerror: timed out waiting for the condition\n"
+ },
+ {
+  "n": 78,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 79,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                        READY   STATUS             RESTARTS   AGE\nhitokoto-6d666f5f4c-n8hkn   0/1     ImagePullBackOff   0          40s\nhitokoto-b55ff59b6-dzs7k    1/1     Running            0          48s\nhitokoto-b55ff59b6-gfqmt    1/1     Running            0          42s\nhitokoto-b55ff59b6-gpjd4    1/1     Running            0          45s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 80,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 81,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-6d666f5f4c-czll2   0/1     ImagePullBackOff   0          40s」が実際の出力に無い 「hitokoto-b55ff59b6-5gw9r    1/1     Running            0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-b25gk    1/1     Running            0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-wtjhs    1/1     Running            0          2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-6d666f5f4c-czll2   0/1     ImagePullBackOff   0          40s」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-5gw9r    1/1     Running            0          2m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-b25gk    1/1     Running            0          2m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-wtjhs    1/1     Running            0          2m」が実際の出力に無い"
+  ],
+  "out": "NAME                        READY   STATUS             RESTARTS   AGE\nhitokoto-6d666f5f4c-n8hkn   0/1     ImagePullBackOff   0          40s\nhitokoto-b55ff59b6-dzs7k    1/1     Running            0          48s\nhitokoto-b55ff59b6-gfqmt    1/1     Running            0          42s\nhitokoto-b55ff59b6-gpjd4    1/1     Running            0          45s\n"
+ },
+ {
+  "n": 82,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout undo deployment/hitokoto",
+  "out": "deployment.apps/hitokoto rolled back\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nWarning: resource deployments/hitokoto was previously managed with 'kubectl apply'. Rolling back will not update the kubectl.kubernetes.io/last-applied-configuration annotation, which may cause unexpected behavior on future 'kubectl apply' operations. Consider using 'kubectl apply' with your previous configuration file instead.\n"
+ },
+ {
+  "n": 83,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 84,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 85,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout status deployment/hitokoto",
+  "out": "deployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 86,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 87,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 88,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                        READY   STATUS        RESTARTS   AGE\nhitokoto-6d666f5f4c-n8hkn   0/1     Terminating   0          40s\nhitokoto-b55ff59b6-dzs7k    1/1     Running       0          48s\nhitokoto-b55ff59b6-gfqmt    1/1     Running       0          42s\nhitokoto-b55ff59b6-gpjd4    1/1     Running       0          45s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 89,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 90,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hitokoto-6d666f5f4c-czll2   0/1     Terminating   0          41s」が実際の出力に無い 「hitokoto-b55ff59b6-5gw9r    1/1     Running       0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-b25gk    1/1     Running       0          2m」が実際の出力に無い 「hitokoto-b55ff59b6-wtjhs    1/1     Running       0          2m」が実際の出力に無い",
+  "warn": [
+   "「hitokoto-6d666f5f4c-czll2   0/1     Terminating   0          41s」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-5gw9r    1/1     Running       0          2m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-b25gk    1/1     Running       0          2m」が実際の出力に無い",
+   "「hitokoto-b55ff59b6-wtjhs    1/1     Running       0          2m」が実際の出力に無い"
+  ],
+  "out": "NAME                        READY   STATUS        RESTARTS   AGE\nhitokoto-6d666f5f4c-n8hkn   0/1     Terminating   0          40s\nhitokoto-b55ff59b6-dzs7k    1/1     Running       0          48s\nhitokoto-b55ff59b6-gfqmt    1/1     Running       0          42s\nhitokoto-b55ff59b6-gpjd4    1/1     Running       0          45s\n"
+ },
+ {
+  "n": 91,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl rollout history deployment/hitokoto",
+  "out": "deployment.apps/hitokoto \nREVISION  CHANGE-CAUSE\n1         <none>\n3         <none>\n4         <none>\n\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 92,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 93,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 94,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 95,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml",
+  "out": "deployment.apps/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 96,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 97,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 98,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 99,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "deployment.apps/hitokoto configured\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 100,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 101,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-mt8ks   1/1     Running       0          2s\nhitokoto-5745d576f-nhz6j   1/1     Running       0          1s\nhitokoto-5745d576f-v4cms   1/1     Running       0          1s\nhitokoto-b55ff59b6-dzs7k   1/1     Terminating   0          50s\nhitokoto-b55ff59b6-gfqmt   0/1     Completed     0          44s\nhitokoto-b55ff59b6-gpjd4   1/1     Terminating   0          47s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 102,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 103,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「deployment \"hitokoto\" successfully rolled out」が実際の出力に無い",
+  "warn": [
+   "「deployment \"hitokoto\" successfully rolled out」が実際の出力に無い"
+  ],
+  "out": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-mt8ks   1/1     Running       0          2s\nhitokoto-5745d576f-nhz6j   1/1     Running       0          1s\nhitokoto-5745d576f-v4cms   1/1     Running       0          1s\nhitokoto-b55ff59b6-dzs7k   1/1     Terminating   0          50s\nhitokoto-b55ff59b6-gfqmt   0/1     Completed     0          44s\nhitokoto-b55ff59b6-gpjd4   1/1     Terminating   0          47s\n"
+ },
+ {
+  "n": 104,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/deployment.yaml"
+ },
+ {
+  "n": 105,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/deployment.yaml && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "out": "deployment.apps/hitokoto configured\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 2 out of 3 new replicas have been updated...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\nWaiting for deployment \"hitokoto\" rollout to finish: 1 old replicas are pending termination...\ndeployment \"hitokoto\" successfully rolled out\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 106,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ }
+]

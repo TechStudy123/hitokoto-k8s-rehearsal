@@ -1,0 +1,3 @@
+deployment.apps/hitokoto unchanged
+service/hitokoto unchanged
+deployment "hitokoto" successfully rolled out

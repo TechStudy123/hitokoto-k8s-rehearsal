@@ -1,0 +1,823 @@
+[
+ {
+  "n": 1,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/service.yaml"
+ },
+ {
+  "n": 2,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/service.yaml --dry-run=server",
+  "out": "service/hitokoto created (server dry run)\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 3,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 4,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 5,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/service.yaml",
+  "out": "service/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 6,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 7,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 8,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get services",
+  "out": "NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE\nhitokoto     ClusterIP   10.96.75.100   <none>        80/TCP    0s\nkubernetes   ClusterIP   10.96.0.1      <none>        443/TCP   4m18s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 9,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 10,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 11,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service hitokoto",
+  "out": "Name:                     hitokoto\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=hitokoto\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.75.100\nIPs:                      10.96.75.100\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.10:8000,10.244.2.11:8000,10.244.1.10:8000 + 0 more...\nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:                   <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 12,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 13,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 14,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 15,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 16,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 17,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 18,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
+  "out": "{\"status\":\"ok\"}pod \"tmp\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\n"
+ },
+ {
+  "n": 19,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 20,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 21,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 22,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
+  "out": "<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5lqfc</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-mvqrk</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-n9n8s</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-mvqrk</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5lqfc</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5lqfc</footer>\npod \"tmp\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\n"
+ },
+ {
+  "n": 23,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 24,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 25,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 26,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get pods",
+  "out": "NAME                       READY   STATUS        RESTARTS   AGE\nhitokoto-5745d576f-nhz6j   1/1     Terminating   0          17s\nhitokoto-b55ff59b6-5lqfc   1/1     Running       0          16s\nhitokoto-b55ff59b6-mvqrk   1/1     Running       0          15s\nhitokoto-b55ff59b6-n9n8s   1/1     Running       0          16s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 27,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl delete $(kubectl get pods -l app=hitokoto -o name | head -n 1)",
+  "out": "pod \"hitokoto-5745d576f-nhz6j\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 28,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 29,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 30,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 31,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 32,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 33,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 34,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 35,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 36,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 37,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s http://hitokoto/health\"",
+  "out": "{\"status\":\"ok\"}pod \"tmp\" deleted from default namespace\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\n"
+ },
+ {
+  "n": 38,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 39,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service hitokoto",
+  "out": "Name:                     hitokoto\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=hitokoto\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.75.100\nIPs:                      10.96.75.100\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.10:8000,10.244.2.11:8000,10.244.1.10:8000\nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:                   <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 40,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 41,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 42,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/service.yaml"
+ },
+ {
+  "n": 43,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 1（期待 1）: kubectl diff -f manifests/service.yaml",
+  "out": "diff -u -N /tmp/LIVE-1488334939/v1.Service.default.hitokoto /tmp/MERGED-3074770201/v1.Service.default.hitokoto\n--- /tmp/LIVE-1488334939/v1.Service.default.hitokoto\t2026-11-16 03:04:09.656564288 +0000\n+++ /tmp/MERGED-3074770201/v1.Service.default.hitokoto\t2026-11-16 03:04:09.656564288 +0000\n@@ -22,7 +22,7 @@\n     protocol: TCP\n     targetPort: 8000\n   selector:\n-    app: hitokoto\n+    app: hitokto\n   sessionAffinity: None\n   type: ClusterIP\n status:\n"
+ },
+ {
+  "n": 44,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 45,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 46,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/service.yaml",
+  "out": "service/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 47,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 48,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 49,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe service hitokoto",
+  "out": "Name:                     hitokoto\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=hitokto\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.75.100\nIPs:                      10.96.75.100\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                \nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:                   <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 50,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 51,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 52,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 53,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 54,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 55,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 56,
+  "t": "cmd",
+  "ok": true,
+  "msg": "skip（表示だけ）"
+ },
+ {
+  "n": 57,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容: 比べる出力が無い（直前のコマンドを実行していない）"
+ },
+ {
+  "n": 58,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 7（期待 7）: kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"sleep 3; curl -s -m 5 http://hitokoto/health\"",
+  "out": "pod \"tmp\" deleted from default namespace\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\npod default/tmp terminated (Error)\n"
+ },
+ {
+  "n": 59,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「Name:                     hitokoto」が実際の出力に無い 「Namespace:                default」が実際の出力に無い 「Selector:                 app=hitokoto」が実際の出力に無い 「Type:                     ClusterIP」が実際の出力に無い 「Port:                     <unset>  80/TCP」が実際の出力に無い 「TargetPort:               8000/TCP」が実際の出力に無い 「Endpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000」が実際の出力に無い",
+  "warn": [
+   "「Name:                     hitokoto」が実際の出力に無い",
+   "「Namespace:                default」が実際の出力に無い",
+   "「Selector:                 app=hitokoto」が実際の出力に無い",
+   "「Type:                     ClusterIP」が実際の出力に無い",
+   "「Port:                     <unset>  80/TCP」が実際の出力に無い",
+   "「TargetPort:               8000/TCP」が実際の出力に無い",
+   "「Endpoints:                10.244.2.5:8000,10.244.2.4:8000,10.244.1.2:8000」が実際の出力に無い"
+  ],
+  "out": "pod \"tmp\" deleted from default namespace\nAll commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.\nIf you don't see a command prompt, try pressing enter.\npod default/tmp terminated (Error)\n"
+ },
+ {
+  "n": 60,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/service.yaml"
+ },
+ {
+  "n": 61,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/service.yaml",
+  "out": "service/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 62,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 63,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 3; kubectl describe service hitokoto",
+  "out": "Name:                     hitokoto\nNamespace:                default\nLabels:                   <none>\nAnnotations:              <none>\nSelector:                 app=hitokoto\nType:                     ClusterIP\nIP Family Policy:         SingleStack\nIP Families:              IPv4\nIP:                       10.96.75.100\nIPs:                      10.96.75.100\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.2.10:8000,10.244.2.11:8000,10.244.1.10:8000\nSession Affinity:         None\nInternal Traffic Policy:  Cluster\nEvents:                   <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 64,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 65,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl api-resources --api-group=gateway.networking.k8s.io",
+  "out": "NAME   SHORTNAMES   APIVERSION   NAMESPACED   KIND\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 66,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 67,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 68,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml",
+  "out": "customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/grpcroutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/listenersets.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/tcproutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/tlsroutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/udproutes.gateway.networking.k8s.io serverside-applied\nvalidatingadmissionpolicy.admissionregistration.k8s.io/safe-upgrades.gateway.networking.k8s.io serverside-applied\nvalidatingadmissionpolicybinding.admissionregistration.k8s.io/safe-upgrades.gateway.networking.k8s.io serverside-applied\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 69,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 70,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 71,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl api-resources --api-group=gateway.networking.k8s.io",
+  "out": "NAME                 SHORTNAMES   APIVERSION                     NAMESPACED   KIND\nbackendtlspolicies   btlspolicy   gateway.networking.k8s.io/v1   true         BackendTLSPolicy\ngatewayclasses       gc           gateway.networking.k8s.io/v1   false        GatewayClass\ngateways             gtw          gateway.networking.k8s.io/v1   true         Gateway\ngrpcroutes                        gateway.networking.k8s.io/v1   true         GRPCRoute\nhttproutes                        gateway.networking.k8s.io/v1   true         HTTPRoute\nlistenersets         lset         gateway.networking.k8s.io/v1   true         ListenerSet\nreferencegrants      refgrant     gateway.networking.k8s.io/v1   true         ReferenceGrant\ntcproutes                         gateway.networking.k8s.io/v1   true         TCPRoute\ntlsroutes                         gateway.networking.k8s.io/v1   true         TLSRoute\nudproutes                         gateway.networking.k8s.io/v1   true         UDPRoute\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 72,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 73,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 74,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply --server-side -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/crds.yaml",
+  "out": "customresourcedefinition.apiextensions.k8s.io/authenticationfilters.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/clientsettingspolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/externalloadbalancers.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/nginxgateways.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/nginxproxies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/observabilitypolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/payloadprocessors.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/proxysettingspolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/ratelimitpolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/snippetsfilters.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/snippetspolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/upstreamsettingspolicies.gateway.nginx.org serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/wafpolicies.gateway.nginx.org serverside-applied\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 75,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 76,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 77,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/nodeport/deploy.yaml",
+  "out": "namespace/nginx-gateway created\nserviceaccount/nginx-gateway created\nserviceaccount/nginx-gateway-cert-generator created\nrole.rbac.authorization.k8s.io/nginx-gateway-cert-generator created\nclusterrole.rbac.authorization.k8s.io/nginx-gateway created\nrolebinding.rbac.authorization.k8s.io/nginx-gateway-cert-generator created\nclusterrolebinding.rbac.authorization.k8s.io/nginx-gateway created\nservice/nginx-gateway created\ndeployment.apps/nginx-gateway created\njob.batch/nginx-gateway-cert-generator created\ngatewayclass.gateway.networking.k8s.io/nginx created\nnginxgateway.gateway.nginx.org/nginx-gateway-config created\nnginxproxy.gateway.nginx.org/nginx-gateway-proxy-config created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 78,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 79,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 80,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type merge --patch-file setup/gateway-nodeport.yaml",
+  "out": "nginxproxy.gateway.nginx.org/nginx-gateway-proxy-config patched\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 81,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 82,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 83,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Available deployment/nginx-gateway -n nginx-gateway --timeout=180s",
+  "out": "deployment.apps/nginx-gateway condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 84,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 85,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get gatewayclass",
+  "out": "NAME    CONTROLLER                                   ACCEPTED   AGE\nnginx   gateway.nginx.org/nginx-gateway-controller   True       14s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 86,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 87,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 88,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/api.yaml"
+ },
+ {
+  "n": 89,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/api.yaml",
+  "out": "deployment.apps/api created\nservice/api created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 90,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 91,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 92,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/gateway.yaml"
+ },
+ {
+  "n": 93,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/httproute.yaml"
+ },
+ {
+  "n": 94,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/gateway.yaml",
+  "out": "gateway.gateway.networking.k8s.io/hitokoto-gateway created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 95,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 96,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 97,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/httproute.yaml",
+  "out": "httproute.gateway.networking.k8s.io/hitokoto created\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 98,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 99,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 100,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s && sleep 15",
+  "out": "gateway.gateway.networking.k8s.io/hitokoto-gateway condition met\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 101,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 102,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl get gateway",
+  "out": "NAME               CLASS   ADDRESS        PROGRAMMED   AGE\nhitokoto-gateway   nginx   10.96.36.175   True         15s\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 103,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 104,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 105,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>ひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>ひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner memory\">データベースを使っていません（書き込みは、Pod ごとに別々で、Pod を消すと消えます）</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>まだ書き込みはありません</li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-n9n8s</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 106,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/api → 200",
+  "out": "hello from api\n"
+ },
+ {
+  "n": 107,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hello from api」が実際の出力に無い",
+  "warn": [
+   "「hello from api」が実際の出力に無い"
+  ],
+  "out": "NAME               CLASS   ADDRESS        PROGRAMMED   AGE\nhitokoto-gateway   nginx   10.96.36.175   True         15s\n"
+ },
+ {
+  "n": 108,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/api/hello → 200",
+  "out": "hello from api\n"
+ },
+ {
+  "n": 109,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe httproute hitokoto",
+  "out": "Name:         hitokoto\nNamespace:    default\nLabels:       <none>\nAnnotations:  <none>\nAPI Version:  gateway.networking.k8s.io/v1\nKind:         HTTPRoute\nMetadata:\n  Creation Timestamp:  2026-11-16T03:04:35Z\n  Generation:          1\n  Resource Version:    1947\n  UID:                 4813d95c-fb40-45cc-81b3-e73c94cf181f\nSpec:\n  Parent Refs:\n    Group:  gateway.networking.k8s.io\n    Kind:   Gateway\n    Name:   hitokoto-gateway\n  Rules:\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    api\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /api\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    hitokoto\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /\nStatus:\n  Parents:\n    Conditions:\n      Last Transition Time:  2026-11-16T03:04:35Z\n      Message:               The Route is accepted\n      Observed Generation:   1\n      Reason:                Accepted\n      Status:                True\n      Type:                  Accepted\n      Last Transition Time:  2026-11-16T03:04:35Z\n      Message:               All references are resolved\n      Observed Generation:   1\n      Reason:                ResolvedRefs\n      Status:                True\n      Type:                  ResolvedRefs\n    Controller Name:         gateway.nginx.org/nginx-gateway-controller\n    Parent Ref:\n      Group:         gateway.networking.k8s.io\n      Kind:          Gateway\n      Name:          hitokoto-gateway\n      Namespace:     default\n      Section Name:  http\nEvents:              <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 110,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 111,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 112,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/httproute.yaml"
+ },
+ {
+  "n": 113,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/httproute.yaml",
+  "out": "httproute.gateway.networking.k8s.io/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 114,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 115,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 116,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 10",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 117,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl describe httproute hitokoto",
+  "out": "Name:         hitokoto\nNamespace:    default\nLabels:       <none>\nAnnotations:  <none>\nAPI Version:  gateway.networking.k8s.io/v1\nKind:         HTTPRoute\nMetadata:\n  Creation Timestamp:  2026-11-16T03:04:35Z\n  Generation:          2\n  Resource Version:    2012\n  UID:                 4813d95c-fb40-45cc-81b3-e73c94cf181f\nSpec:\n  Parent Refs:\n    Group:  gateway.networking.k8s.io\n    Kind:   Gateway\n    Name:   hitokoto-gateway\n  Rules:\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    apii\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /api\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    hitokoto\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /\nStatus:\n  Parents:\n    Conditions:\n      Last Transition Time:  2026-11-16T03:04:52Z\n      Message:               The Route is accepted\n      Observed Generation:   2\n      Reason:                Accepted\n      Status:                True\n      Type:                  Accepted\n      Last Transition Time:  2026-11-16T03:04:52Z\n      Message:               spec.rules[0].backendRefs[0].name: Not found: \"apii\"\n      Observed Generation:   2\n      Reason:                BackendNotFound\n      Status:                False\n      Type:                  ResolvedRefs\n    Controller Name:         gateway.nginx.org/nginx-gateway-controller\n    Parent Ref:\n      Group:         gateway.networking.k8s.io\n      Kind:          Gateway\n      Name:          hitokoto-gateway\n      Namespace:     default\n      Section Name:  http\nEvents:              <none>\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 118,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 119,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容 OK（行が同じ順で出た）"
+ },
+ {
+  "n": 120,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/api → 500",
+  "out": "<html>\r\n<head><title>500 Internal Server Error</title></head>\r\n<body>\r\n<center><h1>500 Internal Server Error</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n"
+ },
+ {
+  "n": 121,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/ → 200",
+  "out": "<!doctype html>\n<html lang=\"ja\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>ひとこと掲示板</title>\n  <style>\n    body { font-family: \"Meiryo\", \"Hiragino Sans\", sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; background: #f8fafc; }\n    h1 { color: #1e3a5f; font-size: 1.8rem; margin-bottom: .2rem; }\n    .lead { color: #64748b; margin-top: 0; }\n    form { display: flex; gap: .5rem; margin: 1.2rem 0; }\n    input[type=text] { flex: 1; padding: .6rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }\n    button { padding: .6rem 1.2rem; font-size: 1rem; background: #0f766e; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }\n    ul { list-style: none; padding: 0; }\n    li { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; margin-bottom: .5rem; }\n    .time { color: #94a3b8; font-size: .8rem; margin-left: .5rem; }\n    .banner { padding: .6rem 1rem; border-radius: 6px; font-size: .9rem; }\n    .memory { background: #fef3c7; color: #92400e; }\n    .db { background: #dcfce7; color: #166534; }\n    .error { background: #fee2e2; color: #991b1b; }\n    footer { color: #94a3b8; font-size: .8rem; text-align: right; margin-top: 2rem; }\n  </style>\n</head>\n<body>\n\n<h1>ひとこと掲示板</h1>\n<p class=\"lead\">みんなのひとことを書き込もう（Kubernetes で動いています）</p>\n\n<p class=\"banner memory\">データベースを使っていません（書き込みは、Pod ごとに別々で、Pod を消すと消えます）</p>\n\n<form method=\"post\" action=\"/\">\n  <input type=\"text\" name=\"text\" maxlength=\"140\" placeholder=\"今日のひとこと（140字まで）\" required>\n  <button type=\"submit\">書き込む</button>\n</form>\n<ul>\n\n  <li>まだ書き込みはありません</li>\n\n</ul>\n\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5lqfc</footer>\n</body>\n</html>"
+ },
+ {
+  "n": 122,
+  "t": "out",
+  "ok": true,
+  "msg": "表示される内容と実際の出力が違う（WARN）: 「hello from api」が実際の出力に無い",
+  "warn": [
+   "「hello from api」が実際の出力に無い"
+  ],
+  "out": "tadata:\n  Creation Timestamp:  2026-11-16T03:04:35Z\n  Generation:          2\n  Resource Version:    2012\n  UID:                 4813d95c-fb40-45cc-81b3-e73c94cf181f\nSpec:\n  Parent Refs:\n    Group:  gateway.networking.k8s.io\n    Kind:   Gateway\n    Name:   hitokoto-gateway\n  Rules:\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    apii\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /api\n    Backend Refs:\n      Group:   \n      Kind:    Service\n      Name:    hitokoto\n      Port:    80\n      Weight:  1\n    Matches:\n      Path:\n        Type:   PathPrefix\n        Value:  /\nStatus:\n  Parents:\n    Conditions:\n      Last Transition Time:  2026-11-16T03:04:52Z\n      Message:               The Route is accepted\n      Observed Generation:   2\n      Reason:                Accepted\n      Status:                True\n      Type:                  Accepted\n      Last Transition Time:  2026-11-16T03:04:52Z\n      Message:               spec.rules[0].backendRefs[0].name: Not found: \"apii\"\n      Observed Generation:   2\n      Reason:                BackendNotFound\n      Status:                False\n      Type:                  ResolvedRefs\n    Controller Name:         gateway.nginx.org/nginx-gateway-controller\n    Parent Ref:\n      Group:         gateway.networking.k8s.io\n      Kind:          Gateway\n      Name:          hitokoto-gateway\n      Namespace:     default\n      Section Name:  http\nEvents:              <none>\n"
+ },
+ {
+  "n": 123,
+  "t": "file",
+  "ok": true,
+  "msg": "write: manifests/httproute.yaml"
+ },
+ {
+  "n": 124,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: kubectl apply -f manifests/httproute.yaml",
+  "out": "httproute.gateway.networking.k8s.io/hitokoto configured\n__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 125,
+  "t": "expect",
+  "ok": true,
+  "msg": "出力 OK"
+ },
+ {
+  "n": 126,
+  "t": "cmd",
+  "ok": true,
+  "msg": "exit 0: sleep 10",
+  "out": "__CWD__=/workspaces/hitokoto-k8s-rehearsal\n"
+ },
+ {
+  "n": 127,
+  "t": "http",
+  "ok": true,
+  "msg": "GET http://127.0.0.1:8080/api → 200",
+  "out": "hello from api\n"
+ }
+]
