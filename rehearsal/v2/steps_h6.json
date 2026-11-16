@@ -1,0 +1,568 @@
+[
+ {
+  "t": "file",
+  "path": "manifests/pvc.yaml",
+  "text": "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: hitokoto-data\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi",
+  "label": "manifests/pvc.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pvc.yaml",
+  "mac": "kubectl apply -f manifests/pvc.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "persistentvolumeclaim/hitokoto-data created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pvc",
+  "mac": "kubectl get pvc"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Pending"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME            STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Pending                                      standard       <unset>                 5s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get storageclass",
+  "mac": "kubectl get storageclass"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "WaitForFirstConsumer"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE\nstandard (default)   rancher.io/local-path   Delete          WaitForFirstConsumer   false                  30m",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/note.yaml",
+  "text": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: note\nspec:\n  containers:\n    - name: note\n      image: busybox:1.37\n      command: [\"sleep\", \"3600\"]\n      volumeMounts:\n        - name: data\n          mountPath: /data\n  volumes:\n    - name: data\n      persistentVolumeClaim:\n        claimName: hitokoto-data",
+  "label": "manifests/note.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/note.yaml",
+  "mac": "kubectl apply -f manifests/note.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/note created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "mac": "kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pvc",
+  "mac": "kubectl get pvc"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Bound"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Bound    pvc-3f1c2a7e-…                             1Gi        RWO            standard       <unset>                 40s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pv",
+  "mac": "kubectl get pv"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-data"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-3f1c2a7e-…   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
+  "label": "表示される内容（例。PV の名前は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec note -- sh -c \"echo hello > /data/memo.txt\"",
+  "mac": "kubectl exec note -- sh -c \"echo hello > /data/memo.txt\""
+ },
+ {
+  "t": "out",
+  "text": "",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec note -- cat /data/memo.txt",
+  "mac": "kubectl exec note -- cat /data/memo.txt"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hello"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hello",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/note.yaml",
+  "mac": "kubectl delete -f manifests/note.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"note\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/note.yaml",
+  "mac": "kubectl apply -f manifests/note.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod/note created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "mac": "kubectl wait --for=condition=Ready pod/note --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec note -- cat /data/memo.txt",
+  "mac": "kubectl exec note -- cat /data/memo.txt"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hello"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hello",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/pvc-fast.yaml",
+  "text": "apiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: hitokoto-fast\nspec:\n  storageClassName: fast\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi",
+  "label": "manifests/pvc-fast.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/pvc-fast.yaml",
+  "mac": "kubectl apply -f manifests/pvc-fast.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "persistentvolumeclaim/hitokoto-fast created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pvc hitokoto-fast",
+  "mac": "kubectl get pvc hitokoto-fast"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Pending"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME            STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-fast   Pending                                      fast           <unset>                 5s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 5",
+  "mac": "sleep 5"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe pvc hitokoto-fast",
+  "mac": "kubectl describe pvc hitokoto-fast"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "\"fast\" not found"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "  Warning  ProvisioningFailed  2s (x3 over 20s)  persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "out",
+  "text": "persistentvolumeclaim \"hitokoto-fast\" deleted from default namespace",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/pvc-fast.yaml",
+  "mac": "kubectl delete -f manifests/pvc-fast.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete -f manifests/note.yaml",
+  "mac": "kubectl delete -f manifests/note.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"note\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/postgres.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: postgres\nspec:\n  replicas: 1\n  strategy:\n    type: Recreate\n  selector:\n    matchLabels:\n      app: postgres\n  template:\n    metadata:\n      labels:\n        app: postgres\n    spec:\n      containers:\n        - name: postgres\n          image: postgres:18\n          env:\n            - name: POSTGRES_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          volumeMounts:\n            - name: data\n              mountPath: /var/lib/postgresql\n      volumes:\n        - name: data\n          persistentVolumeClaim:\n            claimName: hitokoto-data\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: postgres\nspec:\n  selector:\n    app: postgres\n  ports:\n    - port: 5432",
+  "label": "manifests/postgres.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/postgres.yaml --dry-run=server",
+  "mac": "kubectl apply -f manifests/postgres.yaml --dry-run=server"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "server dry run"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/postgres created (server dry run)\nservice/postgres created (server dry run)",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/postgres.yaml",
+  "mac": "kubectl apply -f manifests/postgres.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "service/postgres created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/postgres created\nservice/postgres created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/postgres",
+  "mac": "kubectl rollout status deployment/postgres"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"postgres\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "mac": "for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "timeout": 150
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl logs deployment/postgres",
+  "mac": "kubectl logs deployment/postgres"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "ready to accept connections"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "… database system is ready to accept connections",
+  "label": "表示される内容（最後の行の一部）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl port-forward service/hitokoto 8000:80",
+  "mac": "kubectl port-forward service/hitokoto 8000:80"
+ },
+ {
+  "t": "out",
+  "text": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000",
+  "label": "表示される内容（つないでいる間は、プロンプトに戻りません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl port-forward service/hitokoto 8000:80",
+  "mac": "kubectl port-forward service/hitokoto 8000:80",
+  "bg": true,
+  "wait": "http://127.0.0.1:8000/health"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "hitokoto"
+  ]
+ },
+ {
+  "t": "http",
+  "method": "POST",
+  "url": "http://127.0.0.1:8000/",
+  "form": {
+   "text": "データベースに書きました"
+  },
+  "status": 200
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "データベースに書きました"
+  ]
+ },
+ {
+  "t": "stop"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete pod -l app=postgres",
+  "mac": "kubectl delete pod -l app=postgres"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "pod \"postgres-…\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/postgres",
+  "mac": "kubectl rollout status deployment/postgres"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"postgres\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 5; for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "mac": "sleep 5; for i in $(seq 40); do kubectl logs deployment/postgres | grep -q 'ready to accept connections' && break; sleep 3; done",
+  "timeout": 150
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl port-forward service/hitokoto 8000:80",
+  "mac": "kubectl port-forward service/hitokoto 8000:80"
+ },
+ {
+  "t": "out",
+  "text": "Forwarding from 127.0.0.1:8000 -> 8000\nForwarding from [::1]:8000 -> 8000",
+  "label": "表示される内容（つないでいる間は、プロンプトに戻りません）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl port-forward service/hitokoto 8000:80",
+  "mac": "kubectl port-forward service/hitokoto 8000:80",
+  "bg": true,
+  "wait": "http://127.0.0.1:8000/health"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "データベースに書きました"
+  ]
+ },
+ {
+  "t": "stop"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pv",
+  "mac": "kubectl get pv"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Delete"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-3f1c2a7e-…   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout restart deployment/hitokoto && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl rollout restart deployment/hitokoto && kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl port-forward service/hitokoto 8000:80",
+  "mac": "kubectl port-forward service/hitokoto 8000:80",
+  "bg": true,
+  "wait": "http://127.0.0.1:8000/health"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8000/",
+  "contains": [
+   "データベースに書きました"
+  ]
+ },
+ {
+  "t": "stop"
+ }
+]
