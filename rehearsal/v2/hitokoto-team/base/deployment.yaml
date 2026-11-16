@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hitokoto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hitokoto-team
+  template:
+    metadata:
+      labels:
+        app: hitokoto-team
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:2.1
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: team-secret
+                  key: DB_PASSWORD
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
