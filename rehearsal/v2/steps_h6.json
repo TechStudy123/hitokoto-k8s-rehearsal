@@ -100,7 +100,7 @@
  },
  {
   "t": "out",
-  "text": "NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Bound    pvc-3f1c2a7e-…                             1Gi        RWO            standard       <unset>                 40s",
+  "text": "NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE\nhitokoto-data   Bound    pvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            standard       <unset>                 40s",
   "label": "表示される内容（例）"
  },
  {
@@ -116,7 +116,7 @@
  },
  {
   "t": "out",
-  "text": "NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-3f1c2a7e-…   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
+  "text": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
   "label": "表示される内容（例。PV の名前は人によって違います）"
  },
  {
@@ -261,7 +261,7 @@
  },
  {
   "t": "out",
-  "text": "  Warning  ProvisioningFailed  2s (x3 over 20s)  persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found",
+  "text": "  Warning  ProvisioningFailed  5s    persistentvolume-controller  storageclass.storage.k8s.io \"fast\" not found",
   "label": "表示される内容（Events の一部）"
  },
  {
@@ -467,7 +467,7 @@
  },
  {
   "t": "out",
-  "text": "pod \"postgres-…\" deleted from default namespace",
+  "text": "pod \"postgres-789b848956-w2ljz\" deleted from default namespace",
   "label": "表示される内容（例）"
  },
  {
@@ -533,7 +533,7 @@
  },
  {
   "t": "out",
-  "text": "NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-3f1c2a7e-…   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
+  "text": "NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE\npvc-b2550f20-b650-4e18-be6f-241a77f04882   1Gi        RWO            Delete           Bound    default/hitokoto-data   standard       <unset>                          10s",
   "label": "表示される内容（例）"
  },
  {
