@@ -1,0 +1,731 @@
+[
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml",
+  "mac": "kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deployment.apps/metrics-server created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "serviceaccount/metrics-server created\n…\ndeployment.apps/metrics-server created\napiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl patch deployment metrics-server -n kube-system --type json --patch-file setup/metrics-server-tls.json",
+  "mac": "kubectl patch deployment metrics-server -n kube-system --type json --patch-file setup/metrics-server-tls.json"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "patched"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/metrics-server patched",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/metrics-server -n kube-system",
+  "mac": "kubectl rollout status deployment/metrics-server -n kube-system"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"metrics-server\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 40); do kubectl top pods >/dev/null 2>&1 && break; sleep 5; done",
+  "mac": "for i in $(seq 40); do kubectl top pods >/dev/null 2>&1 && break; sleep 5; done",
+  "timeout": 220
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl top nodes",
+  "mac": "kubectl top nodes"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-worker"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                     CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)\nhitokoto-control-plane   120m         3%       700Mi           4%\nhitokoto-worker          40m          1%       400Mi           2%\nhitokoto-worker2         40m          1%       400Mi           2%",
+  "label": "表示される内容（例。値は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl top pods",
+  "mac": "kubectl top pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        CPU(cores)   MEMORY(bytes)\nhitokoto-6f8d9c7b5-4x2kq    2m           48Mi\nhitokoto-6f8d9c7b5-9mz7d    2m           47Mi\nhitokoto-6f8d9c7b5-tq8wn    2m           48Mi\npostgres-7c5d8f9b6-k8s2p    1m           30Mi",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml --dry-run=server",
+  "mac": "kubectl apply -f manifests/deployment.yaml --dry-run=server"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "server dry run"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured (server dry run)",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 32Mi\n            limits:\n              cpu: 500m\n              memory: 32Mi\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; kubectl get pods",
+  "mac": "for i in $(seq 60); do kubectl get pods | grep -q 'CrashLoopBackOff\\|OOMKilled' && break; sleep 3; done; kubectl get pods",
+  "timeout": 220
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "CrashLoopBackOff\\|OOMKilled"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS             RESTARTS      AGE\nhitokoto-5d7f8c9b6-r2xkq    0/1     CrashLoopBackOff   2 (15s ago)   40s\nhitokoto-6f8d9c7b5-4x2kq    1/1     Running            0             5m\n…",
+  "label": "表示される内容（例。STATUS は OOMKilled のこともあります）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'CrashLoopBackOff\\|OOMKilled\\|Error' && echo $p; done | head -n 1)",
+  "mac": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'CrashLoopBackOff\\|OOMKilled\\|Error' && echo $p; done | head -n 1)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "OOMKilled"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl describe pod hitokoto-5d7f8c9b6-r2xkq",
+  "mac": "kubectl describe pod hitokoto-5d7f8c9b6-r2xkq"
+ },
+ {
+  "t": "out",
+  "text": "    Last State:     Terminated\n      Reason:       OOMKilled\n      Exit Code:    137\n…\n    Restart Count:  2",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -l app=hitokoto",
+  "mac": "kubectl get pods -l app=hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "1/1"
+  ]
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /ready\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 30",
+  "mac": "sleep 30",
+  "timeout": 40
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "0/1"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS   AGE\nhitokoto-7b9c6d8f5-w5j2x    0/1     Running   0          30s\nhitokoto-8c4f7d9b6-2hq7n    1/1     Running   0          3m\n…",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service hitokoto",
+  "mac": "kubectl describe service hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Endpoints"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q '0/1' && echo $p; done | head -n 1)",
+  "mac": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q '0/1' && echo $p; done | head -n 1)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Readiness probe failed"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl describe pod hitokoto-7b9c6d8f5-w5j2x",
+  "mac": "kubectl describe pod hitokoto-7b9c6d8f5-w5j2x"
+ },
+ {
+  "t": "out",
+  "text": "  Warning  Unhealthy  2s (x8 over 30s)  kubelet  spec.containers{app}: Readiness probe failed: HTTP probe failed with statuscode: 404",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml元に戻す"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /healthz\n              port: 8000\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 75",
+  "mac": "sleep 75",
+  "timeout": 90
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto-"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                        READY   STATUS    RESTARTS      AGE\nhitokoto-9d6b8c7f4-m3k9v    1/1     Running   2 (5s ago)    70s\n…",
+  "label": "表示される内容（例。1分ほど待ってから）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'hitokoto-' && echo $p; done | head -n 1)",
+  "mac": "kubectl describe $(kubectl get pods -o name | while read p; do kubectl get $p | grep -q 'hitokoto-' && echo $p; done | head -n 1)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Liveness probe failed"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl describe pod hitokoto-9d6b8c7f4-m3k9v",
+  "mac": "kubectl describe pod hitokoto-9d6b8c7f4-m3k9v"
+ },
+ {
+  "t": "out",
+  "text": "  Warning  Unhealthy  …  kubelet  spec.containers{app}: Liveness probe failed: HTTP probe failed with statuscode: 404\n  Normal   Killing    …  kubelet  spec.containers{app}: Container app failed liveness probe, will be restarted",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "file",
+  "path": "manifests/namespace.yaml",
+  "text": "apiVersion: v1\nkind: Namespace\nmetadata:\n  name: hitokoto\n  labels:\n    pod-security.kubernetes.io/enforce: restricted",
+  "label": "manifests/namespace.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/namespace.yaml",
+  "mac": "kubectl apply -f manifests/namespace.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "namespace/hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -n hitokoto",
+  "mac": "kubectl get pods -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "No resources found"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "No resources found in hitokoto namespace.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/configmap.yaml -n hitokoto",
+  "mac": "kubectl apply -f manifests/configmap.yaml -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "configmap/hitokoto-config created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl create secret generic db-secret --from-literal=POSTGRES_PASSWORD=hitokoto-pass -n hitokoto",
+  "mac": "kubectl create secret generic db-secret --from-literal=POSTGRES_PASSWORD=hitokoto-pass -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "secret/db-secret created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml -n hitokoto",
+  "mac": "kubectl apply -f manifests/deployment.yaml -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deployment.apps/hitokoto created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Warning: would violate PodSecurity \"restricted:latest\": allowPrivilegeEscalation != false (container \"app\" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container \"app\" must set securityContext.capabilities.drop=[\"ALL\"]), runAsNonRoot != true (pod or container \"app\" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container \"app\" must set securityContext.seccompProfile.type to \"RuntimeDefault\" or \"Localhost\")\ndeployment.apps/hitokoto created",
+  "label": "表示される内容"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get deployment -n hitokoto",
+  "mac": "kubectl get deployment -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "0/3"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME       READY   UP-TO-DATE   AVAILABLE   AGE\nhitokoto   0/3     0            0           10s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods -n hitokoto",
+  "mac": "kubectl get pods -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "No resources found"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "No resources found in hitokoto namespace.",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 5",
+  "mac": "sleep 5"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe replicaset -n hitokoto",
+  "mac": "kubectl describe replicaset -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "violates PodSecurity"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "  Warning  FailedCreate  …  replicaset-controller  Error creating: pods \"hitokoto-…\" is forbidden: violates PodSecurity \"restricted:latest\": …",
+  "label": "表示される内容（Events の一部）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/deployment.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: hitokoto\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: hitokoto\n  template:\n    metadata:\n      labels:\n        app: hitokoto\n    spec:\n      containers:\n        - name: app\n          image: ghcr.io/container-nyumon/hitokoto:2.1\n          env:\n            - name: APP_TITLE\n              valueFrom:\n                configMapKeyRef:\n                  name: hitokoto-config\n                  key: APP_TITLE\n            - name: DB_HOST\n              value: postgres\n            - name: DB_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: db-secret\n                  key: POSTGRES_PASSWORD\n          resources:\n            requests:\n              cpu: 100m\n              memory: 128Mi\n            limits:\n              cpu: 500m\n              memory: 256Mi\n          readinessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          livenessProbe:\n            httpGet:\n              path: /health\n              port: 8000\n          securityContext:\n            runAsNonRoot: true\n            allowPrivilegeEscalation: false\n            capabilities:\n              drop: [\"ALL\"]\n            seccompProfile:\n              type: RuntimeDefault\n          volumeMounts:\n            - name: config\n              mountPath: /etc/hitokoto\n      volumes:\n        - name: config\n          configMap:\n            name: hitokoto-config",
+  "label": "manifests/deployment.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml -n hitokoto",
+  "mac": "kubectl apply -f manifests/deployment.yaml -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto -n hitokoto",
+  "mac": "kubectl rollout status deployment/hitokoto -n hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl exec -n hitokoto deployment/hitokoto -- whoami",
+  "mac": "kubectl exec -n hitokoto deployment/hitokoto -- whoami"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "appuser"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "appuser",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "out",
+  "text": "deployment \"hitokoto\" successfully rolled out",
+  "label": "表示される内容（最後の行）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/deployment.yaml",
+  "mac": "kubectl apply -f manifests/deployment.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "mac": "kubectl rollout status deployment/hitokoto --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "successfully rolled out"
+  ]
+ }
+]
