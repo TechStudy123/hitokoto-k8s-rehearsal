@@ -1,0 +1,6 @@
+resources:
+  - ../../base
+namePrefix: staging-
+replicas:
+  - name: hitokoto
+    count: 2
