@@ -1,0 +1,671 @@
+[
+ {
+  "t": "file",
+  "path": "manifests/service.yaml",
+  "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: hitokoto\nspec:\n  selector:\n    app: hitokoto\n  ports:\n    - port: 80\n      targetPort: 8000",
+  "label": "manifests/service.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/service.yaml --dry-run=server",
+  "mac": "kubectl apply -f manifests/service.yaml --dry-run=server"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "server dry run"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "service/hitokoto created (server dry run)",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/service.yaml",
+  "mac": "kubectl apply -f manifests/service.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "service/hitokoto created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "service/hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get services",
+  "mac": "kubectl get services"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokoto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE\nhitokoto     ClusterIP   10.96.120.35   <none>        80/TCP    5s\nkubernetes   ClusterIP   10.96.0.1      <none>        443/TCP   10m",
+  "label": "表示される内容（例。CLUSTER-IP は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service hitokoto",
+  "mac": "kubectl describe service hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Endpoints"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "label": "表示される内容（一部。アドレスは人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- sh"
+ },
+ {
+  "t": "out",
+  "text": "~ $",
+  "label": "表示される内容（Pod の中のプロンプトに変わります。出ないときは Enter を押します）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "curl -s http://hitokoto/health",
+  "mac": "curl -s http://hitokoto/health"
+ },
+ {
+  "t": "out",
+  "text": "{\"status\":\"ok\"}",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "timeout": 150
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "\"status\":\"ok\""
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "curl -s http://hitokoto/ | grep Pod:",
+  "mac": "curl -s http://hitokoto/ | grep Pod:"
+ },
+ {
+  "t": "out",
+  "text": "<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5gw9r</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-wtjhs</footer>\n<footer>hitokoto 2.1 ・ Pod: hitokoto-b55ff59b6-5gw9r</footer>",
+  "label": "表示される内容（3回打った例。名前は人によって違います）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"for i in 1 2 3 4 5 6; do curl -s http://hitokoto/ | grep Pod:; done\"",
+  "timeout": 150
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Pod: hitokoto-"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "exit",
+  "mac": "exit"
+ },
+ {
+  "t": "out",
+  "text": "pod \"tmp\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get pods",
+  "mac": "kubectl get pods"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl delete $(kubectl get pods -l app=hitokoto -o name | head -n 1)",
+  "mac": "kubectl delete $(kubectl get pods -l app=hitokoto -o name | head -n 1)"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deleted"
+  ]
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl delete pod hitokoto-b55ff59b6-5gw9r",
+  "mac": "kubectl delete pod hitokoto-b55ff59b6-5gw9r"
+ },
+ {
+  "t": "out",
+  "text": "pod \"hitokoto-b55ff59b6-5gw9r\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health"
+ },
+ {
+  "t": "out",
+  "text": "{\"status\":\"ok\"}pod \"tmp\" deleted from default namespace",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s http://hitokoto/health\"",
+  "timeout": 150
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "\"status\":\"ok\""
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service hitokoto",
+  "mac": "kubectl describe service hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "Endpoints"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "label": "表示される内容（一部。Endpoints の1つが新しいアドレスに変わります）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/service.yaml",
+  "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: hitokoto\nspec:\n  selector:\n    app: hitokto\n  ports:\n    - port: 80\n      targetPort: 8000",
+  "label": "manifests/service.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "rc": 1,
+  "win": "kubectl diff -f manifests/service.yaml",
+  "mac": "kubectl diff -f manifests/service.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "diff -u -N /tmp/LIVE-…/v1.Service.default.hitokoto /tmp/MERGED-…/v1.Service.default.hitokoto\n…\n   selector:\n-    app: hitokoto\n+    app: hitokto\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/service.yaml",
+  "mac": "kubectl apply -f manifests/service.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "service/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe service hitokoto",
+  "mac": "kubectl describe service hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "hitokto"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Selector:                 app=hitokto\n…\nEndpoints:                \n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "skip": true,
+  "win": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health",
+  "mac": "kubectl run tmp --rm -it --restart=Never --image=curlimages/curl:8.17.0 -- curl -s http://hitokoto/health"
+ },
+ {
+  "t": "out",
+  "text": "curl: (7) Failed to connect to hitokoto port 80 after 2 ms: Could not connect to server\npod \"tmp\" deleted from default namespace\npod default/tmp terminated (Error)",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s -m 5 http://hitokoto/health\"",
+  "mac": "kubectl run tmp --rm -i --restart=Never --image=curlimages/curl:8.17.0 -- sh -c \"curl -s -m 5 http://hitokoto/health\"",
+  "rc": 1,
+  "timeout": 150
+ },
+ {
+  "t": "out",
+  "text": "Name:                     hitokoto\nNamespace:                default\n…\nSelector:                 app=hitokoto\nType:                     ClusterIP\n…\nPort:                     <unset>  80/TCP\nTargetPort:               8000/TCP\nEndpoints:                10.244.1.4:8000,10.244.2.4:8000,10.244.2.5:8000\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/service.yaml",
+  "text": "apiVersion: v1\nkind: Service\nmetadata:\n  name: hitokoto\nspec:\n  selector:\n    app: hitokoto\n  ports:\n    - port: 80\n      targetPort: 8000"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/service.yaml",
+  "mac": "kubectl apply -f manifests/service.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 3; kubectl describe service hitokoto",
+  "mac": "sleep 3; kubectl describe service hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "8000"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl api-resources --api-group=gateway.networking.k8s.io",
+  "mac": "kubectl api-resources --api-group=gateway.networking.k8s.io"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "NAME"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME   SHORTNAMES   APIVERSION   NAMESPACED   KIND",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml",
+  "mac": "kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "gateways.gateway.networking.k8s.io"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "customresourcedefinition.apiextensions.k8s.io/backendtlspolicies.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gatewayclasses.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/gateways.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/grpcroutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/httproutes.gateway.networking.k8s.io serverside-applied\ncustomresourcedefinition.apiextensions.k8s.io/referencegrants.gateway.networking.k8s.io serverside-applied",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl api-resources --api-group=gateway.networking.k8s.io",
+  "mac": "kubectl api-resources --api-group=gateway.networking.k8s.io"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "httproutes"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                 SHORTNAMES   APIVERSION                          NAMESPACED   KIND\nbackendtlspolicies   btlspolicy   gateway.networking.k8s.io/v1        true         BackendTLSPolicy\ngatewayclasses       gc           gateway.networking.k8s.io/v1        false        GatewayClass\ngateways             gtw          gateway.networking.k8s.io/v1        true         Gateway\ngrpcroutes                        gateway.networking.k8s.io/v1        true         GRPCRoute\nhttproutes                        gateway.networking.k8s.io/v1        true         HTTPRoute\nreferencegrants      refgrant     gateway.networking.k8s.io/v1beta1   true         ReferenceGrant",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply --server-side -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/crds.yaml",
+  "mac": "kubectl apply --server-side -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/crds.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "serverside-applied"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "customresourcedefinition.apiextensions.k8s.io/clientsettingspolicies.gateway.nginx.org serverside-applied\n…",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/nodeport/deploy.yaml",
+  "mac": "kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.7.2/deploy/nodeport/deploy.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "gatewayclass"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "namespace/nginx-gateway created\n…\ndeployment.apps/nginx-gateway created\ngatewayclass.gateway.networking.k8s.io/nginx created\nnginxproxy.gateway.nginx.org/nginx-gateway-proxy-config created",
+  "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type merge --patch-file setup/gateway-nodeport.yaml",
+  "mac": "kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type merge --patch-file setup/gateway-nodeport.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "patched"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "nginxproxy.gateway.nginx.org/nginx-gateway-proxy-config patched",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Available deployment/nginx-gateway -n nginx-gateway --timeout=180s",
+  "mac": "kubectl wait --for=condition=Available deployment/nginx-gateway -n nginx-gateway --timeout=180s",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get gatewayclass",
+  "mac": "kubectl get gatewayclass"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "True"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME    CONTROLLER                                   ACCEPTED   AGE\nnginx   gateway.nginx.org/nginx-gateway-controller   True       30s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/api.yaml",
+  "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: api\n  template:\n    metadata:\n      labels:\n        app: api\n    spec:\n      containers:\n        - name: api\n          image: hashicorp/http-echo:1.0.0\n          args: [\"-text=hello from api\"]\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: api\nspec:\n  selector:\n    app: api\n  ports:\n    - port: 80\n      targetPort: 5678",
+  "label": "manifests/api.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/api.yaml",
+  "mac": "kubectl apply -f manifests/api.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "service/api created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "deployment.apps/api created\nservice/api created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/gateway.yaml",
+  "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: hitokoto-gateway\nspec:\n  gatewayClassName: nginx\n  listeners:\n    - name: http\n      protocol: HTTP\n      port: 80",
+  "label": "manifests/gateway.yaml新しく作る"
+ },
+ {
+  "t": "file",
+  "path": "manifests/httproute.yaml",
+  "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: hitokoto\nspec:\n  parentRefs:\n    - name: hitokoto-gateway\n  rules:\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /api\n      backendRefs:\n        - name: api\n          port: 80\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /\n      backendRefs:\n        - name: hitokoto\n          port: 80",
+  "label": "manifests/httproute.yaml新しく作る"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/gateway.yaml",
+  "mac": "kubectl apply -f manifests/gateway.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "gateway.gateway.networking.k8s.io/hitokoto-gateway created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/httproute.yaml",
+  "mac": "kubectl apply -f manifests/httproute.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "created"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "httproute.gateway.networking.k8s.io/hitokoto created",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s && sleep 15",
+  "mac": "kubectl wait --for=condition=Programmed gateway/hitokoto-gateway --timeout=180s && sleep 15",
+  "timeout": 200
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "condition met"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl get gateway",
+  "mac": "kubectl get gateway"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "True"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME               CLASS   ADDRESS        PROGRAMMED   AGE\nhitokoto-gateway   nginx   10.96.45.210   True         20s",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/",
+  "contains": [
+   "hitokoto 2.1"
+  ]
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/api",
+  "contains": [
+   "hello from api"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hello from api",
+  "label": "表示される内容"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/api/hello",
+  "contains": [
+   "hello from api"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe httproute hitokoto",
+  "mac": "kubectl describe httproute hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "ResolvedRefs"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "Status:\n  Parents:\n    Conditions:\n      Last Transition Time:  …\n      Message:               The Route is accepted\n      Observed Generation:   1\n      Reason:                Accepted\n      Status:                True\n      Type:                  Accepted\n      Last Transition Time:  …\n      Message:               All references are resolved\n      Observed Generation:   1\n      Reason:                ResolvedRefs\n      Status:                True\n      Type:                  ResolvedRefs\n…",
+  "label": "表示される内容（いちばん下の Status。一部）"
+ },
+ {
+  "t": "file",
+  "path": "manifests/httproute.yaml",
+  "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: hitokoto\nspec:\n  parentRefs:\n    - name: hitokoto-gateway\n  rules:\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /api\n      backendRefs:\n        - name: apii\n          port: 80\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /\n      backendRefs:\n        - name: hitokoto\n          port: 80",
+  "label": "manifests/httproute.yaml書き換える"
+ },
+ {
+  "t": "cmd",
+  "rc": 1,
+  "win": "kubectl diff -f manifests/httproute.yaml",
+  "mac": "kubectl diff -f manifests/httproute.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "apii"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/httproute.yaml",
+  "mac": "kubectl apply -f manifests/httproute.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "httproute.gateway.networking.k8s.io/hitokoto configured",
+  "label": "表示される内容（例）"
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 10",
+  "mac": "sleep 10"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl describe httproute hitokoto",
+  "mac": "kubectl describe httproute hitokoto"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "BackendNotFound"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "      Message:               Spec.rules[0].backendRefs[0].name: Not found: \"apii\"\n      Observed Generation:   2\n      Reason:                BackendNotFound\n      Status:                False\n      Type:                  ResolvedRefs\n…",
+  "label": "表示される内容（Status の一部）"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/api",
+  "status": 500
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/",
+  "contains": [
+   "hitokoto 2.1"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "hello from api",
+  "label": "/api を開いたときの表示"
+ },
+ {
+  "t": "file",
+  "path": "manifests/httproute.yaml",
+  "text": "apiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: hitokoto\nspec:\n  parentRefs:\n    - name: hitokoto-gateway\n  rules:\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /api\n      backendRefs:\n        - name: api\n          port: 80\n    - matches:\n        - path:\n            type: PathPrefix\n            value: /\n      backendRefs:\n        - name: hitokoto\n          port: 80"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl apply -f manifests/httproute.yaml",
+  "mac": "kubectl apply -f manifests/httproute.yaml"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "configured"
+  ]
+ },
+ {
+  "t": "cmd",
+  "win": "sleep 10",
+  "mac": "sleep 10"
+ },
+ {
+  "t": "http",
+  "url": "http://127.0.0.1:8080/api",
+  "contains": [
+   "hello from api"
+  ]
+ }
+]
