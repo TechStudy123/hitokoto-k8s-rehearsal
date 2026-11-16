@@ -233,8 +233,8 @@
  },
  {
   "t": "cmd",
-  "win": "kubectl api-resources",
-  "mac": "kubectl api-resources"
+  "win": "kubectl api-resources --api-group=\"\"",
+  "mac": "kubectl api-resources --api-group=\"\""
  },
  {
   "t": "expect",
@@ -244,8 +244,24 @@
  },
  {
   "t": "out",
-  "text": "NAME                                SHORTNAMES   APIVERSION                        NAMESPACED   KIND\n…\nnamespaces                          ns           v1                                false        Namespace\nnodes                               no           v1                                false        Node\n…\npods                                po           v1                                true         Pod\n…\nservices                            svc          v1                                true         Service\n…\ndeployments                         deploy       apps/v1                           true         Deployment\n…\nreplicasets                         rs           apps/v1                           true         ReplicaSet\n…",
+  "text": "NAME                     SHORTNAMES   APIVERSION   NAMESPACED   KIND\nbindings                              v1           true         Binding\ncomponentstatuses        cs           v1           false        ComponentStatus\nconfigmaps               cm           v1           true         ConfigMap\n…\nnamespaces               ns           v1           false        Namespace\nnodes                    no           v1           false        Node\n…\npods                     po           v1           true         Pod\n…\nsecrets                                v1           true         Secret\n…\nservices                 svc          v1           true         Service",
   "label": "表示される内容（一部）"
+ },
+ {
+  "t": "cmd",
+  "win": "kubectl api-resources --api-group=apps",
+  "mac": "kubectl api-resources --api-group=apps"
+ },
+ {
+  "t": "expect",
+  "contains": [
+   "deployments"
+  ]
+ },
+ {
+  "t": "out",
+  "text": "NAME                  SHORTNAMES   APIVERSION   NAMESPACED   KIND\ncontrollerrevisions                apps/v1      true         ControllerRevision\ndaemonsets            ds           apps/v1      true         DaemonSet\ndeployments           deploy       apps/v1      true         Deployment\nreplicasets           rs           apps/v1      true         ReplicaSet\nstatefulsets          sts          apps/v1      true         StatefulSet",
+  "label": "表示される内容（例）"
  },
  {
   "t": "cmd",
