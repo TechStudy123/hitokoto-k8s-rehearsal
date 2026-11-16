@@ -16,19 +16,9 @@ for N in ${RH_HANDSON:-3}; do
   python3 rehearsal/v2/rh.py run rehearsal/v2/steps_h$N.json --os mac --work . --out results/h$N.json > results/h$N.log 2>&1
   echo "H$N exit $?" >> results/env.log
 done
-# 講義 3-3 の見本のための出力（kubectl diff の実際の行・undo の警告）
-{
-  echo '== diff（版だけ）'; sed -i 's/hitokoto:2\.1/hitokoto:2.0/' manifests/deployment.yaml; kubectl diff -f manifests/deployment.yaml; echo "rc=$?"
-  echo '== diff（replicas も）'; sed -i 's/replicas: 3/replicas: 1/' manifests/deployment.yaml; kubectl diff -f manifests/deployment.yaml; echo "rc=$?"
-  git checkout -- manifests/deployment.yaml 2>/dev/null; cp rehearsal/v2/H3/manifests/deployment.yaml manifests/
-  echo '== explain'; kubectl explain deployment.spec.strategy; kubectl explain deployment.spec.strategi; echo "rc=$?"
-  echo '== dry-run 古い apiVersion'; sed 's#apps/v1#extensions/v1beta1#' manifests/deployment.yaml > /tmp/old.yaml; kubectl apply -f /tmp/old.yaml --dry-run=server; echo "rc=$?"
-  echo '== dry-run ok'; kubectl apply -f manifests/deployment.yaml --dry-run=server; echo "rc=$?"
-  echo '== selector mismatch'; sed '0,/app: hitokoto/! s/        app: hitokoto/        app: web/' manifests/deployment.yaml > /tmp/mis.yaml; kubectl apply -f /tmp/mis.yaml --dry-run=server; echo "rc=$?"
-  echo '== delete pod の表示'; kubectl delete $(kubectl get pods -o name | head -n 1); echo "rc=$?"
-  echo '== undo の表示（stderr も）'; kubectl rollout undo deployment/hitokoto 2>&1; echo "rc=$?"
-  echo '== history'; kubectl rollout history deployment/hitokoto
-  echo '== get pods -o wide'; kubectl get pods -o wide
-} > results/extra.log 2>&1
+# 回ごとの追加の出力（あれば rehearsal/v2/extra_h{N}.sh。資料に書く表示を確かめるため）
+for N in ${RH_HANDSON:-3}; do
+  [ -f rehearsal/v2/extra_h$N.sh ] && bash rehearsal/v2/extra_h$N.sh > results/extra_h$N.log 2>&1
+done
 kind delete cluster --name hitokoto >> results/env.log 2>&1
 exit 0
