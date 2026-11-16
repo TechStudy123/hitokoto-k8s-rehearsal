@@ -1,0 +1,19 @@
+# 壊れたアプリ その2（ハンズオン9）
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop2
+  template:
+    metadata:
+      labels:
+        app: shop2
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/container-nyumon/hitokoto:2.1
+          args: ["fastapi", "run", "mian.py", "--port", "8000"]
